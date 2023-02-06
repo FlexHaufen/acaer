@@ -20,10 +20,12 @@
 namespace Acaer {
 
     Core::Core() {
-
+        //SetTraceLogLevel(0);
         InitWindow(800, 450, "acaer");
-        //SetTargetFPS(144);
-       
+
+        if (!IsWindowReady()) {
+            TraceLog(LOG_FATAL, "Couldn't create Window");
+        }       
     }
 
     Core::~Core() {
@@ -40,13 +42,6 @@ namespace Acaer {
             windowTitel = "arcaer - FPS: " + std::to_string(GetFPS());
             SetWindowTitle(windowTitel.c_str());
         
-			
-
-
-          
-
-            
-
             if (IsWindowMinimized()) {
                 
                 
