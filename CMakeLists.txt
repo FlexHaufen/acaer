@@ -74,6 +74,8 @@ endif()
 #----------------------------------------------------
 include_directories(
 	"${CMAKE_SOURCE_DIR}/src"
+  #EnTT
+	"${CMAKE_SOURCE_DIR}/lib/vendor/entt"
 )
 
 

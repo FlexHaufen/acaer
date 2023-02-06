@@ -19,6 +19,8 @@
 #include <raymath.h>
 #include <rcamera.h>
 
+// * EnTT *
+#include "entt.hpp"
 
 #include <string>
 
