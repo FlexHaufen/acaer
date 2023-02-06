@@ -1,0 +1,10 @@
+# Default
+build/
+.vscode/
+
+# Doc
+.obsidian/
+
+# Log files
+*.log
+*.ini
