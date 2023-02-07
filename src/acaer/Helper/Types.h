@@ -5,21 +5,44 @@
 // *** CUSTOM TYPE DEFINTIONS ***
 
 // unsigned
-typedef uint8_t         u8;
-typedef uint16_t        u16;
-typedef uint32_t        u32;
-typedef uint64_t        u64;
+typedef unsigned char       u8;
+typedef unsigned short      u16;
+typedef unsigned int        u32;
+typedef unsigned long long  u64;
 
 // signed
-typedef int8_t          i8;
-typedef int16_t         i16;
-typedef int32_t         i32;
-typedef int64_t         i64;
+typedef char                s8;
+typedef short               s16;
+typedef int                 s32;
+typedef long long           s64;
 
 
-typedef bool            b8;
+typedef bool                b8;
 
 // floatingpoints
-typedef float           f32;
-typedef double          f64;
-typedef long double     f128;
+typedef float               f32;
+typedef double              f64;
+typedef long double         f128;
+
+/**
+ * @brief 2D vector
+ * 
+ * @tparam T type of vector
+ */
+template <typename T>
+struct v2 {
+    T x;
+    T y;
+};
+
+/**
+ * @brief 3D Vector
+ * 
+ * @tparam T type of vector
+ */
+template <typename T>
+struct v3 {
+    T x;
+    T y;
+    T z;
+};
