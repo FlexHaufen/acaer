@@ -25,7 +25,7 @@ namespace Acaer {
     };
 
     struct Transform_C {
-        std::string name;                   // Name
+        std::string tag;                    // tag (name)
 
         //v2 center_pos;
         s8 render_layer;                    // Order in the renderer

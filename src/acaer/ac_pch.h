@@ -26,3 +26,17 @@
 
 // ** Local **
 #include "Helper/Types.h"
+
+
+// *** DEFINES ***
+
+
+// ** Flags **
+#define AC_WINDOW_RESIZABLE
+#define AC_SCENE_CLEAR_BACKGROUND           DARKGRAY
+
+#define AC_RENDER_ENTITY_HITBOX             // flag
+
+#define AC_RENDER_ENTITY_TAG                // flag
+#define AC_RENDER_ENTITY_TAG_FONT_COLOR     GREEN
+#define AC_RENDER_ENTITY_TAG_FONT_SIZE      20

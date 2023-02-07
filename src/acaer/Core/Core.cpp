@@ -17,7 +17,6 @@
 
 
 // *** DEFINE ***
-#define AC_WINDOW_RESIZABLE
 
 // *** NAMESPACE ***
 namespace Acaer {
@@ -35,13 +34,13 @@ namespace Acaer {
         }
 
         m_ActiveScene = CreateRef<Scene>();
-        auto ent1 = m_ActiveScene->CreateEntity();
+        auto ent1 = m_ActiveScene->CreateEntity("ent1");
         auto &t1 = ent1.GetComponent<Transform_C>();
         t1.hitbox = {100, 100, 100, 200};
         t1.color = RED;
-        auto ent2 = m_ActiveScene->CreateEntity();
+        auto ent2 = m_ActiveScene->CreateEntity("ent2");
         auto &t2 = ent2.GetComponent<Transform_C>();
-        t2.hitbox = {80, 200, 300, 300};
+        t2.hitbox = {300, 100, 300, 300};
         t2.color = PINK;
     }
 

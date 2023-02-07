@@ -27,11 +27,12 @@ namespace Acaer {
         ~Scene();
 
         /**
-         * @brief Create a new Entity
+         * @brief Create a Entity object
          * 
+         * @param tag       tag (name) of entity
          * @return Entity 
          */
-        Entity CreateEntity();
+        Entity CreateEntity(std::string tag = "entity");
 
         /**
          * @brief Update function
