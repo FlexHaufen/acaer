@@ -12,6 +12,9 @@
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
+#include "acaer/Scene/Scene.h"
+
+
 
 //*** DEFINES ***
 
@@ -60,5 +63,8 @@ namespace Acaer {
       
         bool m_isRunning = true;    // True when app is running
         bool m_isMinimized = false; // True when app is minimzed
+
+        Ref<Scene> m_ActiveScene;   // Current active scene
+
     };
 }
