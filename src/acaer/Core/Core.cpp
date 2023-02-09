@@ -27,12 +27,13 @@ namespace Acaer {
             SetConfigFlags(FLAG_WINDOW_RESIZABLE);    // Window configuration flags
         #endif
 
-        InitWindow(800, 450, "acaer");
+        InitWindow(AC_WINDOW_X, AC_WINDOW_Y, "acaer");
 
         if (!IsWindowReady()) {
             TraceLog(LOG_FATAL, "Couldn't create Window");
         }
 
+        //! ---- DEBUG ----
         m_ActiveScene = CreateRef<Scene>();
         auto ent1 = m_ActiveScene->CreateEntity("ent1");
         auto &t1 = ent1.GetComponent<Transform_C>();
@@ -42,6 +43,7 @@ namespace Acaer {
         auto &t2 = ent2.GetComponent<Transform_C>();
         t2.hitbox = {300, 100, 300, 300};
         t2.color = PINK;
+        //! ----------------
     }
 
     Core::~Core() {

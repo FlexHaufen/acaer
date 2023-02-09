@@ -62,8 +62,4 @@ namespace Acaer {
     struct Input_C  {
     };
 
-
-    struct Camera_C {
-    };
-
 };

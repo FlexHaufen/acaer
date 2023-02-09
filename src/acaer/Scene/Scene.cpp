@@ -11,7 +11,6 @@
 
 // *** INCLUDES ***
 #include "acaer/Scene/Scene.h"
-#include "acaer/Scene/Components.h"
 #include "acaer/Scene/Entity.h"
 
 
@@ -24,6 +23,10 @@ namespace Acaer {
     Scene::Scene() {
 
         entt::entity entity = m_Registry.create();
+
+        m_Camera.offset = {AC_WINDOW_X / 2.0f, AC_WINDOW_Y / 2.0f};
+        m_Camera.zoom = 1.0f;
+        m_Camera.rotation = 0.0f;
     }
 
     Scene::~Scene() {
@@ -43,30 +46,45 @@ namespace Acaer {
 
 
     void Scene::OnUpdate(f32 dt) {
-        auto view = m_Registry.view<Transform_C>();
+        Render();
+    }
+
+    void Scene::Render() {
         BeginDrawing();
             ClearBackground(AC_SCENE_CLEAR_BACKGROUND);
-        
-        for (auto entity : view) {
-            auto &transform = view.get<Transform_C>(entity);
-    
-            #ifdef AC_RENDER_ENTITY_TAG
-                DrawText(transform.tag.c_str(), 
-                         int(transform.hitbox.x), 
-                         int(transform.hitbox.y - 20),      // little offset so tag will display above hitbox
-                         AC_RENDER_ENTITY_TAG_FONT_SIZE, 
-                         AC_RENDER_ENTITY_TAG_FONT_COLOR);
-            #endif
 
-            #ifdef AC_RENDER_ENTITY_HITBOX
-                DrawRectangleLines(int(transform.hitbox.x),
+            // Update camera here
+            m_Camera.target = {300, 100};
+
+            BeginMode2D(m_Camera);
+                // ** Render **
+                auto view = m_Registry.view<Transform_C>();
+                for (auto entity : view) {
+                    auto &transform = view.get<Transform_C>(entity);
+                    RenderTransform(transform);
+                }
+            EndMode2D();
+
+            // Render GUI here
+
+        EndDrawing();
+    }
+
+    void Scene::RenderTransform(Transform_C &transform) {
+        #ifdef AC_RENDER_ENTITY_HITBOX
+            DrawRectangleLines(int(transform.hitbox.x),
                                 int(transform.hitbox.y),
                                 int(transform.hitbox.width),
                                 int(transform.hitbox.height),
                                 transform.color);
-            #endif
+        #endif
 
-        }
-        EndDrawing();
+        #ifdef AC_RENDER_ENTITY_TAG
+                DrawText(transform.tag.c_str(), 
+                int(transform.hitbox.x), 
+                int(transform.hitbox.y - 20),      // little offset so tag will display above hitbox
+                AC_RENDER_ENTITY_TAG_FONT_SIZE, 
+                AC_RENDER_ENTITY_TAG_FONT_COLOR);
+        #endif
     }
 }

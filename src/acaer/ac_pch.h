@@ -15,10 +15,12 @@
 
 // ** External **
 // * Raylib *
-#include <raylib.h>
-#include <raymath.h>
-#include <rcamera.h>
-
+// TODO (inj): Add namespace here
+//namespace ray {
+    #include <raylib.h>
+    #include <raymath.h>
+    #include <rcamera.h>
+//};
 // * EnTT *
 #include "entt.hpp"
 
@@ -33,6 +35,9 @@
 
 // ** Flags **
 #define AC_WINDOW_RESIZABLE
+#define AC_WINDOW_X                         800
+#define AC_WINDOW_Y                         450
+
 #define AC_SCENE_CLEAR_BACKGROUND           DARKGRAY
 
 #define AC_RENDER_ENTITY_HITBOX             // flag

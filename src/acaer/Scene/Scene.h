@@ -12,6 +12,7 @@
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
+#include "acaer/Scene/Components.h"
 
 //*** DEFINES ***
 
@@ -43,9 +44,15 @@ namespace Acaer {
 
     private:
 
+
+        void Render();
+        void RenderTransform(Transform_C &transform);
+
+
         // ** Members **
         entt::registry m_Registry;
 
+        Camera2D m_Camera;
         friend class Entity;
     };
 };
