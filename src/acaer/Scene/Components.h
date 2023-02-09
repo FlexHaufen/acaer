@@ -30,8 +30,8 @@ namespace Acaer {
         //v2 center_pos;
         s8 render_layer;                    // Order in the renderer
         
-        // Debug hitbox
-        Rectangle hitbox = {50, 50, 50, 50};// Rectangle Transform
+        // Debug rec
+        Rectangle rec = {50, 50, 50, 50};   // Rectangle Transform
         Color color = {200, 0, 200, 255};   // Color of transform   default: Pink #C800C8
     };
 
@@ -60,6 +60,7 @@ namespace Acaer {
   
     // *** Input ***
     struct Input_C  {
+        b8 isControllable = true;           // true: Player is controllable via input
     };
 
 };

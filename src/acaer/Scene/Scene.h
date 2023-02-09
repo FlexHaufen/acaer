@@ -44,6 +44,7 @@ namespace Acaer {
 
     private:
 
+        void HandleInput();
 
         void Render();
         void RenderTransform(Transform_C &transform);

@@ -37,12 +37,13 @@ namespace Acaer {
         m_ActiveScene = CreateRef<Scene>();
         auto ent1 = m_ActiveScene->CreateEntity("ent1");
         auto &t1 = ent1.GetComponent<Transform_C>();
-        t1.hitbox = {100, 100, 100, 200};
+        t1.rec = {100, 100, 100, 200};
         t1.color = RED;
-        auto ent2 = m_ActiveScene->CreateEntity("ent2");
+        auto ent2 = m_ActiveScene->CreateEntity("player");
         auto &t2 = ent2.GetComponent<Transform_C>();
-        t2.hitbox = {300, 100, 300, 300};
+        t2.rec = {300, 100, 300, 300};
         t2.color = PINK;
+        auto &i = ent2.AddComponent<Input_C>();
         //! ----------------
     }
 

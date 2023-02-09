@@ -46,7 +46,30 @@ namespace Acaer {
 
 
     void Scene::OnUpdate(f32 dt) {
+
+        // Input
+        HandleInput();
+
+        // Update
+
         Render();
+    }
+
+
+    void Scene::HandleInput() {
+        auto group = m_Registry.group<Input_C, Transform_C>();
+        for (auto entity : group) {
+            auto &transform = group.get<Transform_C>(entity);
+            auto &input = group.get<Input_C>(entity);
+
+            // Basic player moevment
+            if (input.isControllable) {
+                if (IsKeyDown(KEY_W)) {transform.rec.y -= 0.5f;}
+                if (IsKeyDown(KEY_S)) {transform.rec.y += 0.5f;}
+                if (IsKeyDown(KEY_A)) {transform.rec.x -= 0.5f;}
+                if (IsKeyDown(KEY_D)) {transform.rec.x += 0.5f;}
+            }
+        }
     }
 
     void Scene::Render() {
@@ -72,17 +95,17 @@ namespace Acaer {
 
     void Scene::RenderTransform(Transform_C &transform) {
         #ifdef AC_RENDER_ENTITY_HITBOX
-            DrawRectangleLines(int(transform.hitbox.x),
-                                int(transform.hitbox.y),
-                                int(transform.hitbox.width),
-                                int(transform.hitbox.height),
+            DrawRectangleLines(int(transform.rec.x),
+                                int(transform.rec.y),
+                                int(transform.rec.width),
+                                int(transform.rec.height),
                                 transform.color);
         #endif
 
         #ifdef AC_RENDER_ENTITY_TAG
                 DrawText(transform.tag.c_str(), 
-                int(transform.hitbox.x), 
-                int(transform.hitbox.y - 20),      // little offset so tag will display above hitbox
+                int(transform.rec.x), 
+                int(transform.rec.y - 20),      // little offset so tag will display above rec
                 AC_RENDER_ENTITY_TAG_FONT_SIZE, 
                 AC_RENDER_ENTITY_TAG_FONT_COLOR);
         #endif
