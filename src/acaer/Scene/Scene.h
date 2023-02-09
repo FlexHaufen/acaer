@@ -46,6 +46,8 @@ namespace Acaer {
 
         void HandleInput();
 
+        void UpdateCamera();
+
         void Render();
         void RenderTransform(Transform_C &transform);
 

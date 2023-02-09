@@ -57,6 +57,10 @@ namespace Acaer {
     struct Collider_C {
     };
 
+    struct Camera_C {
+        f32 zoom = 1.0f;                    // Camera zoom
+    };
+
   
     // *** Input ***
     struct Input_C  {

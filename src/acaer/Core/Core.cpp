@@ -39,11 +39,18 @@ namespace Acaer {
         auto &t1 = ent1.GetComponent<Transform_C>();
         t1.rec = {100, 100, 100, 200};
         t1.color = RED;
-        auto ent2 = m_ActiveScene->CreateEntity("player");
+
+        auto ent2 = m_ActiveScene->CreateEntity("ent2");
         auto &t2 = ent2.GetComponent<Transform_C>();
-        t2.rec = {300, 100, 300, 300};
-        t2.color = PINK;
-        auto &i = ent2.AddComponent<Input_C>();
+        t2.rec = {400, 150, 200, 200};
+        t2.color = BLUE;
+
+        auto player = m_ActiveScene->CreateEntity("player");
+        auto &t3 = player.GetComponent<Transform_C>();
+        t3.rec = {300, 100, 50, 100};
+        t3.color = PINK;
+        player.AddComponent<Input_C>();
+        player.AddComponent<Camera_C>();
         //! ----------------
     }
 

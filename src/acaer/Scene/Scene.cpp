@@ -51,7 +51,7 @@ namespace Acaer {
         HandleInput();
 
         // Update
-
+        UpdateCamera();
         Render();
     }
 
@@ -72,12 +72,19 @@ namespace Acaer {
         }
     }
 
+    void Scene::UpdateCamera() {
+        // Update camera
+        auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
+        for (auto entity : group) {
+            auto &transform = group.get<Transform_C>(entity);
+
+            m_Camera.target = {transform.rec.x, transform.rec.y};
+        }
+    }
+
     void Scene::Render() {
         BeginDrawing();
             ClearBackground(AC_SCENE_CLEAR_BACKGROUND);
-
-            // Update camera here
-            m_Camera.target = {300, 100};
 
             BeginMode2D(m_Camera);
                 // ** Render **
