@@ -48,15 +48,15 @@ namespace Acaer {
     void Scene::OnUpdate(f32 dt) {
 
         // Input
-        HandleInput();
+        HandleInput_C();
 
         // Update
-        UpdateCamera();
+        HandleCamera_C();
         Render();
     }
 
 
-    void Scene::HandleInput() {
+    void Scene::HandleInput_C() {
         auto group = m_Registry.group<Input_C, Transform_C>();
         for (auto entity : group) {
             auto &transform = group.get<Transform_C>(entity);
@@ -72,7 +72,7 @@ namespace Acaer {
         }
     }
 
-    void Scene::UpdateCamera() {
+    void Scene::HandleCamera_C() {
         // Update camera
         auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
         for (auto entity : group) {

@@ -1,9 +1,20 @@
-#include <cstdint>
-
+/**
+ * @file Types.h
+ * @author flexhaufen
+ * @brief Custom Types
+ * @version 0.1
+ * @date 2023-02-10
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #pragma once
 
-// *** CUSTOM TYPE DEFINTIONS ***
+// *** INCLUDES ***
+#include <cstdint>
 
+
+// *** CUSTOM TYPE DEFINTIONS ***
 // unsigned
 typedef unsigned char       u8;
 typedef unsigned short      u16;
@@ -16,7 +27,7 @@ typedef short               s16;
 typedef int                 s32;
 typedef long long           s64;
 
-
+// bool
 typedef bool                b8;
 
 // floatingpoints

@@ -13,18 +13,18 @@
 
 // *** INCLUDES ***
 
+#include <string>
+
 // ** External **
 // * Raylib *
-// TODO (inj): Add namespace here
-//namespace ray {
-    #include <raylib.h>
-    #include <raymath.h>
-    #include <rcamera.h>
-//};
+// TODO: is there a way to namspace Raylib?
+#include <raylib.h>
+#include <raymath.h>
+#include <rcamera.h>
+
 // * EnTT *
 #include "entt.hpp"
 
-#include <string>
 
 // ** Local **
 #include "Helper/Types.h"
@@ -33,15 +33,14 @@
 // *** DEFINES ***
 
 
-// ** Flags **
-#define AC_WINDOW_RESIZABLE
+#define AC_WINDOW_RESIZABLE                             // flag
 #define AC_WINDOW_X                         800
 #define AC_WINDOW_Y                         450
 
-#define AC_SCENE_CLEAR_BACKGROUND           DARKGRAY
+#define AC_SCENE_CLEAR_BACKGROUND           DARKGRAY    // Type = Raylib Color
 
-#define AC_RENDER_ENTITY_HITBOX             // flag
+#define AC_RENDER_ENTITY_HITBOX                         // flag
 
-#define AC_RENDER_ENTITY_TAG                // flag
-#define AC_RENDER_ENTITY_TAG_FONT_COLOR     GREEN
+#define AC_RENDER_ENTITY_TAG                            // flag
+#define AC_RENDER_ENTITY_TAG_FONT_COLOR     GREEN       // Type = Raylib Color
 #define AC_RENDER_ENTITY_TAG_FONT_SIZE      20

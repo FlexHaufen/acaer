@@ -23,44 +23,40 @@
 namespace Acaer {
 
     /**
-     * @brief Core
+     * @brief Core class of Game
      * 
      */
     class Core {
 
-        public:
+    public:
 
-            /**
-             * @brief Construct a new Core object
-             * 
-             */
-            Core();
+        /**
+         * @brief Construct a new Core object
+         * 
+         */
+        Core();
 
-            /**
-             * @brief Destroy the Core object
-             * 
-             */
-            ~Core();
+        /**
+         * @brief Destroy the Core object
+         * 
+         */
+        ~Core();
 
-            /**
-             * @brief Running loop
-             * 
-             */
-            void Run();
+        /**
+         * @brief Running loop
+         * 
+         */
+        void Run();
 
-            /**
-             * @brief Closes App
-             * 
-             */
-            void Close();
-
-        
-        private:
-
-
+        /**
+         * @brief Closes App
+         * 
+         */
+        void Close();
 
     private:
       
+        // ** Members **
         bool m_isRunning = true;    // True when app is running
         bool m_isMinimized = false; // True when app is minimzed
 

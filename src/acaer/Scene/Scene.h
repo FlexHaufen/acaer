@@ -21,6 +21,10 @@
 namespace Acaer {
     class Entity;
 
+    /**
+     * @brief World Scene
+     * 
+     */
     class Scene {
 
     public:
@@ -44,18 +48,36 @@ namespace Acaer {
 
     private:
 
-        void HandleInput();
+        /**
+         * @brief Handels Input Components
+         * 
+         */
+        void HandleInput_C();
 
-        void UpdateCamera();
+        /**
+         * @brief Handles Camera Component
+         * 
+         */
+        void HandleCamera_C();
 
+        /**
+         * @brief Main render update function
+         * 
+         */
         void Render();
+
+        /**
+         * @brief Renders given transform
+         * 
+         * @param transform transform to render
+         */
         void RenderTransform(Transform_C &transform);
 
 
         // ** Members **
-        entt::registry m_Registry;
+        entt::registry m_Registry;      // entt Registry
 
-        Camera2D m_Camera;
-        friend class Entity;
+        Camera2D m_Camera;              // Raylib Camera
+        friend class Entity;            // Entity class
     };
 };

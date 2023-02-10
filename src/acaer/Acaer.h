@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2023
  * 
  */
+#pragma once
 
-
-
+// *** INCLUDES ***
 #include "acaer/Core/Core.h"
