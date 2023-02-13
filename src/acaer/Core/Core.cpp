@@ -11,10 +11,10 @@
 
 // *** INCLUDES ***
 #include "acaer/Core/Core.h"
+
 #include "acaer/Scene/Components.h"
 #include "acaer/Scene/Entity.h"
-
-
+#include "acaer/Scene/SceneSerializer.h"
 
 // *** DEFINE ***
 
@@ -32,9 +32,17 @@ namespace Acaer {
         if (!IsWindowReady()) {
             TraceLog(LOG_FATAL, "Couldn't create Window");
         }
+    
 
-        //! ---- DEBUG ----
+        // Load Scene
         m_ActiveScene = CreateRef<Scene>();
+        SceneSerializer serializer(m_ActiveScene);
+        if (!serializer.Deserialize("assets/Scenes/scene.acs")) {
+            std::cout << "fuck - no scene";
+        }
+
+    #if 0
+        //! ---- DEBUG ----
         auto ent1 = m_ActiveScene->CreateEntity("ent1");
         auto &t1 = ent1.GetComponent<Transform_C>();
         t1.rec = {100, 100, 100, 200};
@@ -52,9 +60,14 @@ namespace Acaer {
         player.AddComponent<Input_C>();
         player.AddComponent<Camera_C>();
         //! ----------------
+    #endif
     }
 
     Core::~Core() {
+        // Save scene
+        SceneSerializer serializer(m_ActiveScene);
+        serializer.Serialize("assets/Scenes/scene.acs");
+        
         CloseWindow();
     }
 

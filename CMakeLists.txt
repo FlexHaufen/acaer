@@ -68,6 +68,11 @@ if (NOT raylib_FOUND) 							# If there's none, fetch and build raylib
   endif()
 endif()
 
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
+set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
+set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "disable yaml contrib")
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/yaml/)
 
 #----------------------------------------------------
 #				      INCLUDE DIRS
@@ -85,7 +90,8 @@ include_directories(
 #----------------------------------------------------
 
 #Put all libraries into a variable
-set(LIBS raylib)
+set(LIBS raylib
+         yaml-cpp)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

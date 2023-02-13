@@ -34,10 +34,10 @@ namespace Acaer {
      * 
      */
     struct Transform_C {
-        std::string tag;                    // tag (name)
+        std::string tag = "";               // tag (name)
 
         //v2 center_pos;
-        s8 render_layer;                    // Order in the renderer
+        s8 render_layer = 0;                // Order in the renderer
         
         // Debug rec
         Rectangle rec = {50, 50, 50, 50};   // Rectangle Transform

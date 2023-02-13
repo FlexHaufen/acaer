@@ -31,6 +31,8 @@ namespace Acaer {
         Scene();
         ~Scene();
 
+        static Ref<Scene> Copy(Ref<Scene> other);
+
         /**
          * @brief Create a Entity object
          * 
@@ -78,6 +80,8 @@ namespace Acaer {
         entt::registry m_Registry;      // entt Registry
 
         Camera2D m_Camera;              // Raylib Camera
+        
         friend class Entity;            // Entity class
+        friend class SceneSerializer;   // Scene Serializer
     };
 };

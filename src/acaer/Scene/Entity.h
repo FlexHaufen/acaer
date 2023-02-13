@@ -50,6 +50,28 @@ namespace Acaer {
             return m_Scene->m_Registry.get<T>(m_EntityHandle); 
         }
 
+        /**
+         * @brief           Gets or emplaces component of entity 
+         * 
+         * @tparam T        Types of components to get.
+         * @return T&       References to the components owned by the entity.
+         */
+        template<typename T>
+        T& GetOrEmplaceComponent() { 
+            return m_Scene->m_Registry.get_or_emplace<T>(m_EntityHandle); 
+        }
+
+        /**
+         * @brief           Checks if entity has the given components
+         * 
+         * @tparam T        Types of components to get.
+         * @return True     Entity has given components
+         */
+    
+        template<typename T>
+        bool HasComponent() { 
+            return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
+        }
 
         /**
          * @brief           Removes component from entity if exists
@@ -61,8 +83,12 @@ namespace Acaer {
             return m_Scene->m_Registry.remove_if_exists<T>(m_EntityHandle)
         };
 
-        bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
-        bool operator!=(const Entity& other) const { return !(*this == other); }
+        operator b8() const { return m_EntityHandle != entt::null; }
+		operator entt::entity() const { return m_EntityHandle; }
+		operator u32() const { return (uint32_t)m_EntityHandle; }
+
+        b8 operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
+        b8 operator!=(const Entity& other) const { return !(*this == other); }
 
     private:
 

@@ -1,0 +1,24 @@
+Scene: Untitled
+Entities:
+  - Entity: UUID - 000000000
+    Transform_C:
+      tag: ent1
+      render_layer: "\x00"
+      rec: [100, 100, 100, 200]
+      color: [230, 41, 55, 255]
+  - Entity: UUID - 000000000
+    Transform_C:
+      tag: ent2
+      render_layer: "\x00"
+      rec: [400, 150, 200, 200]
+      color: [0, 121, 241, 255]
+  - Entity: UUID - 000000000
+    Transform_C:
+      tag: player
+      render_layer: "\x00"
+      rec: [264.5, 93, 50, 100]
+      color: [255, 109, 194, 255]
+    Camera_C:
+      zoom: 1
+    Input_C:
+      isControllable: true

@@ -22,8 +22,6 @@ namespace Acaer {
 
     Scene::Scene() {
 
-        entt::entity entity = m_Registry.create();
-
         m_Camera.offset = {AC_WINDOW_X / 2.0f, AC_WINDOW_Y / 2.0f};
         m_Camera.zoom = 1.0f;
         m_Camera.rotation = 0.0f;

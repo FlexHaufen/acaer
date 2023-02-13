@@ -14,6 +14,8 @@
 // *** INCLUDES ***
 
 #include <string>
+#include <fstream>
+#include <iostream>
 
 // ** External **
 // * Raylib *
@@ -24,6 +26,9 @@
 
 // * EnTT *
 #include "entt.hpp"
+
+// * yaml-cpp *
+#include "yaml-cpp/yaml.h"
 
 
 // ** Local **
