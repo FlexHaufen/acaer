@@ -67,7 +67,6 @@ namespace Acaer {
          * @tparam T        Types of components to get.
          * @return True     Entity has given components
          */
-    
         template<typename T>
         bool HasComponent() { 
             return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
@@ -83,6 +82,8 @@ namespace Acaer {
             return m_Scene->m_Registry.remove_if_exists<T>(m_EntityHandle)
         };
 
+
+        // *** Custom operators ***
         operator b8() const { return m_EntityHandle != entt::null; }
 		operator entt::entity() const { return m_EntityHandle; }
 		operator u32() const { return (uint32_t)m_EntityHandle; }

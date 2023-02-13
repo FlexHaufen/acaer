@@ -21,6 +21,11 @@
 // *** NAMESPACE ***
 namespace YAML {
 
+    /**
+     * @brief   Custom definiton for saving a Raylib Rectangle struct
+     * 
+     * @tparam  N/A
+     */
 	template<>
 	struct convert<Rectangle> {
 		static Node encode(const Rectangle& rhs) {
@@ -45,6 +50,11 @@ namespace YAML {
 		}
 	};
 
+    /**
+     * @brief   Custom definiton for saving a Raylib Color struct
+     * 
+     * @tparam  N/A
+     */
 	template<>
 	struct convert<Color> {
 		static Node encode(const Color& rhs) {
@@ -72,12 +82,26 @@ namespace YAML {
 
 namespace Acaer {
 
+    /**
+     * @brief Overwrite operator for saving a Raylib Rectangle struct
+     * 
+     * @param out       YAML Emitter
+     * @param r         Raylib Rectangle struct
+     * @return YAML::Emitter& 
+     */
     YAML::Emitter& operator<<(YAML::Emitter& out, const Rectangle& r) {
 		out << YAML::Flow;
 		out << YAML::BeginSeq << r.x << r.y << r.width << r.height << YAML::EndSeq;
 		return out;
 	}
 
+    /**
+     * @brief Overwrite operator for saving a Raylib Rectangle struct
+     * 
+     * @param out       YAML Emitter
+     * @param c         Raylib Color struct
+     * @return YAML::Emitter& 
+     */
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Color& c) {
 		out << YAML::Flow;
         // NOTE: The colors are saved as u16 instead of unsigned char's. Because char's will

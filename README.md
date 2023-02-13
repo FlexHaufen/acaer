@@ -17,6 +17,7 @@ Custom 2D **pixelart game** programmed in **C++**
 ## Dependencies
 - [Raylib](https://www.raylib.com/)
 - [EnTT](https://github.com/skypjack/entt)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
 
 ## Acknowledgements

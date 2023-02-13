@@ -45,6 +45,7 @@
 #define AC_SCENE_CLEAR_BACKGROUND           DARKGRAY    // Type = Raylib Color
 
 #define AC_RENDER_ENTITY_HITBOX                         // flag
+//#define AC_RENDER_ENTITY_REC                            // flag
 
 #define AC_RENDER_ENTITY_TAG                            // flag
 #define AC_RENDER_ENTITY_TAG_FONT_COLOR     GREEN       // Type = Raylib Color

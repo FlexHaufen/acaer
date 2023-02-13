@@ -107,6 +107,14 @@ namespace Acaer {
                                 transform.color);
         #endif
 
+        #ifdef AC_RENDER_ENTITY_REC
+            DrawRectangle(int(transform.rec.x),
+                                int(transform.rec.y),
+                                int(transform.rec.width),
+                                int(transform.rec.height),
+                                transform.color);
+        #endif
+
         #ifdef AC_RENDER_ENTITY_TAG
                 DrawText(transform.tag.c_str(), 
                 int(transform.rec.x), 
