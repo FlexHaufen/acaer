@@ -84,4 +84,4 @@ namespace Acaer {
         friend class Entity;            // Entity class
         friend class SceneSerializer;   // Scene Serializer
     };
-};
+}

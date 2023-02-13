@@ -92,5 +92,4 @@ namespace Acaer {
     struct Input_C  {
         b8 isControllable = true;           // true: Player is controllable via input
     };
-
-};
+}

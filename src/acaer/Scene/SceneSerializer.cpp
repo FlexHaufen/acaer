@@ -213,7 +213,7 @@ namespace Acaer {
 			data = YAML::LoadFile(filepath);
 		}
 		catch (YAML::ParserException e) {
-			std::cout << "Failed to load .hazel file" << filepath << "\n" <<  e.what() << "\n";
+			std::cout << "Failed to load .acs file" << filepath << "\n" <<  e.what() << "\n";
 			return false;
 		}
 
@@ -225,7 +225,6 @@ namespace Acaer {
         auto entities = data["Entities"];
         if (entities) {
             for (auto entity : entities) {
-                std::cout << entity << std::endl;
                 DeserializeEntity(entity);
             }
         }
@@ -235,4 +234,4 @@ namespace Acaer {
     b8 SceneSerializer::DeserializeRuntime(const std::string& filepath) {
         return false;
     }
-};
+}

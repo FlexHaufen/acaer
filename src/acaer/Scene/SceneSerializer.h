@@ -82,6 +82,4 @@ namespace Acaer {
         Ref<Scene> m_Scene; // Active scene
 
     };
-
-
-};
+}

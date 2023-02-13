@@ -97,7 +97,4 @@ namespace Acaer {
         entt::entity m_EntityHandle = { entt::null };   // entity
         Scene* m_Scene = nullptr;                       // scene reference
     };
-
-
-
-};
+}
