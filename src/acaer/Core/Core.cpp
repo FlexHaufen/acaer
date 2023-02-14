@@ -32,7 +32,7 @@ namespace Acaer {
         if (!IsWindowReady()) {
             TraceLog(LOG_FATAL, "Couldn't create Window");
         }
-    
+        m_ImGuiLayer->OnAttach();
         m_ActiveScene = CreateRef<Scene>();
 
         // Load Scene
@@ -68,6 +68,8 @@ namespace Acaer {
         SceneSerializer serializer(m_ActiveScene);
         serializer.Serialize("assets/Scenes/scene.acs");
         
+        m_ImGuiLayer->OnDetach();
+
         CloseWindow();
     }
 
@@ -82,14 +84,22 @@ namespace Acaer {
             windowTitel = "arcaer - FPS: " + std::to_string(GetFPS());
             SetWindowTitle(windowTitel.c_str());
         
-            if (IsWindowMinimized()) {
+            if (!IsWindowMinimized()) {
                 
-                
+                m_ActiveScene->OnUpdate(dt);
+
+                // ---- RENDER LOOP ----
+                BeginDrawing();
+                    ClearBackground(AC_SCENE_CLEAR_BACKGROUND);
+
+                    m_ActiveScene->OnRender();
+
+                    m_ImGuiLayer->Begin();
+                    //ImGui::ShowDemoWindow();
+                    m_ImGuiLayer->End();
+                EndDrawing();
+                // ---------------------
             }
-
-
-            m_ActiveScene->OnUpdate(dt);
-
         }
         m_isRunning = false;
     }

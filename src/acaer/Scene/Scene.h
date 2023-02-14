@@ -57,6 +57,12 @@ namespace Acaer {
          */
         void OnUpdate(f32 dt);
 
+        /**
+         * @brief Main render update function
+         * 
+         */
+        void OnRender();
+
     private:
 
         /**
@@ -71,11 +77,7 @@ namespace Acaer {
          */
         void HandleCamera_C();
 
-        /**
-         * @brief Main render update function
-         * 
-         */
-        void Render();
+        
 
         /**
          * @brief Renders given transform

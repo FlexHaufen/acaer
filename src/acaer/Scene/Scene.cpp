@@ -55,7 +55,6 @@ namespace Acaer {
 
         // Update
         HandleCamera_C();
-        Render();
     }
 
 
@@ -85,25 +84,19 @@ namespace Acaer {
         }
     }
 
-    void Scene::Render() {
-        BeginDrawing();
-            ClearBackground(AC_SCENE_CLEAR_BACKGROUND);
-
-            BeginMode2D(m_Camera);
-                // ** Render **
-                {
-                    auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
-                    for (auto entity : group) {
-                        auto &transform = group.get<Transform_C>(entity);
-                        auto &tag = group.get<Tag_C>(entity);
-                        RenderTransform(transform, tag);
-                    }
+    void Scene::OnRender() {
+        BeginMode2D(m_Camera);
+            // ** Render **
+            {
+                auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
+                for (auto entity : group) {
+                    auto &transform = group.get<Transform_C>(entity);
+                    auto &tag = group.get<Tag_C>(entity);
+                    RenderTransform(transform, tag);
                 }
-            EndMode2D();
-
-            // Render GUI heres
-
-        EndDrawing();
+            }
+        EndMode2D();
+        // Render GUI heres
     }
 
     void Scene::RenderTransform(Transform_C &transform, Tag_C &tag) {

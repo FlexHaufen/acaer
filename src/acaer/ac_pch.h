@@ -30,6 +30,9 @@
 // * yaml-cpp *
 #include "yaml-cpp/yaml.h"
 
+// * ImGui *
+#include "imgui.h"
+#include "rlImGui.h"
 
 // ** Local **
 #include "Helper/Types.h"
