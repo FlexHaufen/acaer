@@ -81,8 +81,9 @@ namespace Acaer {
          * @brief Renders given transform
          * 
          * @param transform transform to render
+         * @param tag       tag component
          */
-        void RenderTransform(Transform_C &transform);
+        void RenderTransform(Transform_C &transform, Tag_C &tag);
 
 
         // ** Members **

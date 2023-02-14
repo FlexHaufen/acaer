@@ -5,7 +5,7 @@ Entities:
       tag: player
     Transform_C:
       render_layer: "\x00"
-      rec: [411.5, 55, 50, 100]
+      rec: [240.5, 185.5, 50, 100]
       color: [255, 109, 194, 255]
     Camera_C:
       zoom: 1

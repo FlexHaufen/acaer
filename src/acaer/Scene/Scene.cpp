@@ -91,19 +91,22 @@ namespace Acaer {
 
             BeginMode2D(m_Camera);
                 // ** Render **
-                auto view = m_Registry.view<Transform_C>();
-                for (auto entity : view) {
-                    auto &transform = view.get<Transform_C>(entity);
-                    RenderTransform(transform);
+                {
+                    auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
+                    for (auto entity : group) {
+                        auto &transform = group.get<Transform_C>(entity);
+                        auto &tag = group.get<Tag_C>(entity);
+                        RenderTransform(transform, tag);
+                    }
                 }
             EndMode2D();
 
-            // Render GUI here
+            // Render GUI heres
 
         EndDrawing();
     }
 
-    void Scene::RenderTransform(Transform_C &transform) {
+    void Scene::RenderTransform(Transform_C &transform, Tag_C &tag) {
         #ifdef AC_RENDER_ENTITY_HITBOX
             DrawRectangleLines(int(transform.rec.x),
                                 int(transform.rec.y),
@@ -121,11 +124,19 @@ namespace Acaer {
         #endif
 
         #ifdef AC_RENDER_ENTITY_TAG
-              //  DrawText(transform.tag.c_str(), 
-              //  int(transform.rec.x), 
-              //  int(transform.rec.y - 20),      // little offset so tag will display above rec
-              //  AC_RENDER_ENTITY_TAG_FONT_SIZE, 
-              //  AC_RENDER_ENTITY_TAG_FONT_COLOR);
+                DrawText(tag.tag.c_str(), 
+                int(transform.rec.x), 
+                int(transform.rec.y - 20),          // little offset so the tag will display above rec
+                AC_RENDER_ENTITY_TAG_FONT_SIZE, 
+                AC_RENDER_ENTITY_TAG_FONT_COLOR);
+        #endif
+
+        #ifdef AC_RENDER_ENTITY_UUID
+                DrawText(std::to_string(tag.uuid).c_str(), 
+                int(transform.rec.x), 
+                int(transform.rec.y - 40),           // little offset so the uuid will display above rec
+                AC_RENDER_ENTITY_UUID_FONT_SIZE, 
+                AC_RENDER_ENTITY_UUID_FONT_COLOR);
         #endif
     }
 }
