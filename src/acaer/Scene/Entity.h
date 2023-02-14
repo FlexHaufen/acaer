@@ -13,6 +13,7 @@
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Scene.h"
+#include "acaer/Helper/UUID/UUID.h"
 
 //*** DEFINES ***
 
@@ -81,6 +82,20 @@ namespace Acaer {
         void RemoveComponent() {
             return m_Scene->m_Registry.remove_if_exists<T>(m_EntityHandle)
         };
+
+        /**
+         * @brief Gets UUID of entity
+         * 
+         * @return UUID 
+         */
+        UUID GetUUID() { return GetComponent<Tag_C>().uuid; }
+
+        /**
+         * @brief Get the tag of entity
+         * 
+         * @return const std::string& tag
+         */
+		const std::string& GetTag() { return GetComponent<Tag_C>().tag; }
 
 
         // *** Custom operators ***

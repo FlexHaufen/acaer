@@ -39,7 +39,16 @@ namespace Acaer {
          * @param tag       tag (name) of entity
          * @return Entity 
          */
-        Entity CreateEntity(std::string tag = "entity");
+        Entity CreateEntity(const std::string& name = "entity");
+
+        /**
+         * @brief Create a Entity with a uuid
+         * 
+         * @param uuid      given uuid
+         * @param name      given name
+         * @return Entity   created entity
+         */
+        Entity CreateEntityWithUUID(UUID uuid, const std::string& name = "entity");
 
         /**
          * @brief Update function

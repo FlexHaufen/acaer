@@ -78,6 +78,26 @@ namespace YAML {
 			return true;
 		}
 	};
+
+    /**
+     * @brief   Custom definiton for saving a UUID struct
+     * 
+     * @tparam  N/A
+     */
+    template<>
+	struct convert<Acaer::UUID> {
+		static Node encode(const Acaer::UUID& uuid) {
+			Node node;
+			node.push_back((u64)uuid);
+			return node;
+		}
+
+		static bool decode(const Node& node, Acaer::UUID& uuid) {
+			uuid = node.as<u64>();
+			return true;
+		}
+	};
+
 };
 
 namespace Acaer {
@@ -115,15 +135,25 @@ namespace Acaer {
     : m_Scene(scene){}
 
     void SceneSerializer::SerializeEntity(YAML::Emitter& out, Entity entity) {
-        out << YAML::BeginMap;
-        out << YAML::Key << "Entity"        << YAML::Value << "UUID - 000000000";
     
+        // TODO: assert here if entity has no tag
+
+        out << YAML::BeginMap; // Entity
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
+
+
+		if (entity.HasComponent<Tag_C>()) {
+			auto& tag = entity.GetComponent<Tag_C>().tag;
+			out << YAML::Key << "Tag_C";
+			out << YAML::BeginMap;
+			out << YAML::Key << "tag" << YAML::Value << tag;
+			out << YAML::EndMap;
+		}
 
         if (entity.HasComponent<Transform_C>()) {
             auto &c = entity.GetComponent<Transform_C>();
             out << YAML::Key << "Transform_C";
             out << YAML::BeginMap;
-            out << YAML::Key << "tag"           << YAML::Value << c.tag;
             out << YAML::Key << "render_layer"  << YAML::Value << c.render_layer;
             out << YAML::Key << "rec"           << YAML::Value << c.rec;
             out << YAML::Key << "color"         << YAML::Value << c.color;
@@ -149,9 +179,12 @@ namespace Acaer {
     }
 
     void SceneSerializer::DeserializeEntity(YAML::detail::iterator_value& entity) {
-        //u64 uuid = entity["Entity"].as<u64>();
+        
+        
+        u64 uuid = entity["Entity"].as<u64>();
+        std::string tag = entity["Tag_C"]["tag"].as<std::string>();
 
-        Entity currentEntity = m_Scene->CreateEntity(entity["Transform_C"]["tag"].as<std::string>());
+        Entity currentEntity = m_Scene->CreateEntityWithUUID(uuid, tag);
      
         auto transform_c = entity["Transform_C"];
         if (transform_c) {

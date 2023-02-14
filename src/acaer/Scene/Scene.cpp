@@ -31,14 +31,19 @@ namespace Acaer {
 
     }
 
+    Entity Scene::CreateEntity(const std::string& name) {
+        return CreateEntityWithUUID(UUID(), name);
+	}
 
-    Entity Scene::CreateEntity(std::string tag) {
-        Entity entity(m_Registry.create(), this);
+    Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name) {
+        Entity entity = { m_Registry.create(), this };
+		auto& tag = entity.AddComponent<Tag_C>();
+        tag.uuid = uuid;
+		tag.tag = name;
 
-        auto &transform = entity.AddComponent<Transform_C>();
-        transform.tag = tag;
+        // m_EntityMap[uuid] = entity;
 
-        return entity;
+		return entity;
     }
 
 
@@ -116,11 +121,11 @@ namespace Acaer {
         #endif
 
         #ifdef AC_RENDER_ENTITY_TAG
-                DrawText(transform.tag.c_str(), 
-                int(transform.rec.x), 
-                int(transform.rec.y - 20),      // little offset so tag will display above rec
-                AC_RENDER_ENTITY_TAG_FONT_SIZE, 
-                AC_RENDER_ENTITY_TAG_FONT_COLOR);
+              //  DrawText(transform.tag.c_str(), 
+              //  int(transform.rec.x), 
+              //  int(transform.rec.y - 20),      // little offset so tag will display above rec
+              //  AC_RENDER_ENTITY_TAG_FONT_SIZE, 
+              //  AC_RENDER_ENTITY_TAG_FONT_COLOR);
         #endif
     }
 }

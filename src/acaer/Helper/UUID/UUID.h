@@ -41,10 +41,12 @@ namespace Acaer {
 
 
 namespace std {
-    template<>
-    struct hash<Acaer::UUID> {
-        std::size_t operator()(const Acaer::UUID& uuid) const {
-            return hash<u64>((u64)uuid);
-        }
-    }
+	template <typename T> struct hash;
+
+	template<>
+	struct hash<Acaer::UUID>{
+		std::size_t operator()(const Acaer::UUID& uuid) const {
+			return (u64)uuid;
+		}
+	};
 }

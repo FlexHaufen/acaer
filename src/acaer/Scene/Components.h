@@ -12,12 +12,22 @@
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
+#include "acaer/Helper/UUID/UUID.h"
 
 //*** DEFINES ***
 
 
 //*** NAMESPACE ***
 namespace Acaer {
+
+    struct Tag_C {
+        std::string tag = "";               // tag (name)
+
+        UUID uuid;                          // uuid of entity (64bit)
+    
+        Tag_C() = default;
+		Tag_C(const Tag_C&) = default;
+    };
 
     /**
      * @brief Sprite Component
@@ -34,8 +44,6 @@ namespace Acaer {
      * 
      */
     struct Transform_C {
-        std::string tag = "";               // tag (name)
-
         //v2 center_pos;
         s8 render_layer = 0;                // Order in the renderer
         
