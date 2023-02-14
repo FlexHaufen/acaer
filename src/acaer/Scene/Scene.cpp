@@ -81,6 +81,10 @@ namespace Acaer {
         for (auto entity : group) {
             auto &transform = group.get<Transform_C>(entity);
 
+            // center cam
+            m_Camera.offset = {GetScreenWidth() / 2.f, GetScreenHeight() / 2.f};
+            
+            // update pos
             m_Camera.target = {transform.rec.x, transform.rec.y};
         }
     }
@@ -93,6 +97,10 @@ namespace Acaer {
                 for (auto entity : group) {
                     auto &transform = group.get<Transform_C>(entity);
                     auto &tag = group.get<Tag_C>(entity);
+                    #ifdef AC_RENDER_CAM_LINES
+                        DrawLine((int)m_Camera.target.x, -GetScreenHeight()*10, (int)m_Camera.target.x, GetScreenHeight()*10, GREEN);
+                        DrawLine(-GetScreenWidth()*10, (int)m_Camera.target.y, GetScreenWidth()*10, (int)m_Camera.target.y, GREEN);
+                    #endif
                     RenderTransform(transform, tag);
                 }
             }
@@ -102,19 +110,11 @@ namespace Acaer {
 
     void Scene::RenderTransform(Transform_C &transform, Tag_C &tag) {
         #ifdef AC_RENDER_ENTITY_HITBOX
-            DrawRectangleLines(int(transform.rec.x),
-                                int(transform.rec.y),
-                                int(transform.rec.width),
-                                int(transform.rec.height),
-                                transform.color);
+            DrawRectangleLinesEx(transform.rec, 2, transform.color);
         #endif
 
         #ifdef AC_RENDER_ENTITY_REC
-            DrawRectangle(int(transform.rec.x),
-                                int(transform.rec.y),
-                                int(transform.rec.width),
-                                int(transform.rec.height),
-                                transform.color);
+            DrawRectangleRec(transform.rec, transform.color);
         #endif
 
         #ifdef AC_RENDER_ENTITY_TAG
