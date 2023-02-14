@@ -1,0 +1,27 @@
+Scene: Untitled
+Entities:
+  - Entity: 8916958110188646487
+    Tag_C:
+      tag: ent1
+    Transform_C:
+      render_layer: "\x00"
+      rec: [100, 100, 100, 200]
+      color: [230, 41, 55, 255]
+  - Entity: 6757140786909149828
+    Tag_C:
+      tag: ent2
+    Transform_C:
+      render_layer: "\x00"
+      rec: [400, 150, 200, 200]
+      color: [0, 121, 241, 255]
+  - Entity: 4226557170731801327
+    Tag_C:
+      tag: player
+    Transform_C:
+      render_layer: "\x00"
+      rec: [342, -6.5, 50, 100]
+      color: [255, 109, 194, 255]
+    Camera_C:
+      zoom: 1
+    Input_C:
+      isControllable: true

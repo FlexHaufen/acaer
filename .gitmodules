@@ -1,0 +1,9 @@
+[submodule "lib/vendor/yaml"]
+	path = lib/vendor/yaml
+	url = git@github.com:jbeder/yaml-cpp.git
+[submodule "lib/vendor/rlImGui"]
+	path = lib/vendor/rlImGui
+	url = git@github.com:raylib-extras/rlImGui.git
+[submodule "lib/vendor/imgui"]
+	path = lib/vendor/imgui
+	url = https://github.com/ocornut/imgui.git

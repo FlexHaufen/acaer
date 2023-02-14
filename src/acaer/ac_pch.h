@@ -13,8 +13,13 @@
 
 // *** INCLUDES ***
 
+#include <string>
+#include <fstream>
+#include <iostream>
+
 // ** External **
 // * Raylib *
+// TODO: is there a way to namspace Raylib?
 #include <raylib.h>
 #include <raymath.h>
 #include <rcamera.h>
@@ -22,7 +27,32 @@
 // * EnTT *
 #include "entt.hpp"
 
-#include <string>
+// * yaml-cpp *
+#include "yaml-cpp/yaml.h"
+
+// * ImGui *
+#include "imgui.h"
+#include "rlImGui.h"
 
 // ** Local **
 #include "Helper/Types.h"
+
+
+// *** DEFINES ***
+
+
+#define AC_WINDOW_RESIZABLE                             // flag
+#define AC_WINDOW_X                         800
+#define AC_WINDOW_Y                         450
+
+#define AC_SCENE_CLEAR_BACKGROUND           DARKGRAY    // Type = Raylib Color
+
+#define AC_RENDER_ENTITY_HITBOX                         // flag
+//#define AC_RENDER_ENTITY_REC                          // flag
+
+#define AC_RENDER_ENTITY_UUID                           // flag
+#define AC_RENDER_ENTITY_UUID_FONT_COLOR    RED         // Type = Raylib Color
+#define AC_RENDER_ENTITY_UUID_FONT_SIZE     15
+#define AC_RENDER_ENTITY_TAG                            // flag
+#define AC_RENDER_ENTITY_TAG_FONT_COLOR     GREEN       // Type = Raylib Color
+#define AC_RENDER_ENTITY_TAG_FONT_SIZE      20

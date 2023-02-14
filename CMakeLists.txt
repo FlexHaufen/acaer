@@ -68,14 +68,48 @@ if (NOT raylib_FOUND) 							# If there's none, fetch and build raylib
   endif()
 endif()
 
+#--------IMGUI--------
+set(IMGUI_PATH ${CMAKE_SOURCE_DIR}/lib/vendor/imgui)
+add_library(imgui 
+			${IMGUI_PATH}/imconfig.h
+			${IMGUI_PATH}/imgui.h
+			${IMGUI_PATH}/imgui.cpp
+			${IMGUI_PATH}/imgui_draw.cpp
+			${IMGUI_PATH}/imgui_internal.h
+			${IMGUI_PATH}/imgui_tables.cpp
+			${IMGUI_PATH}/imgui_widgets.cpp
+			${IMGUI_PATH}/imstb_rectpack.h
+			${IMGUI_PATH}/imstb_textedit.h
+			${IMGUI_PATH}/imstb_truetype.h
+			${IMGUI_PATH}/imgui_demo.cpp)
+
+set(RLIMGUI_PATH ${CMAKE_SOURCE_DIR}/lib/vendor/rlImGui)
+add_library(rlImGui 
+			${RLIMGUI_PATH}/rlImGui.h
+			${RLIMGUI_PATH}/rlImGuiColors.h
+			${RLIMGUI_PATH}/rlImGui.cpp)
+
+
+
+#--------YAML--------
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
+set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
+set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "disable yaml contrib")
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/yaml/)
 
 #----------------------------------------------------
 #				      INCLUDE DIRS
 #----------------------------------------------------
 include_directories(
 	"${CMAKE_SOURCE_DIR}/src"
-  #EnTT
+  	#EnTT
 	"${CMAKE_SOURCE_DIR}/lib/vendor/entt"
+  	#ImGui
+	"${CMAKE_SOURCE_DIR}/lib/vendor/imgui"
+	#rlImgui
+	"${CMAKE_SOURCE_DIR}/lib/vendor/rlImGui"
+
 )
 
 
@@ -85,8 +119,11 @@ include_directories(
 #----------------------------------------------------
 
 #Put all libraries into a variable
-set(LIBS raylib)
-
+set(LIBS raylib
+         yaml-cpp
+         imgui
+         rlImGui)
+target_link_libraries(rlImGui raylib)
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
 

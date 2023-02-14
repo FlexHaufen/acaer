@@ -12,6 +12,7 @@
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
+#include "acaer/Scene/Components.h"
 
 //*** DEFINES ***
 
@@ -20,18 +21,34 @@
 namespace Acaer {
     class Entity;
 
+    /**
+     * @brief World Scene
+     * 
+     */
     class Scene {
 
     public:
         Scene();
         ~Scene();
 
+        static Ref<Scene> Copy(Ref<Scene> other);
+
         /**
-         * @brief Create a new Entity
+         * @brief Create a Entity object
          * 
+         * @param tag       tag (name) of entity
          * @return Entity 
          */
-        Entity CreateEntity();
+        Entity CreateEntity(const std::string& name = "entity");
+
+        /**
+         * @brief Create a Entity with a uuid
+         * 
+         * @param uuid      given uuid
+         * @param name      given name
+         * @return Entity   created entity
+         */
+        Entity CreateEntityWithUUID(UUID uuid, const std::string& name = "entity");
 
         /**
          * @brief Update function
@@ -40,11 +57,43 @@ namespace Acaer {
          */
         void OnUpdate(f32 dt);
 
+        /**
+         * @brief Main render update function
+         * 
+         */
+        void OnRender();
+
     private:
 
-        // ** Members **
-        entt::registry m_Registry;
+        /**
+         * @brief Handels Input Components
+         * 
+         */
+        void HandleInput_C();
 
-        friend class Entity;
+        /**
+         * @brief Handles Camera Component
+         * 
+         */
+        void HandleCamera_C();
+
+        
+
+        /**
+         * @brief Renders given transform
+         * 
+         * @param transform transform to render
+         * @param tag       tag component
+         */
+        void RenderTransform(Transform_C &transform, Tag_C &tag);
+
+
+        // ** Members **
+        entt::registry m_Registry;      // entt Registry
+
+        Camera2D m_Camera;              // Raylib Camera
+        
+        friend class Entity;            // Entity class
+        friend class SceneSerializer;   // Scene Serializer
     };
-};
+}
