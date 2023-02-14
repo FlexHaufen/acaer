@@ -51,14 +51,14 @@ namespace Acaer {
     void Scene::OnUpdate(f32 dt) {
 
         // Input
-        HandleInput_C();
+        HandleInput_C(dt);
 
         // Update
         HandleCamera_C();
     }
 
 
-    void Scene::HandleInput_C() {
+    void Scene::HandleInput_C(f32 dt) {
         auto group = m_Registry.group<Input_C, Transform_C>();
         for (auto entity : group) {
             auto &transform = group.get<Transform_C>(entity);
@@ -66,10 +66,11 @@ namespace Acaer {
 
             // Basic player moevment
             if (input.isControllable) {
-                if (IsKeyDown(KEY_W)) {transform.rec.y -= 0.5f;}
-                if (IsKeyDown(KEY_S)) {transform.rec.y += 0.5f;}
-                if (IsKeyDown(KEY_A)) {transform.rec.x -= 0.5f;}
-                if (IsKeyDown(KEY_D)) {transform.rec.x += 0.5f;}
+                // TODO: player speed const
+                if (IsKeyDown(KEY_W)) {transform.rec.y -= 200.f * dt;}
+                if (IsKeyDown(KEY_S)) {transform.rec.y += 200.f * dt;}
+                if (IsKeyDown(KEY_A)) {transform.rec.x -= 200.f * dt;}
+                if (IsKeyDown(KEY_D)) {transform.rec.x += 200.f * dt;}
             }
         }
     }

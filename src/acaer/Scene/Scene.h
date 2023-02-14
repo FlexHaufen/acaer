@@ -68,8 +68,9 @@ namespace Acaer {
         /**
          * @brief Handels Input Components
          * 
+         * @param dt delta time
          */
-        void HandleInput_C();
+        void HandleInput_C(f32 dt);
 
         /**
          * @brief Handles Camera Component
