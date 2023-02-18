@@ -50,6 +50,14 @@ add_executable(${PROJECT_NAME} ${SRC_FILES}
 #				    	LIBS
 #----------------------------------------------------
 
+#---------SFML---------
+include(FetchContent)
+FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.x)
+FetchContent_MakeAvailable(SFML)
+
+
 #--------RAYLIB--------
 set(RAYLIB_VERSION 4.2.0)
 find_package(raylib ${RAYLIB_VERSION} QUIET) 	# QUIET or REQUIRED
@@ -83,14 +91,6 @@ add_library(imgui
 			${IMGUI_PATH}/imstb_truetype.h
 			${IMGUI_PATH}/imgui_demo.cpp)
 
-set(RLIMGUI_PATH ${CMAKE_SOURCE_DIR}/lib/vendor/rlImGui)
-add_library(rlImGui 
-			${RLIMGUI_PATH}/rlImGui.h
-			${RLIMGUI_PATH}/rlImGuiColors.h
-			${RLIMGUI_PATH}/rlImGui.cpp)
-
-
-
 #--------YAML--------
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
@@ -107,9 +107,6 @@ include_directories(
 	"${CMAKE_SOURCE_DIR}/lib/vendor/entt"
   	#ImGui
 	"${CMAKE_SOURCE_DIR}/lib/vendor/imgui"
-	#rlImgui
-	"${CMAKE_SOURCE_DIR}/lib/vendor/rlImGui"
-
 )
 
 
@@ -122,8 +119,8 @@ include_directories(
 set(LIBS raylib
          yaml-cpp
          imgui
-         rlImGui)
-target_link_libraries(rlImGui raylib)
+		 sfml-graphics)
+
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
 

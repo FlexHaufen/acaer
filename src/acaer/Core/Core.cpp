@@ -22,45 +22,48 @@
 namespace Acaer {
 
     Core::Core() {
-        SetTraceLogLevel(0);
-        #ifdef AC_WINDOW_RESIZABLE
-            SetConfigFlags(FLAG_WINDOW_RESIZABLE);    // Window configuration flags
-        #endif
 
-        InitWindow(AC_WINDOW_X, AC_WINDOW_Y, "acaer");
+        m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), "acaer");
 
-        if (!IsWindowReady()) {
-            TraceLog(LOG_FATAL, "Couldn't create Window");
-        }
-        m_ImGuiLayer->OnAttach();
+        //m_ImGuiLayer->OnAttach();
         m_ActiveScene = CreateRef<Scene>();
 
+    #if 1
         // Load Scene
         SceneSerializer serializer(m_ActiveScene);
         if (!serializer.Deserialize("assets/Scenes/scene.acs")) {
             std::cout << "fuck - no scene";
         }
-        
+    #endif
+     
     #if 0
         //! ---- DEBUG ----
         auto ent1 = m_ActiveScene->CreateEntity("ent1");
         auto &t1 = ent1.AddComponent<Transform_C>();
-        t1.rec = {100, 100, 100, 200};
-        t1.color = RED;
+        t1.pos = {100, 100};
+        t1.size = {100, 200};
+        t1.color = {255, 17, 0, 255};
 
         auto ent2 = m_ActiveScene->CreateEntity("ent2");
         auto &t2 = ent2.AddComponent<Transform_C>();
-        t2.rec = {400, 150, 200, 200};
-        t2.color = BLUE;
+        t2.pos = {400, 150};
+        t2.size = {200, 200};
+        t2.color = {0, 251, 255, 255};
 
         auto player = m_ActiveScene->CreateEntity("player");
         auto &t3 = player.AddComponent<Transform_C>();
-        t3.rec = {300, 100, 50, 100};
-        t3.color = PINK;
+
+
+        t3.pos = {300, 100};
+        t3.size = { 50, 100};
+        t3.color = {34, 255, 0, 255};
         player.AddComponent<Input_C>();
         player.AddComponent<Camera_C>();
+        
         //! ----------------
     #endif
+
+        m_isRunning = true;
     }
 
     Core::~Core() {
@@ -68,39 +71,45 @@ namespace Acaer {
         SceneSerializer serializer(m_ActiveScene);
         serializer.Serialize("assets/Scenes/scene.acs");
         
-        m_ImGuiLayer->OnDetach();
+        //m_ImGuiLayer->OnDetach();
 
-        CloseWindow();
+        m_Window.close();
     }
 
     void Core::Run() {
-        std::string windowTitel;
+        sf::Clock dt_clock;
         
-        m_isRunning = true;
-        while (!WindowShouldClose()) {
+        while (m_Window.isOpen() && m_isRunning) {
             
-            f32 dt = GetFrameTime();
+            f32 dt = dt_clock.restart().asSeconds();
            
-            windowTitel = "arcaer - FPS: " + std::to_string(GetFPS());
-            SetWindowTitle(windowTitel.c_str());
-        
-            if (!IsWindowMinimized()) {
-                
-                m_ActiveScene->OnUpdate(dt);
+            #ifdef AC_CALC_FPS
+                u16 fps = u16(1/dt);
+                m_Window.setTitle("arcaer - FPS: " + std::to_string(fps));
+            #endif
 
-                // ---- RENDER LOOP ----
-                BeginDrawing();
-                    ClearBackground(AC_SCENE_CLEAR_BACKGROUND);
-
-                    m_ActiveScene->OnRender();
-
-                    m_ImGuiLayer->Begin();
-                    //ImGui::ShowDemoWindow();
-                    m_ImGuiLayer->End();
-                EndDrawing();
-                // ---------------------
+            // ---- EVENT HANDLING ----
+            sf::Event event;
+            while (m_Window.pollEvent(event)) {
+                // "close requested" event: we close the window
+                if (event.type == sf::Event::Closed) {
+                    m_isRunning = false;
+                }
+                if (event.type == sf::Event::KeyPressed) {
+                    m_ActiveScene->OnInput(dt, event);
+                }
             }
+            
+            
+            m_ActiveScene->OnUpdate(dt, m_Window);
+
+            // ---- RENDER LOOP ----
+            m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
+            m_ActiveScene->OnRender(m_Window);
+            //    m_ImGuiLayer->Begin();
+                //ImGui::ShowDemoWindow();
+            //    m_ImGuiLayer->End();
+            m_Window.display();
         }
-        m_isRunning = false;
     }
 }

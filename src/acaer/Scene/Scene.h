@@ -54,32 +54,27 @@ namespace Acaer {
          * @brief Update function
          * 
          * @param dt delta time
+         * @param window sf::Window reference
          */
-        void OnUpdate(f32 dt);
+        void OnUpdate(f32 dt, sf::RenderWindow &window);
 
         /**
          * @brief Main render update function
          * 
+         * @param window sf::Window reference
          */
-        void OnRender();
-
-    private:
+        void OnRender(sf::RenderWindow &window);
 
         /**
-         * @brief Handels Input Components
+         * @brief Handle inputs
          * 
          * @param dt delta time
+         * @param e event
          */
-        void HandleInput_C(f32 dt);
+        void OnInput(f32 dt, sf::Event &e);
 
-        /**
-         * @brief Handles Camera Component
-         * 
-         */
-        void HandleCamera_C();
-
+    private:
         
-
         /**
          * @brief Renders given transform
          * 
@@ -92,8 +87,8 @@ namespace Acaer {
         // ** Members **
         entt::registry m_Registry;      // entt Registry
 
-        Camera2D m_Camera;              // Raylib Camera
-        
+        sf::View m_Camera;              // Camera
+
         friend class Entity;            // Entity class
         friend class SceneSerializer;   // Scene Serializer
     };

@@ -34,7 +34,6 @@ namespace Acaer {
      * 
      */
     struct Sprite_C {
-        Texture2D sprite_texture;           // Sprite Texutre    
     };
 
     /**
@@ -48,8 +47,10 @@ namespace Acaer {
         s8 render_layer = 0;                // Order in the renderer
         
         // Debug rec
-        Rectangle rec = {50, 50, 50, 50};   // Rectangle Transform
-        Color color = {200, 0, 200, 255};   // Color of transform   default: Pink #C800C8
+        v2f size = {10, 10};
+        v2f pos = {10, 10};
+
+        vColor color = {200, 0, 200, 255};   // Color of transform   default: Pink #C800C8
     };
 
     /**
@@ -70,7 +71,7 @@ namespace Acaer {
 
 
         // privat
-        v2<float> velocity;                 // velocity x / y
+        v2f velocity;                 // velocity x / y
 
     };
 
@@ -80,7 +81,6 @@ namespace Acaer {
      */
     struct Collider_C {
         b8  isPassible;                     // true: collider is passible
-        Rectangle rec {0, 0, 0, 0,};        // Rectangle Collider
     };
 
     /**

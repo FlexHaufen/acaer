@@ -21,10 +21,7 @@
 namespace Acaer {
 
     Scene::Scene() {
-
-        m_Camera.offset = {AC_WINDOW_X / 2.0f, AC_WINDOW_Y / 2.0f};
-        m_Camera.zoom = 1.0f;
-        m_Camera.rotation = 0.0f;
+        m_Camera.setSize(sf::Vector2f(AC_WINDOW_X, AC_WINDOW_Y));
     }
 
     Scene::~Scene() {
@@ -47,90 +44,56 @@ namespace Acaer {
     }
 
 
-
-    void Scene::OnUpdate(f32 dt) {
-
+    void Scene::OnInput(f32 dt, sf::Event &e) {
         // Input
-        HandleInput_C(dt);
+        {
+            auto group = m_Registry.group<Input_C, Transform_C>();
+            for (auto entity : group) {
+                auto &transform = group.get<Transform_C>(entity);
+                auto &input = group.get<Input_C>(entity);
 
-        // Update
-        HandleCamera_C();
-    }
-
-
-    void Scene::HandleInput_C(f32 dt) {
-        auto group = m_Registry.group<Input_C, Transform_C>();
-        for (auto entity : group) {
-            auto &transform = group.get<Transform_C>(entity);
-            auto &input = group.get<Input_C>(entity);
-
-            // Basic player moevment
-            if (input.isControllable) {
-                // TODO: player speed const
-                if (IsKeyDown(KEY_W)) {transform.rec.y -= 200.f * dt;}
-                if (IsKeyDown(KEY_S)) {transform.rec.y += 200.f * dt;}
-                if (IsKeyDown(KEY_A)) {transform.rec.x -= 200.f * dt;}
-                if (IsKeyDown(KEY_D)) {transform.rec.x += 200.f * dt;}
-            }
-        }
-    }
-
-    void Scene::HandleCamera_C() {
-        // Update camera
-        auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
-        for (auto entity : group) {
-            auto &transform = group.get<Transform_C>(entity);
-
-            // center cam
-            m_Camera.offset = {GetScreenWidth() / 2.f, GetScreenHeight() / 2.f};
-            
-            // update pos
-            m_Camera.target = {transform.rec.x, transform.rec.y};
-        }
-    }
-
-    void Scene::OnRender() {
-        BeginMode2D(m_Camera);
-            // ** Render **
-            {
-                auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
-                for (auto entity : group) {
-                    auto &transform = group.get<Transform_C>(entity);
-                    auto &tag = group.get<Tag_C>(entity);
-                    #ifdef AC_RENDER_CAM_LINES
-                        DrawLine((int)m_Camera.target.x, -GetScreenHeight()*10, (int)m_Camera.target.x, GetScreenHeight()*10, GREEN);
-                        DrawLine(-GetScreenWidth()*10, (int)m_Camera.target.y, GetScreenWidth()*10, (int)m_Camera.target.y, GREEN);
-                    #endif
-                    RenderTransform(transform, tag);
+                // Basic player moevment
+                if (input.isControllable) {
+                    // "close requested" event: we close the window
+                    if (e.key.code == sf::Keyboard::W) {transform.pos.y -= 200.f * dt * 100;}
+                    if (e.key.code == sf::Keyboard::S) {transform.pos.y += 200.f * dt * 100;}
+                    if (e.key.code == sf::Keyboard::A) {transform.pos.x -= 200.f * dt * 100;}
+                    if (e.key.code == sf::Keyboard::D) {transform.pos.x += 200.f * dt * 100;}
                 }
             }
-        EndMode2D();
-        // Render GUI heres
+        }
     }
 
-    void Scene::RenderTransform(Transform_C &transform, Tag_C &tag) {
-        #ifdef AC_RENDER_ENTITY_HITBOX
-            DrawRectangleLinesEx(transform.rec, 2, transform.color);
-        #endif
 
-        #ifdef AC_RENDER_ENTITY_REC
-            DrawRectangleRec(transform.rec, transform.color);
-        #endif
+    void Scene::OnUpdate(f32 dt, sf::RenderWindow &window) {
+        // Camera
+        {
+            auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
+            for (auto entity : group) {
+                auto &transform = group.get<Transform_C>(entity);
 
-        #ifdef AC_RENDER_ENTITY_TAG
-                DrawText(tag.tag.c_str(), 
-                int(transform.rec.x), 
-                int(transform.rec.y - 20),          // little offset so the tag will display above rec
-                AC_RENDER_ENTITY_TAG_FONT_SIZE, 
-                AC_RENDER_ENTITY_TAG_FONT_COLOR);
-        #endif
+                // center cam
+                //m_Camera.setSize(window.getSize().x, window.getSize().y);
+                m_Camera.setCenter(sf::Vector2(transform.pos.x, transform.pos.y));
+                window.setView(m_Camera);
+            }
+        }
+    }
 
-        #ifdef AC_RENDER_ENTITY_UUID
-                DrawText(std::to_string(tag.uuid).c_str(), 
-                int(transform.rec.x), 
-                int(transform.rec.y - 40),           // little offset so the uuid will display above rec
-                AC_RENDER_ENTITY_UUID_FONT_SIZE, 
-                AC_RENDER_ENTITY_UUID_FONT_COLOR);
-        #endif
+
+    void Scene::OnRender(sf::RenderWindow &window) {
+        // ** Render **
+        {
+            auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
+            for (auto entity : group) {
+                auto &t = group.get<Transform_C>(entity);
+                auto &tag = group.get<Tag_C>(entity);
+                sf::RectangleShape rec;
+                rec.setSize(sf::Vector2f(t.size.x, t.size.y));
+                rec.setPosition(sf::Vector2f(t.pos.x, t.pos.y));
+                rec.setFillColor(sf::Color(t.color.r, t.color.a, t.color.b, t.color.a));
+                window.draw(rec);
+            }
+        }
     }
 }
