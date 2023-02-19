@@ -12,7 +12,7 @@
 // *** INCLUDES ***
 #include "acaer/Scene/Scene.h"
 #include "acaer/Scene/Entity.h"
-
+#include "acaer/Scene/ScriptableEntity.h"
 
 
 // *** DEFINE ***
@@ -66,7 +66,18 @@ namespace Acaer {
 
 
     void Scene::OnUpdate(f32 dt, sf::RenderWindow &window) {
-        // Camera
+
+        // ** Update Scripts **
+        m_Registry.view<NativeScript_C>().each([=](auto entity, auto& nsc) {
+            if (!nsc.Instance) {
+                nsc.Instance = nsc.InstantiateScript();
+                nsc.Instance->m_Entity = Entity{ entity, this };
+                nsc.Instance->OnCreate();
+            }
+            nsc.Instance->OnUpdate(dt);
+        });
+
+        // ** Update Camera **
         {
             auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
             for (auto entity : group) {

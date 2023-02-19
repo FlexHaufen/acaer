@@ -14,9 +14,13 @@
 
 #include "acaer/Scene/Components.h"
 #include "acaer/Scene/Entity.h"
+#include "acaer/Scene/ScriptableEntity.h"
 #include "acaer/Scene/SceneSerializer.h"
 
 #include "acaer/Core/Events/EventManager.h"
+
+// ** Scripts **
+#include "acaer/Scripts/Player/CharacterController.h"
 
 
 // *** DEFINE ***
@@ -60,6 +64,7 @@ namespace Acaer {
         t3.color = {34, 255, 0, 255};
         player.AddComponent<Input_C>();
         player.AddComponent<Camera_C>();
+        player.AddComponent<NativeScript_C>().Bind<CharacterController>();
         
         //! ----------------
     #endif
@@ -102,7 +107,7 @@ namespace Acaer {
             // TODO: Add input for player;
             //m_ActiveScene->OnInput(dt, );
 
-            
+
             m_ActiveScene->OnUpdate(dt, m_Window);
 
             // ---- RENDER LOOP ----

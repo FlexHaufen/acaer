@@ -99,4 +99,23 @@ namespace Acaer {
     struct Input_C  {
         b8 isControllable = true;           // true: Player is controllable via input
     };
+
+
+	class ScriptableEntity; // Forward declaration
+    /**
+     * @brief Nativ Script component
+     * 
+     */    
+	struct NativeScript_C {
+		ScriptableEntity* Instance = nullptr;
+
+		ScriptableEntity*(*InstantiateScript)();
+		void (*DestroyScript)(NativeScript_C*);
+
+		template<typename T>
+		void Bind() {
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScript_C* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+		}
+	};
 }
