@@ -21,11 +21,16 @@
 namespace Acaer {
 
     Scene::Scene() {
+        AC_CORE_INFO("Initializing Scene");
+
+        AC_CORE_INFO("Setting up Camera:");
+        AC_CORE_INFO("    Width:  {0}", AC_WINDOW_X);
+        AC_CORE_INFO("    Height: {0}", AC_WINDOW_Y);
         m_Camera.setSize(sf::Vector2f(AC_WINDOW_X, AC_WINDOW_Y));
     }
 
     Scene::~Scene() {
-
+        AC_CORE_INFO("Terminating Scene");
     }
 
     Entity Scene::CreateEntity(const std::string& name) {

@@ -29,52 +29,62 @@
 namespace Acaer {
 
     Core::Core() {
+        Log::Init();
 
+        AC_CORE_INFO("ACAER v{0}", AC_VERSION);
+        AC_CORE_INFO("----------------------");
+
+        AC_CORE_INFO("Initializing Core");
+        
+
+        AC_CORE_INFO("Creating Window");
         m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), "acaer");
 
         //m_ImGuiLayer->OnAttach();
         m_ActiveScene = CreateRef<Scene>();
 
     #ifdef AC_SCENE_LOAD_ON_OPEN
+        AC_CORE_INFO("Loading scene...");
         // Load Scene
         SceneSerializer serializer(m_ActiveScene);
         if (!serializer.Deserialize("assets/Scenes/scene.acs")) {
-            std::cout << "fuck - no scene";
+            AC_CORE_ERROR("Failed to load scene");
         }
     #else
         //! ---- DEBUG ----
+        AC_CORE_TRACE("creating ent1");
         auto ent1 = m_ActiveScene->CreateEntity("ent1");
         auto &t1 = ent1.AddComponent<Transform_C>();
         t1.pos = {100, 100};
         t1.size = {100, 200};
         t1.color = {255, 17, 0, 255};
 
+        AC_CORE_TRACE("creating ent2");
         auto ent2 = m_ActiveScene->CreateEntity("ent2");
         auto &t2 = ent2.AddComponent<Transform_C>();
         t2.pos = {400, 150};
         t2.size = {200, 200};
         t2.color = {0, 251, 255, 255};
 
+        AC_CORE_TRACE("creating player");
         auto player = m_ActiveScene->CreateEntity("player");
         auto &t3 = player.AddComponent<Transform_C>();
-
-
         t3.pos = {300, 100};
         t3.size = { 50, 100};
         t3.color = {34, 255, 0, 255};
         player.AddComponent<Input_C>();
         player.AddComponent<Camera_C>();
         player.AddComponent<NativeScript_C>().Bind<CharacterController>();
-        
         //! ----------------
     #endif
-
         m_isRunning = true;
     }
 
     Core::~Core() {
+        AC_CORE_INFO("Shutting down Core");
         // Save scene
         #ifdef AC_SCENE_SAVE_ON_CLOSE
+            AC_CORE_INFO("Saving scene...");
             SceneSerializer serializer(m_ActiveScene);
             serializer.Serialize("assets/Scenes/scene.acs");
         #endif
@@ -87,6 +97,7 @@ namespace Acaer {
     void Core::Run() {
         sf::Clock dt_clock;
         
+        AC_CORE_INFO("Setting up EventManager");
         EventManager eventManager(m_Window);
         eventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {m_Window.close(); });
         eventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {m_Window.close(); });
@@ -118,5 +129,6 @@ namespace Acaer {
             //    m_ImGuiLayer->End();
             m_Window.display();
         }
+        AC_CORE_WARN("Core stopped runnging");
     }
 }

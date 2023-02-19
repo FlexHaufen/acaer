@@ -37,10 +37,13 @@
 //#include "imgui.h"
 
 // ** Local **
-#include "Helper/Types.h"
+#include "acaer/Helper/Types.h"
+#include "acaer/Core/Log.h"
 
 
 // *** DEFINES ***
+#define AC_VERSION                          "0.0.1"
+
 
 #define AC_WINDOW_RESIZABLE                             // flag
 #define AC_WINDOW_X                         800
