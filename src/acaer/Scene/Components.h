@@ -48,7 +48,10 @@ namespace Acaer {
         
         // Debug rec
         v2f size = {10, 10};
-        v2f pos = {10, 10};
+        v2f pos =  {10, 10};
+        v2f scale =  {1, 1};
+
+        f32 rotation = 0.f;
 
         vColor color = {200, 0, 200, 255};   // Color of transform   default: Pink #C800C8
     };
@@ -58,28 +61,17 @@ namespace Acaer {
      * 
      */
     struct RigidBody_C {
-        f32 mass;                           // Mass of entity
-        f32 inv_mass = 0.f;                 // Inverse mass for easy calculations
-        b8  isMovable;                      // inf. mass
+        enum class BodyType { Static = 0, Kinematic, Dynamic};
+        BodyType type = BodyType::Static;   // Type
 
-        f32 restitution;      
-        f32 drag;                           // Decay rate of liniar velocity
-        // f32 angularDrag;                 // Rotational decay rate
+        b8 fixedRoation = true;
 
-        b8  usesGravity;                    // true: affectet by gravity
-        f32 gravityFactor;                  // gravity multiplyer factor 
+        f32 density = 1.0f;
+        f32 friction = 0.5f;                // Decay rate of liniar velocity
+        f32 restitution = 0.0f;      
+        f32 restitutionThreshold = 0.5f;
 
-
-        // privat
-        v2f velocity;                       // velocity x / y
-    };
-
-    /**
-     * @brief Collision Component.
-     * 
-     */
-    struct Collider_C {
-        b8  isPassible;                     // true: collider is passible
+        b2Body *RuntimeBody = nullptr;
     };
 
     /**

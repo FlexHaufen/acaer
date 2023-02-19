@@ -57,6 +57,9 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
+#add_library(box2d SHARED ${CMAKE_SOURCE_DIR}/lib/box2d/lib/box2d.lib)
+
+
 #--------YAML--------
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
@@ -73,6 +76,8 @@ include_directories(
 	"${CMAKE_SOURCE_DIR}/lib/vendor/entt"
 	# spdlog
 	"${CMAKE_SOURCE_DIR}/lib/vendor/spdlog/include"
+	# Box2D
+	"${CMAKE_SOURCE_DIR}/lib/box2d/include"
 )
 
 
@@ -83,7 +88,8 @@ include_directories(
 
 #Put all libraries into a variable
 set(LIBS sfml-graphics
-         yaml-cpp)
+         yaml-cpp
+		${CMAKE_SOURCE_DIR}/lib/box2d/lib/box2d.lib)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

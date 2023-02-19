@@ -25,6 +25,9 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 
+// * Box2D *
+#include "box2d/box2d.h"
+
 // * EnTT *
 #include "entt.hpp"
 
@@ -48,6 +51,7 @@
 #define AC_WINDOW_RESIZABLE                             // flag
 #define AC_WINDOW_X                         800
 #define AC_WINDOW_Y                         450
+#define AC_CALC_FPS
 
 #define AC_SCENE_CLEAR_BACKGROUND           sf::Color::Black
 
@@ -57,3 +61,9 @@
 #define AC_RENDER_ENTITY_HITBOX                         // flag
 #define AC_RENDER_ENTITY_HITBOX_THICKNESS   1    
 //#define AC_RENDER_ENTITY_REC                            // flag
+
+
+#define AC_PHYSICS_VEL_STEPS               10
+#define AC_PHYSICS_POS_STEPS                6
+#define AC_PPM                             30           // pixels per meter     [SFML -> BOX2D]
+#define AC_DEG_PER_RAD                     57.295795F   // degrees per radian   [SFML -> BOX2D]

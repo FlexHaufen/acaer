@@ -33,6 +33,11 @@ namespace Acaer {
 
         static Ref<Scene> Copy(Ref<Scene> other);
 
+
+        void OnStart();
+
+        void OnEnd();
+
         /**
          * @brief Create a Entity object
          * 
@@ -65,13 +70,6 @@ namespace Acaer {
          */
         void OnRender(sf::RenderWindow &window);
 
-        /**
-         * @brief Handle inputs
-         * 
-         * @param dt delta time
-         * @param e event
-         */
-        void OnInput(f32 dt, sf::Event &e);
 
     private:
         
@@ -88,6 +86,8 @@ namespace Acaer {
         entt::registry m_Registry;      // entt Registry
 
         sf::View m_Camera;              // Camera
+
+        b2World* m_PhysicsWorld = nullptr;
 
         friend class Entity;            // Entity class
         friend class SceneSerializer;   // Scene Serializer
