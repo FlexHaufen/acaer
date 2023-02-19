@@ -16,6 +16,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <unordered_map>
+#include <functional>
 
 // ** External **
 // * SFML *
@@ -39,7 +41,6 @@
 
 
 // *** DEFINES ***
-
 
 #define AC_WINDOW_RESIZABLE                             // flag
 #define AC_WINDOW_X                         800

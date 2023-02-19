@@ -16,6 +16,9 @@
 #include "acaer/Scene/Entity.h"
 #include "acaer/Scene/SceneSerializer.h"
 
+#include "acaer/Core/Events/EventManager.h"
+
+
 // *** DEFINE ***
 
 // *** NAMESPACE ***
@@ -79,6 +82,11 @@ namespace Acaer {
     void Core::Run() {
         sf::Clock dt_clock;
         
+        EventManager eventManager(m_Window);
+        eventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {m_Window.close(); });
+        eventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {m_Window.close(); });
+
+
         while (m_Window.isOpen() && m_isRunning) {
             
             f32 dt = dt_clock.restart().asSeconds();
@@ -89,17 +97,11 @@ namespace Acaer {
             #endif
 
             // ---- EVENT HANDLING ----
-            sf::Event event;
-            while (m_Window.pollEvent(event)) {
-                // "close requested" event: we close the window
-                if (event.type == sf::Event::Closed) {
-                    m_isRunning = false;
-                }
-                if (event.type == sf::Event::KeyPressed) {
-                    m_ActiveScene->OnInput(dt, event);
-                }
-            }
-            
+            eventManager.processEvents();
+           
+            // TODO: Add input for player;
+            //m_ActiveScene->OnInput(dt, );
+
             
             m_ActiveScene->OnUpdate(dt, m_Window);
 
