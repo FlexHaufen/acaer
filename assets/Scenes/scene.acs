@@ -1,14 +1,18 @@
 Scene: Untitled
 Entities:
-  - Entity: 16328143444961328158
+  - Entity: 1749061460230834851
     Tag_C:
-      tag: ent1
+      tag: player
     Transform_C:
       render_layer: "\x00"
-      size: [100, 200]
-      pos: [100, 100]
-      color: [255, 17, 0, 255]
-  - Entity: 1948278404795318803
+      size: [50, 100]
+      pos: [235.779907, 86.7051315]
+      color: [34, 255, 0, 255]
+    Camera_C:
+      zoom: 1
+    Input_C:
+      isControllable: true
+  - Entity: 7993084117745992241
     Tag_C:
       tag: ent2
     Transform_C:
@@ -16,15 +20,11 @@ Entities:
       size: [200, 200]
       pos: [400, 150]
       color: [0, 251, 255, 255]
-  - Entity: 14854849784710082070
+  - Entity: 4935238758898244105
     Tag_C:
-      tag: player
+      tag: ent1
     Transform_C:
       render_layer: "\x00"
-      size: [50, 100]
-      pos: [289.416687, 69.4195786]
-      color: [34, 255, 0, 255]
-    Camera_C:
-      zoom: 1
-    Input_C:
-      isControllable: true
+      size: [100, 200]
+      pos: [100, 100]
+      color: [255, 17, 0, 255]

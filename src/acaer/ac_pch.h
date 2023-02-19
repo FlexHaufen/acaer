@@ -48,7 +48,7 @@
 
 #define AC_SCENE_CLEAR_BACKGROUND           sf::Color::Black
 
-#define AC_SCENE_LOAD_ON_OPEN                           // flag
+//#define AC_SCENE_LOAD_ON_OPEN                           // flag
 #define AC_SCENE_SAVE_ON_CLOSE                          // flag
 
 #define AC_RENDER_ENTITY_HITBOX                         // flag

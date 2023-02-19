@@ -81,11 +81,17 @@ namespace Acaer {
         {
             auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
             for (auto entity : group) {
-                auto &transform = group.get<Transform_C>(entity);
-
-                // center cam
-                //m_Camera.setSize(window.getSize().x, window.getSize().y);
-                m_Camera.setCenter(sf::Vector2(transform.pos.x, transform.pos.y));
+                auto &t = group.get<Transform_C>(entity);
+                static const f32 speed = 5;
+               
+                // ----- Smoothening in x & y
+                sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
+                m_Camera.move(movement * dt * speed);
+                
+                // ----- No smoothening
+                //m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
+                
+                
                 window.setView(m_Camera);
             }
         }
