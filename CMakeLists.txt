@@ -57,40 +57,6 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-
-#--------RAYLIB--------
-set(RAYLIB_VERSION 4.2.0)
-find_package(raylib ${RAYLIB_VERSION} QUIET) 	# QUIET or REQUIRED
-if (NOT raylib_FOUND) 							# If there's none, fetch and build raylib
-  include(FetchContent)
-  FetchContent_Declare(
-    raylib
-    URL https://github.com/raysan5/raylib/archive/refs/tags/${RAYLIB_VERSION}.tar.gz
-  )
-  FetchContent_GetProperties(raylib)
-  if (NOT raylib_POPULATED) 					# Have we downloaded raylib yet?
-    set(FETCHCONTENT_QUIET NO)
-    FetchContent_Populate(raylib)
-    set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-    add_subdirectory(${raylib_SOURCE_DIR} ${raylib_BINARY_DIR})
-  endif()
-endif()
-
-#--------IMGUI--------
-set(IMGUI_PATH ${CMAKE_SOURCE_DIR}/lib/vendor/imgui)
-add_library(imgui 
-			${IMGUI_PATH}/imconfig.h
-			${IMGUI_PATH}/imgui.h
-			${IMGUI_PATH}/imgui.cpp
-			${IMGUI_PATH}/imgui_draw.cpp
-			${IMGUI_PATH}/imgui_internal.h
-			${IMGUI_PATH}/imgui_tables.cpp
-			${IMGUI_PATH}/imgui_widgets.cpp
-			${IMGUI_PATH}/imstb_rectpack.h
-			${IMGUI_PATH}/imstb_textedit.h
-			${IMGUI_PATH}/imstb_truetype.h
-			${IMGUI_PATH}/imgui_demo.cpp)
-
 #--------YAML--------
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
@@ -105,8 +71,6 @@ include_directories(
 	"${CMAKE_SOURCE_DIR}/src"
   	#EnTT
 	"${CMAKE_SOURCE_DIR}/lib/vendor/entt"
-  	#ImGui
-	"${CMAKE_SOURCE_DIR}/lib/vendor/imgui"
 )
 
 
@@ -116,10 +80,8 @@ include_directories(
 #----------------------------------------------------
 
 #Put all libraries into a variable
-set(LIBS raylib
-         yaml-cpp
-         imgui
-		 sfml-graphics)
+set(LIBS sfml-graphics
+         yaml-cpp)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

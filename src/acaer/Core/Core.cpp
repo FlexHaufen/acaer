@@ -28,15 +28,13 @@ namespace Acaer {
         //m_ImGuiLayer->OnAttach();
         m_ActiveScene = CreateRef<Scene>();
 
-    #if 1
+    #ifdef AC_SCENE_LOAD_ON_OPEN
         // Load Scene
         SceneSerializer serializer(m_ActiveScene);
         if (!serializer.Deserialize("assets/Scenes/scene.acs")) {
             std::cout << "fuck - no scene";
         }
-    #endif
-     
-    #if 0
+    #else
         //! ---- DEBUG ----
         auto ent1 = m_ActiveScene->CreateEntity("ent1");
         auto &t1 = ent1.AddComponent<Transform_C>();
@@ -68,9 +66,11 @@ namespace Acaer {
 
     Core::~Core() {
         // Save scene
-        SceneSerializer serializer(m_ActiveScene);
-        serializer.Serialize("assets/Scenes/scene.acs");
-        
+        #ifdef AC_SCENE_SAVE_ON_CLOSE
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize("assets/Scenes/scene.acs");
+        #endif
+
         //m_ImGuiLayer->OnDetach();
 
         m_Window.close();

@@ -71,8 +71,7 @@ namespace Acaer {
 
 
         // privat
-        v2f velocity;                 // velocity x / y
-
+        v2f velocity;                       // velocity x / y
     };
 
     /**
