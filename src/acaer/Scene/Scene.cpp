@@ -91,7 +91,9 @@ namespace Acaer {
                 sf::RectangleShape rec;
                 rec.setSize(sf::Vector2f(t.size.x, t.size.y));
                 rec.setPosition(sf::Vector2f(t.pos.x, t.pos.y));
-                rec.setFillColor(sf::Color(t.color.r, t.color.a, t.color.b, t.color.a));
+                rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
+                rec.setOutlineThickness(AC_RENDER_ENTITY_HITBOX_THICKNESS);
+                rec.setOutlineColor(sf::Color(t.color.r, t.color.a, t.color.b, t.color.a));
                 window.draw(rec);
             }
         }
