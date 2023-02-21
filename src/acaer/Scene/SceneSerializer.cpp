@@ -150,7 +150,22 @@ namespace Acaer {
             out << YAML::Key << "render_layer"  << YAML::Value << c.render_layer;
             out << YAML::Key << "size"          << YAML::Value << c.size;
             out << YAML::Key << "pos"           << YAML::Value << c.pos;
+            out << YAML::Key << "scale"         << YAML::Value << c.scale;
+            out << YAML::Key << "rotation"      << YAML::Value << c.rotation;
             out << YAML::Key << "color"         << YAML::Value << c.color;
+            out << YAML::EndMap;
+        }
+
+        if (entity.HasComponent<RigidBody_C>()) {
+            auto &c = entity.GetComponent<RigidBody_C>();
+            out << YAML::Key << "RigitBody_C";
+            out << YAML::BeginMap;
+            out << YAML::Key << "type"                  << YAML::Value << (int)c.type;
+            out << YAML::Key << "fixedRoation"          << YAML::Value << c.fixedRoation;
+            out << YAML::Key << "density"               << YAML::Value << c.density;
+            out << YAML::Key << "friction"              << YAML::Value << c.friction;
+            out << YAML::Key << "restitution"           << YAML::Value << c.restitution;
+            out << YAML::Key << "restitutionThreshold"  << YAML::Value << c.restitutionThreshold;
             out << YAML::EndMap;
         }
 
@@ -183,10 +198,21 @@ namespace Acaer {
         auto transform_c = entity["Transform_C"];
         if (transform_c) {
             auto& c = currentEntity.GetOrEmplaceComponent<Transform_C>();
-            c.render_layer = transform_c["render_layer"].as<s8>();
-            c.size = transform_c["size"].as<v2f>();
-            c.pos = transform_c["pos"].as<v2f>();
-            c.color = transform_c["color"].as<vColor>();
+            c.render_layer  = transform_c["render_layer"].as<s8>();
+            c.size          = transform_c["size"].as<v2f>();
+            c.pos           = transform_c["pos"].as<v2f>();
+            c.color         = transform_c["color"].as<vColor>();
+        }
+
+        auto rigitbody_c = entity["RigidBody_C"];
+        if (rigitbody_c) {
+            auto &c = currentEntity.GetOrEmplaceComponent<RigidBody_C>();
+            c.type                  = (RigidBody_C::BodyType)rigitbody_c["type"].as<s8>();
+            c.fixedRoation          = rigitbody_c["fixedRoation"].as<b8>();
+            c.density               = rigitbody_c["density"].as<f32>();
+            c.friction              = rigitbody_c["friction"].as<f32>();
+            c.restitution           = rigitbody_c["restitution"].as<f32>();
+            c.restitutionThreshold  = rigitbody_c["restitutionThreshold"].as<f32>();
         }
 
         auto camera_c = entity["Camera_C"];
