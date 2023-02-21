@@ -15,7 +15,7 @@
 #include "acaer/Scene/Scene.h"
 
 
-
+#include "acaer/ImGui/ImGuiLayer.h"
 
 //*** DEFINES ***
 
@@ -65,7 +65,7 @@ namespace Acaer {
 
         Ref<Scene> m_ActiveScene;       // Current active scene
 
-        //ImGuiLayer* m_ImGuiLayer;     // Imgui    (for debug)
+        ImGuiLayer* m_ImGuiLayer;     // Imgui    (for debug)
 
 
     };

@@ -27,23 +27,26 @@ set(CMAKE_CXX_FLAGS_RELEASE "/O3 /g0 /DNLY_DEBUG")
 #----------------------------------------------------
 #set(LYCHEE_APP_ICO "${CMAKE_SOURCE_DIR}/resource/images/acaer.rc")
 
-
 #----------------------------------------------------
 #				  SOURCE & INCLUDE
 #----------------------------------------------------
-# Header fildes
+# Global Header fildes
 file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h
 	                           ${CMAKE_SOURCE_DIR}/src/*.hpp)
 
-# Source files
+# Global Source files
 file(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/*c
                             ${CMAKE_SOURCE_DIR}/src/*.cpp)
 
-### APP ###
-add_executable(${PROJECT_NAME} ${SRC_FILES} 
-							   ${HEADER_FILES})
-							   # ${LYCHEE_APP_ICO})
+file(GLOB_RECURSE IMGUI_FILES ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.h
+							  ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.cpp)
 
+
+### APP ###
+add_executable(${PROJECT_NAME} 	${SRC_FILES} 
+							   	${HEADER_FILES}
+							   	${IMGUI_FILES})
+							   	# ${LYCHEE_APP_ICO})
 
 
 #----------------------------------------------------
@@ -51,33 +54,34 @@ add_executable(${PROJECT_NAME} ${SRC_FILES}
 #----------------------------------------------------
 
 #---------SFML---------
-include(FetchContent)
-FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 2.6.x)
-FetchContent_MakeAvailable(SFML)
+set(SFML_STATIC_LIBRARIES TRUE)
+set(SFML_DIR ${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/lib/cmake/SFML)
+find_package(SFML 2.5.1 REQUIRED COMPONENTS window system graphics audio network)
 
-#add_library(box2d SHARED ${CMAKE_SOURCE_DIR}/lib/box2d/lib/box2d.lib)
-
+#---------BOX2D---------
+set(BOX2D_LIB ${CMAKE_SOURCE_DIR}/lib/box2d/lib/box2d.lib)
 
 #--------YAML--------
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
 set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "disable yaml contrib")
-
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/yaml/)
 
 #----------------------------------------------------
 #				      INCLUDE DIRS
 #----------------------------------------------------
 include_directories(
-	"${CMAKE_SOURCE_DIR}/src"
+	${CMAKE_SOURCE_DIR}/src
   	#EnTT
-	"${CMAKE_SOURCE_DIR}/lib/vendor/entt"
+	${CMAKE_SOURCE_DIR}/lib/vendor/entt
 	# spdlog
-	"${CMAKE_SOURCE_DIR}/lib/vendor/spdlog/include"
+	${CMAKE_SOURCE_DIR}/lib/vendor/spdlog/include
+	#SFML
+	${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/include
 	# Box2D
-	"${CMAKE_SOURCE_DIR}/lib/box2d/include"
+	${CMAKE_SOURCE_DIR}/lib/box2d/include
+	#ImGui
+	${CMAKE_SOURCE_DIR}/lib/imgui-sfml/include
 )
 
 
@@ -87,9 +91,13 @@ include_directories(
 #----------------------------------------------------
 
 #Put all libraries into a variable
-set(LIBS sfml-graphics
-         yaml-cpp
-		${CMAKE_SOURCE_DIR}/lib/box2d/lib/box2d.lib)
+set(LIBS 	sfml-window
+			sfml-system
+			sfml-graphics
+			sfml-audio
+			sfml-network
+			yaml-cpp
+			${BOX2D_LIB})
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

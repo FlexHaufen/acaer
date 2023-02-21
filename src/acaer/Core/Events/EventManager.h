@@ -140,6 +140,7 @@ namespace Acaer {
             // Iterate over events
             sf::Event event;
             while (m_window.pollEvent(event)) {
+                ImGui::SFML::ProcessEvent(event);
                 m_event_map.executeCallback(event, callback);
             }
         }
