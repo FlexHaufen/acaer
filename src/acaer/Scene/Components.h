@@ -47,9 +47,9 @@ namespace Acaer {
         s8 render_layer = 0;                // Order in the renderer
         
         // Debug rec
-        v2f size = {10, 10};
-        v2f pos =  {10, 10};
-        v2f scale =  {1, 1};
+        v2f size = {10, 10};                // Size [px]
+        v2f pos =  {10, 10};                // Position [px]
+        v2f scale =  {1, 1};                // Scale [1].
 
         f32 rotation = 0.f;
 
@@ -62,16 +62,17 @@ namespace Acaer {
      */
     struct RigidBody_C {
         enum class BodyType { Static = 0, Kinematic, Dynamic};
-        BodyType type = BodyType::Static;   // Type
+        BodyType type = BodyType::Static;   // Type         [Static, Kinematic, Dynamic]
 
-        b8 fixedRoation = true;
+        b8 fixedRoation = true;             // Fixed rotation. On by default
 
-        f32 density = 1.0f;
-        f32 friction = 0.5f;                // Decay rate of liniar velocity
-        f32 restitution = 0.0f;      
-        f32 restitutionThreshold = 0.5f;
+        f32 density = 1.0f;                 // Density      [kg/m^2]
+        f32 friction = 0.5f;                // Friction     [0..1]
+        f32 restitution = 0.0f;             // Restitution  [0..1]
+        f32 restitutionThreshold = 0.f;     // Restitution velocity threshold, [m/s]. 
+                                            // apply restitution above this speed
 
-        b2Body *RuntimeBody = nullptr;
+        b2Body *RuntimeBody = nullptr;      // b2Body at runtime
     };
 
     /**
