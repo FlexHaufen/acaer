@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.24.1)
 #----------------------------------------------------
 #			   	 PROJECT PROPERTIES
 #----------------------------------------------------
-project(acaer VERSION 0.1.1)
+project(acaer VERSION 0.0.2)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
