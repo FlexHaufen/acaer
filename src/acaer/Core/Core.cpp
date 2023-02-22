@@ -59,28 +59,32 @@ namespace Acaer {
             auto ent = m_ActiveScene->CreateEntity("ent1");
             auto &t = ent.AddComponent<Transform_C>();
             t.pos = {100, 150};
-            t.size = {500, 10};
-            t.color = {255, 17, 0, 255};
+            //t.size = {500, 10};
+            //t.color = {255, 17, 0, 255};
             auto &rb = ent.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Static;
+            auto &s = ent.AddComponent<Sprite_C>();
+            if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
+                AC_CORE_WARN("Couldn't load sprite texture");
+            }
         }
-        {   // Ent2
-            AC_CORE_TRACE("creating ent2");
-            auto ent = m_ActiveScene->CreateEntity("ent2");
-            auto &t = ent.AddComponent<Transform_C>();
-            t.pos = {100, 50};
-            t.size = {10, 100};
-            t.color = {0, 251, 255, 255};
-            auto &rb = ent.AddComponent<RigidBody_C>();
-            rb.type = RigidBody_C::BodyType::Static;
-        }
+        //{   // Ent2
+        //    AC_CORE_TRACE("creating ent2");
+        //    auto ent = m_ActiveScene->CreateEntity("ent2");
+        //    auto &t = ent.AddComponent<Transform_C>();
+        //    t.pos = {100, 50};
+        //    //t.size = {10, 100};
+        //    t.color = {0, 251, 255, 255};
+        //    auto &rb = ent.AddComponent<RigidBody_C>();
+        //    rb.type = RigidBody_C::BodyType::Static;
+        //}
         {   // Player
             AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Transform_C>();
             t.pos = {150, 0};
-            t.size = { 50, 100};
-            t.color = {34, 255, 0, 255};
+            //t.size = { 50, 100};
+            //t.color = {34, 255, 0, 255};
             player.AddComponent<Input_C>();
             player.AddComponent<Camera_C>();
             player.AddComponent<NativeScript_C>().Bind<CharacterController>();
@@ -89,7 +93,7 @@ namespace Acaer {
             rb.density = 200;
 
             auto &s = player.AddComponent<Sprite_C>();
-            if (!s.texture.loadFromFile("assets/Textures/Player/Shia.png")) {
+            if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
 

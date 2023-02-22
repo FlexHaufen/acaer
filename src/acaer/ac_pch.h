@@ -61,7 +61,7 @@
 
 #define AC_SCENE_CLEAR_BACKGROUND           sf::Color::Black
 
-
+#define AC_GLOBAL_SCALE                     4          
 #define AC_RENDER_ENTITY_HITBOX                         // flag
 #define AC_RENDER_ENTITY_HITBOX_THICKNESS   1    
 //#define AC_RENDER_ENTITY_REC                            // flag

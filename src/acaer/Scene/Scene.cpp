@@ -14,6 +14,7 @@
 #include "acaer/Scene/Entity.h"
 #include "acaer/Scene/ScriptableEntity.h"
 
+#include "acaer/Scene/Renderer/Renderer.h"
 
 // *** DEFINE ***
 
@@ -56,8 +57,14 @@ namespace Acaer {
         for (auto e: view) {
             Entity entity = {e, this};
 
-            auto& t = entity.GetComponent<Transform_C>();
-            auto& rb = entity.GetComponent<RigidBody_C>();
+            auto &t = entity.GetComponent<Transform_C>();
+            auto &rb = entity.GetComponent<RigidBody_C>();
+
+            if (entity.HasComponent<Sprite_C>()) {
+                auto &s = entity.GetComponent<Sprite_C>();
+                t.size.x = (float)s.texture.getSize().x * AC_GLOBAL_SCALE;
+                t.size.y = (float)s.texture.getSize().y * AC_GLOBAL_SCALE;
+            }
 
             b2BodyDef bodyDef;
 
@@ -152,40 +159,10 @@ namespace Acaer {
 
                 auto &tag = entity.GetComponent<Tag_C>();
                 auto &t = entity.GetComponent<Transform_C>();
-                {   // Render Transform
-                    sf::RectangleShape rec;
-                    rec.setPosition(sf::Vector2f(t.pos.x, t.pos.y));
-                    rec.setRotation(t.rotation);
-                   // rec.setOrigin(sf::Vector2f(t.size.x / 2.f, t.size.y / 2.f));
-                    rec.setSize(sf::Vector2f(t.size.x, t.size.y));
-
-                    rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
-                    rec.setOutlineThickness(AC_RENDER_ENTITY_HITBOX_THICKNESS);
-                    rec.setOutlineColor(sf::Color(t.color.r, t.color.a, t.color.b, t.color.a));
-                    window.draw(rec);
-
-
-                    // Render origin
-                    static const f32 radius = 2.f;
-                    sf::CircleShape c;
-                    c.setRadius(radius);
-                    c.setFillColor(sf::Color::Red);
-                    c.setPosition(sf::Vector2f(t.pos.x - radius, t.pos.y - radius));
-                    window.draw(c);
-                }
-                {   // Render Sprite
-                    if (entity.HasComponent<Sprite_C>()) {
-                        auto &s = entity.GetComponent<Sprite_C>();
-
-                        sf::Sprite sprite;
-                        sprite.setTexture(s.texture);
-
-                        // Scale texture to size
-                        sprite.setScale({t.size.x / s.texture.getSize().x, t.size.y / s.texture.getSize().y});
-                        sprite.setPosition(sf::Vector2f(t.pos.x, t.pos.y));
-                        sprite.setRotation(t.rotation);
-                        window.draw(sprite);
-                    }
+               
+                if (entity.HasComponent<Sprite_C>()) {
+                    auto &s = entity.GetComponent<Sprite_C>();
+                    Renderer::RenderSprite(window, t, s, true, true);
                 }
             }
         }
