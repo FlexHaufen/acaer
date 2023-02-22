@@ -19,53 +19,54 @@
 //*** NAMESPACE ***
 namespace Acaer {
 
-	ImGuiLayer::ImGuiLayer() {}
+	ImGuiLayer::ImGuiLayer() {
+		AC_CORE_INFO("Initializing ImGuiLayer");
+	}
 
-	void ImGuiLayer::OnAttach()	{
-
+	void ImGuiLayer::OnAttach(sf::RenderWindow &window)	{
+		
+		ImGui::SFML::Init(window);
 		
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 
+		AC_CORE_INFO("Running ImGui version: {0}", ImGui::GetVersion());
+		//AC_CORE_INFO("Running ImPlot version: {0}", IMPLOT_VERSION);
+
 		ImGui::CreateContext();
+		//ImPlot::CreateContext();
 
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+		//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
 		// Setup Dear ImGui style
-
-		rlImGuiSetup(true); 	// sets up ImGui with ether a dark or light default theme
 		SetStyle();
-
 	}
 
 	void ImGuiLayer::OnDetach() {
-		rlImGuiShutdown();
+		AC_CORE_INFO("Terminating ImGui");
+		ImGui::SFML::Shutdown();
 	}
+
 	
-	void ImGuiLayer::Begin() {
-		rlImGuiBegin();
+	void ImGuiLayer::OnUpdate(sf::RenderWindow &window, sf::Time dt) {
+		ImGui::SFML::Update(window, dt);
 	}
 
-	void ImGuiLayer::End() {
-
-		ImGuiIO& io = ImGui::GetIO();
-		//Core& app = Core::Get();
-		//io.DisplaySize = ImVec2((f32)app.GetWindow().GetWidth(), (f32)app.GetWindow().GetHeight());
-
-		// Rendering
-		rlImGuiEnd();
+	void ImGuiLayer::OnRender(sf::RenderWindow &window) {
+		ImGui::SFML::Render(window);
 	}
+
 
 	void ImGuiLayer::SetStyle() {
 		ImGuiIO &io = ImGui::GetIO();
 		
-	//	io.FontDefault = io.Fonts->AddFontFromFileTTF(LY_FONT_REGULAR, LY_FONT_SIZE);
+	//	io.FontDefault = io.Fonts->AddFontFromFileTTF(AC_FONT_REGULAR, AC_FONT_SIZE);
 		
 		
 		ImGuiStyle * style = &ImGui::GetStyle();

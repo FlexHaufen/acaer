@@ -12,8 +12,9 @@
 // *** INCLUDES ***
 #include "acaer/Scene/Scene.h"
 #include "acaer/Scene/Entity.h"
+#include "acaer/Scene/ScriptableEntity.h"
 
-
+#include "acaer/Scene/Renderer/Renderer.h"
 
 // *** DEFINE ***
 
@@ -21,14 +22,16 @@
 namespace Acaer {
 
     Scene::Scene() {
+        AC_CORE_INFO("Initializing Scene");
 
-        m_Camera.offset = {AC_WINDOW_X / 2.0f, AC_WINDOW_Y / 2.0f};
-        m_Camera.zoom = 1.0f;
-        m_Camera.rotation = 0.0f;
+        AC_CORE_INFO("Setting up Camera:");
+        AC_CORE_INFO("    Width:  {0}", AC_WINDOW_X);
+        AC_CORE_INFO("    Height: {0}", AC_WINDOW_Y);
+        m_Camera.setSize(sf::Vector2f(AC_WINDOW_X, AC_WINDOW_Y));
     }
 
     Scene::~Scene() {
-
+        AC_CORE_INFO("Terminating Scene");
     }
 
     Entity Scene::CreateEntity(const std::string& name) {
@@ -47,90 +50,121 @@ namespace Acaer {
     }
 
 
+    void Scene::OnStart() {
+        m_PhysicsWorld = new b2World({ 0.0f, 10.f});
 
-    void Scene::OnUpdate(f32 dt) {
+        auto view = m_Registry.view<RigidBody_C>();
+        for (auto e: view) {
+            Entity entity = {e, this};
 
-        // Input
-        HandleInput_C(dt);
+            auto &t = entity.GetComponent<Transform_C>();
+            auto &rb = entity.GetComponent<RigidBody_C>();
 
-        // Update
-        HandleCamera_C();
+            if (entity.HasComponent<Sprite_C>()) {
+                auto &s = entity.GetComponent<Sprite_C>();
+                t.size.x = (float)s.texture.getSize().x * AC_GLOBAL_SCALE;
+                t.size.y = (float)s.texture.getSize().y * AC_GLOBAL_SCALE;
+            }
+
+            b2BodyDef bodyDef;
+
+            bodyDef.type = (b2BodyType)rb.type;     // NOTE: Type conversion is possible because of same order
+
+            // TODO: Check if line below is correct
+            bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
+            bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
+
+            b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+            body->SetFixedRotation(rb.fixedRoation);
+            rb.RuntimeBody = body;
+
+
+            b2PolygonShape polyShape;
+            // TODO: Add ability to don't use scale 
+            polyShape.SetAsBox((t.size.x / 2.f / AC_PPM), (t.size.y / 2.f / AC_PPM));
+            b2FixtureDef fixtureDef;
+            fixtureDef.shape        = &polyShape;
+            fixtureDef.density      = rb.density;
+            fixtureDef.restitution  = rb.restitution;
+            fixtureDef.friction     = rb.friction;
+            fixtureDef.restitutionThreshold = rb.restitutionThreshold;
+            body->CreateFixture(&fixtureDef);
+        }
+    }
+
+    void Scene::OnEnd() {
+        delete m_PhysicsWorld;
+		m_PhysicsWorld = nullptr;
     }
 
 
-    void Scene::HandleInput_C(f32 dt) {
-        auto group = m_Registry.group<Input_C, Transform_C>();
-        for (auto entity : group) {
-            auto &transform = group.get<Transform_C>(entity);
-            auto &input = group.get<Input_C>(entity);
+    void Scene::OnUpdate(f32 dt, sf::RenderWindow &window) {
 
-            // Basic player moevment
-            if (input.isControllable) {
-                // TODO: player speed const
-                if (IsKeyDown(KEY_W)) {transform.rec.y -= 200.f * dt;}
-                if (IsKeyDown(KEY_S)) {transform.rec.y += 200.f * dt;}
-                if (IsKeyDown(KEY_A)) {transform.rec.x -= 200.f * dt;}
-                if (IsKeyDown(KEY_D)) {transform.rec.x += 200.f * dt;}
+        // ** Update Scripts **
+        m_Registry.view<NativeScript_C>().each([=](auto entity, auto& nsc) {
+            if (!nsc.Instance) {
+                nsc.Instance = nsc.InstantiateScript();
+                nsc.Instance->m_Entity = Entity{ entity, this };
+                nsc.Instance->OnCreate();
+            }
+            nsc.Instance->OnUpdate(dt);
+        });
+
+        // ** Update Camera **
+        {
+            auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
+            for (auto entity : group) {
+                auto &t = group.get<Transform_C>(entity);
+                static const f32 speed = 5;
+               
+                // ----- Smoothening in x & y
+                sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
+                m_Camera.move(movement * dt * speed);
+                
+                // ----- No smoothening
+                //m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
+                
+
+                window.setView(m_Camera);
+            }
+        }
+
+        // ** Physics **
+        {
+            m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
+
+            // retrive transform form box2d
+            auto view = m_Registry.view<RigidBody_C>();
+            for (auto e : view) {
+                Entity entity = {e , this};
+                auto& t = entity.GetComponent<Transform_C>();
+                auto& rb = entity.GetComponent<RigidBody_C>();
+
+                b2Body* body = (b2Body*)rb.RuntimeBody;
+                // Calculate pos and rotation based on fixture
+                t.pos       = {(body->GetPosition().x * AC_PPM) - t.size.x / 2 , (body->GetPosition().y * AC_PPM) - t.size.y / 2};
+                t.rotation  =  body->GetAngle() * AC_DEG_PER_RAD * -1;
             }
         }
     }
 
-    void Scene::HandleCamera_C() {
-        // Update camera
-        auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
-        for (auto entity : group) {
-            auto &transform = group.get<Transform_C>(entity);
 
-            // center cam
-            m_Camera.offset = {GetScreenWidth() / 2.f, GetScreenHeight() / 2.f};
-            
-            // update pos
-            m_Camera.target = {transform.rec.x, transform.rec.y};
-        }
-    }
+    void Scene::OnRender(sf::RenderWindow &window) {
+        // ** Render **
+        {
+            auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
+            for (auto e : group) {
 
-    void Scene::OnRender() {
-        BeginMode2D(m_Camera);
-            // ** Render **
-            {
-                auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
-                for (auto entity : group) {
-                    auto &transform = group.get<Transform_C>(entity);
-                    auto &tag = group.get<Tag_C>(entity);
-                    #ifdef AC_RENDER_CAM_LINES
-                        DrawLine((int)m_Camera.target.x, -GetScreenHeight()*10, (int)m_Camera.target.x, GetScreenHeight()*10, GREEN);
-                        DrawLine(-GetScreenWidth()*10, (int)m_Camera.target.y, GetScreenWidth()*10, (int)m_Camera.target.y, GREEN);
-                    #endif
-                    RenderTransform(transform, tag);
+                Entity entity = {e, this};
+
+                auto &tag = entity.GetComponent<Tag_C>();
+                auto &t = entity.GetComponent<Transform_C>();
+               
+                if (entity.HasComponent<Sprite_C>()) {
+                    auto &s = entity.GetComponent<Sprite_C>();
+                    Renderer::RenderSprite(window, t, s, true, true);
                 }
             }
-        EndMode2D();
-        // Render GUI heres
-    }
-
-    void Scene::RenderTransform(Transform_C &transform, Tag_C &tag) {
-        #ifdef AC_RENDER_ENTITY_HITBOX
-            DrawRectangleLinesEx(transform.rec, 2, transform.color);
-        #endif
-
-        #ifdef AC_RENDER_ENTITY_REC
-            DrawRectangleRec(transform.rec, transform.color);
-        #endif
-
-        #ifdef AC_RENDER_ENTITY_TAG
-                DrawText(tag.tag.c_str(), 
-                int(transform.rec.x), 
-                int(transform.rec.y - 20),          // little offset so the tag will display above rec
-                AC_RENDER_ENTITY_TAG_FONT_SIZE, 
-                AC_RENDER_ENTITY_TAG_FONT_COLOR);
-        #endif
-
-        #ifdef AC_RENDER_ENTITY_UUID
-                DrawText(std::to_string(tag.uuid).c_str(), 
-                int(transform.rec.x), 
-                int(transform.rec.y - 40),           // little offset so the uuid will display above rec
-                AC_RENDER_ENTITY_UUID_FONT_SIZE, 
-                AC_RENDER_ENTITY_UUID_FONT_COLOR);
-        #endif
+        }
     }
 }

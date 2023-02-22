@@ -15,7 +15,6 @@
 //*** MAIN ***
 int main(int argc, char **argv) {
 
-
 	Acaer::Core* ac_game = new Acaer::Core();
 	ac_game->Run();
 	delete ac_game;

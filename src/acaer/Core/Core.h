@@ -14,6 +14,7 @@
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Scene.h"
 
+
 #include "acaer/ImGui/ImGuiLayer.h"
 
 //*** DEFINES ***
@@ -57,12 +58,14 @@ namespace Acaer {
     private:
       
         // ** Members **
-        bool m_isRunning = true;    // True when app is running
-        bool m_isMinimized = false; // True when app is minimzed
+        bool m_isRunning = true;        // True when app is running
+        bool m_isMinimized = false;     // True when app is minimzed
 
-        Ref<Scene> m_ActiveScene;   // Current active scene
+        sf::RenderWindow m_Window;      // Sfml window
 
-        ImGuiLayer* m_ImGuiLayer;   // Imgui    (for debug)
+        Ref<Scene> m_ActiveScene;       // Current active scene
+
+        ImGuiLayer* m_ImGuiLayer;     // Imgui    (for debug)
 
 
     };

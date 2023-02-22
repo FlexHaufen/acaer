@@ -47,6 +47,15 @@ struct v2 {
 };
 
 /**
+ * @brief 2D vector
+ * 
+ */
+struct v2f {
+    f32 x;
+    f32 y;
+};
+
+/**
  * @brief 3D Vector
  * 
  * @tparam T type of vector
@@ -56,6 +65,30 @@ struct v3 {
     T x;
     T y;
     T z;
+};
+
+/**
+ * @brief 4D Vector
+ * 
+ * @tparam T type of vector
+ */
+template <typename T>
+struct v4 {
+    T w;
+    T x;
+    T y;
+    T z;
+};
+
+/**
+ * @brief Color Vector
+ * 
+ */
+struct vColor {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a;
 };
 
 template<typename T>

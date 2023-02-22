@@ -33,6 +33,11 @@ namespace Acaer {
 
         static Ref<Scene> Copy(Ref<Scene> other);
 
+
+        void OnStart();
+
+        void OnEnd();
+
         /**
          * @brief Create a Entity object
          * 
@@ -54,32 +59,20 @@ namespace Acaer {
          * @brief Update function
          * 
          * @param dt delta time
+         * @param window sf::Window reference
          */
-        void OnUpdate(f32 dt);
+        void OnUpdate(f32 dt, sf::RenderWindow &window);
 
         /**
          * @brief Main render update function
          * 
+         * @param window sf::Window reference
          */
-        void OnRender();
+        void OnRender(sf::RenderWindow &window);
+
 
     private:
-
-        /**
-         * @brief Handels Input Components
-         * 
-         * @param dt delta time
-         */
-        void HandleInput_C(f32 dt);
-
-        /**
-         * @brief Handles Camera Component
-         * 
-         */
-        void HandleCamera_C();
-
         
-
         /**
          * @brief Renders given transform
          * 
@@ -92,8 +85,10 @@ namespace Acaer {
         // ** Members **
         entt::registry m_Registry;      // entt Registry
 
-        Camera2D m_Camera;              // Raylib Camera
-        
+        sf::View m_Camera;              // Camera
+
+        b2World* m_PhysicsWorld = nullptr;
+
         friend class Entity;            // Entity class
         friend class SceneSerializer;   // Scene Serializer
     };

@@ -25,11 +25,12 @@ namespace Acaer {
 		ImGuiLayer();
 		~ImGuiLayer() = default;
 
-		void OnAttach();
+		void OnAttach(sf::RenderWindow &window);
 		void OnDetach();
 
-		void Begin();
-		void End();
+		void OnUpdate(sf::RenderWindow &window, sf::Time dt);
+		void OnRender(sf::RenderWindow &window);
+
 
 		void SetStyle();
 	private:

@@ -14,93 +14,147 @@
 
 #include "acaer/Scene/Components.h"
 #include "acaer/Scene/Entity.h"
+#include "acaer/Scene/ScriptableEntity.h"
 #include "acaer/Scene/SceneSerializer.h"
 
+#include "acaer/Core/Events/EventManager.h"
+
+// ** Scripts **
+#include "acaer/Scripts/Player/CharacterController.h"
+
+
 // *** DEFINE ***
+//#define AC_SCENE_LOAD_ON_OPEN                           // flag
+#define AC_SCENE_SAVE_ON_CLOSE                          // flag
 
 // *** NAMESPACE ***
 namespace Acaer {
 
     Core::Core() {
-        SetTraceLogLevel(0);
-        #ifdef AC_WINDOW_RESIZABLE
-            SetConfigFlags(FLAG_WINDOW_RESIZABLE);    // Window configuration flags
-        #endif
+        Log::Init();
 
-        InitWindow(AC_WINDOW_X, AC_WINDOW_Y, "acaer");
+        AC_CORE_INFO("ACAER v{0}", AC_VERSION);
+        AC_CORE_INFO("----------------------");
 
-        if (!IsWindowReady()) {
-            TraceLog(LOG_FATAL, "Couldn't create Window");
-        }
-        m_ImGuiLayer->OnAttach();
+        AC_CORE_INFO("Initializing Core");
+        
+
+        AC_CORE_INFO("Creating Window");
+        m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), "acaer");
+
+        m_ImGuiLayer->OnAttach(m_Window);
         m_ActiveScene = CreateRef<Scene>();
 
+    #ifdef AC_SCENE_LOAD_ON_OPEN
+        AC_CORE_INFO("Loading scene...");
         // Load Scene
         SceneSerializer serializer(m_ActiveScene);
         if (!serializer.Deserialize("assets/Scenes/scene.acs")) {
-            std::cout << "fuck - no scene";
+            AC_CORE_ERROR("Failed to load scene");
         }
-        
-    #if 0
+    #else
         //! ---- DEBUG ----
-        auto ent1 = m_ActiveScene->CreateEntity("ent1");
-        auto &t1 = ent1.AddComponent<Transform_C>();
-        t1.rec = {100, 100, 100, 200};
-        t1.color = RED;
+        {   // Ent1
+            AC_CORE_TRACE("creating ent1");
+            auto ent = m_ActiveScene->CreateEntity("ent1");
+            auto &t = ent.AddComponent<Transform_C>();
+            t.pos = {100, 150};
+            //t.size = {500, 10};
+            //t.color = {255, 17, 0, 255};
+            auto &rb = ent.AddComponent<RigidBody_C>();
+            rb.type = RigidBody_C::BodyType::Static;
+            auto &s = ent.AddComponent<Sprite_C>();
+            if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
+                AC_CORE_WARN("Couldn't load sprite texture");
+            }
+        }
+        //{   // Ent2
+        //    AC_CORE_TRACE("creating ent2");
+        //    auto ent = m_ActiveScene->CreateEntity("ent2");
+        //    auto &t = ent.AddComponent<Transform_C>();
+        //    t.pos = {100, 50};
+        //    //t.size = {10, 100};
+        //    t.color = {0, 251, 255, 255};
+        //    auto &rb = ent.AddComponent<RigidBody_C>();
+        //    rb.type = RigidBody_C::BodyType::Static;
+        //}
+        {   // Player
+            AC_CORE_TRACE("creating player");
+            auto player = m_ActiveScene->CreateEntity("player");
+            auto &t = player.AddComponent<Transform_C>();
+            t.pos = {150, 0};
+            //t.size = { 50, 100};
+            //t.color = {34, 255, 0, 255};
+            player.AddComponent<Input_C>();
+            player.AddComponent<Camera_C>();
+            player.AddComponent<NativeScript_C>().Bind<CharacterController>();
+            auto &rb = player.AddComponent<RigidBody_C>();
+            rb.type = RigidBody_C::BodyType::Dynamic;
+            rb.density = 200;
 
-        auto ent2 = m_ActiveScene->CreateEntity("ent2");
-        auto &t2 = ent2.AddComponent<Transform_C>();
-        t2.rec = {400, 150, 200, 200};
-        t2.color = BLUE;
+            auto &s = player.AddComponent<Sprite_C>();
+            if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
+                AC_CORE_WARN("Couldn't load sprite texture");
+            }
 
-        auto player = m_ActiveScene->CreateEntity("player");
-        auto &t3 = player.AddComponent<Transform_C>();
-        t3.rec = {300, 100, 50, 100};
-        t3.color = PINK;
-        player.AddComponent<Input_C>();
-        player.AddComponent<Camera_C>();
+        }
         //! ----------------
     #endif
+        m_isRunning = true;
     }
 
     Core::~Core() {
+        AC_CORE_INFO("Shutting down Core");
         // Save scene
-        SceneSerializer serializer(m_ActiveScene);
-        serializer.Serialize("assets/Scenes/scene.acs");
-        
-        m_ImGuiLayer->OnDetach();
+        #ifdef AC_SCENE_SAVE_ON_CLOSE
+            AC_CORE_INFO("Saving scene...");
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize("assets/Scenes/scene.acs");
+        #endif
 
-        CloseWindow();
+        m_Window.close();
+        m_ImGuiLayer->OnDetach();        
     }
 
     void Core::Run() {
-        std::string windowTitel;
+        sf::Clock dt_clock;
+        sf::Time dt;
         
-        m_isRunning = true;
-        while (!WindowShouldClose()) {
+        AC_CORE_INFO("Setting up EventManager");
+        EventManager eventManager(m_Window);
+        eventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {m_Window.close(); });
+        eventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {m_Window.close(); });
+
+        m_ActiveScene->OnStart();
+        while (m_Window.isOpen() && m_isRunning) {
             
-            f32 dt = GetFrameTime();
+            dt = dt_clock.restart();
+            f32 dt_sec = dt.asSeconds();
            
-            windowTitel = "arcaer - FPS: " + std::to_string(GetFPS());
-            SetWindowTitle(windowTitel.c_str());
-        
-            if (!IsWindowMinimized()) {
-                
-                m_ActiveScene->OnUpdate(dt);
+            #ifdef AC_CALC_FPS
+                u16 fps = u16(1/dt_sec);
+                m_Window.setTitle("arcaer - FPS: " + std::to_string(fps));
+            #endif
 
-                // ---- RENDER LOOP ----
-                BeginDrawing();
-                    ClearBackground(AC_SCENE_CLEAR_BACKGROUND);
+            // ---- EVENT HANDLING ----
+            eventManager.processEvents(nullptr);
+            //ImGui::SFML::ProcessEvent();          // TODO: Add ImGui Events
 
-                    m_ActiveScene->OnRender();
+            // ---- UPDATE HANDLING ----
+            m_ActiveScene->OnUpdate(dt_sec, m_Window);
+            m_ImGuiLayer->OnUpdate(m_Window, dt);
 
-                    m_ImGuiLayer->Begin();
-                    //ImGui::ShowDemoWindow();
-                    m_ImGuiLayer->End();
-                EndDrawing();
-                // ---------------------
-            }
+            // ---- RENDER LOOP ----
+            m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
+            m_ActiveScene->OnRender(m_Window);
+            
+            b8 p = true;
+            ImGui::ShowDemoWindow(&p);
+
+            m_ImGuiLayer->OnRender(m_Window);
+            m_Window.display();
         }
-        m_isRunning = false;
+        m_ActiveScene->OnEnd();
+        AC_CORE_WARN("Core stopped runnging");
     }
 }

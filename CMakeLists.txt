@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.24.1)
 #----------------------------------------------------
 #			   	 PROJECT PROPERTIES
 #----------------------------------------------------
-project(acaer VERSION 0.1.1)
+project(acaer VERSION 0.0.2)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
@@ -27,89 +27,61 @@ set(CMAKE_CXX_FLAGS_RELEASE "/O3 /g0 /DNLY_DEBUG")
 #----------------------------------------------------
 #set(LYCHEE_APP_ICO "${CMAKE_SOURCE_DIR}/resource/images/acaer.rc")
 
-
 #----------------------------------------------------
 #				  SOURCE & INCLUDE
 #----------------------------------------------------
-# Header fildes
+# Global Header fildes
 file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h
 	                           ${CMAKE_SOURCE_DIR}/src/*.hpp)
 
-# Source files
+# Global Source files
 file(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/*c
                             ${CMAKE_SOURCE_DIR}/src/*.cpp)
 
-### APP ###
-add_executable(${PROJECT_NAME} ${SRC_FILES} 
-							   ${HEADER_FILES})
-							   # ${LYCHEE_APP_ICO})
+file(GLOB_RECURSE IMGUI_FILES ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.h
+							  ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.cpp)
 
+
+### APP ###
+add_executable(${PROJECT_NAME} 	${SRC_FILES} 
+							   	${HEADER_FILES}
+							   	${IMGUI_FILES})
+							   	# ${LYCHEE_APP_ICO})
 
 
 #----------------------------------------------------
 #				    	LIBS
 #----------------------------------------------------
 
-#--------RAYLIB--------
-set(RAYLIB_VERSION 4.2.0)
-find_package(raylib ${RAYLIB_VERSION} QUIET) 	# QUIET or REQUIRED
-if (NOT raylib_FOUND) 							# If there's none, fetch and build raylib
-  include(FetchContent)
-  FetchContent_Declare(
-    raylib
-    URL https://github.com/raysan5/raylib/archive/refs/tags/${RAYLIB_VERSION}.tar.gz
-  )
-  FetchContent_GetProperties(raylib)
-  if (NOT raylib_POPULATED) 					# Have we downloaded raylib yet?
-    set(FETCHCONTENT_QUIET NO)
-    FetchContent_Populate(raylib)
-    set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-    add_subdirectory(${raylib_SOURCE_DIR} ${raylib_BINARY_DIR})
-  endif()
-endif()
+#---------SFML---------
+set(SFML_STATIC_LIBRARIES TRUE)
+set(SFML_DIR ${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/lib/cmake/SFML)
+find_package(SFML 2.5.1 REQUIRED COMPONENTS window system graphics audio network)
 
-#--------IMGUI--------
-set(IMGUI_PATH ${CMAKE_SOURCE_DIR}/lib/vendor/imgui)
-add_library(imgui 
-			${IMGUI_PATH}/imconfig.h
-			${IMGUI_PATH}/imgui.h
-			${IMGUI_PATH}/imgui.cpp
-			${IMGUI_PATH}/imgui_draw.cpp
-			${IMGUI_PATH}/imgui_internal.h
-			${IMGUI_PATH}/imgui_tables.cpp
-			${IMGUI_PATH}/imgui_widgets.cpp
-			${IMGUI_PATH}/imstb_rectpack.h
-			${IMGUI_PATH}/imstb_textedit.h
-			${IMGUI_PATH}/imstb_truetype.h
-			${IMGUI_PATH}/imgui_demo.cpp)
-
-set(RLIMGUI_PATH ${CMAKE_SOURCE_DIR}/lib/vendor/rlImGui)
-add_library(rlImGui 
-			${RLIMGUI_PATH}/rlImGui.h
-			${RLIMGUI_PATH}/rlImGuiColors.h
-			${RLIMGUI_PATH}/rlImGui.cpp)
-
-
+#---------BOX2D---------
+set(BOX2D_LIB ${CMAKE_SOURCE_DIR}/lib/box2d/lib/box2d.lib)
 
 #--------YAML--------
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
 set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "disable yaml contrib")
-
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/yaml/)
 
 #----------------------------------------------------
 #				      INCLUDE DIRS
 #----------------------------------------------------
 include_directories(
-	"${CMAKE_SOURCE_DIR}/src"
+	${CMAKE_SOURCE_DIR}/src
   	#EnTT
-	"${CMAKE_SOURCE_DIR}/lib/vendor/entt"
-  	#ImGui
-	"${CMAKE_SOURCE_DIR}/lib/vendor/imgui"
-	#rlImgui
-	"${CMAKE_SOURCE_DIR}/lib/vendor/rlImGui"
-
+	${CMAKE_SOURCE_DIR}/lib/vendor/entt
+	# spdlog
+	${CMAKE_SOURCE_DIR}/lib/vendor/spdlog/include
+	#SFML
+	${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/include
+	# Box2D
+	${CMAKE_SOURCE_DIR}/lib/box2d/include
+	#ImGui
+	${CMAKE_SOURCE_DIR}/lib/imgui-sfml/include
 )
 
 
@@ -119,11 +91,14 @@ include_directories(
 #----------------------------------------------------
 
 #Put all libraries into a variable
-set(LIBS raylib
-         yaml-cpp
-         imgui
-         rlImGui)
-target_link_libraries(rlImGui raylib)
+set(LIBS 	sfml-window
+			sfml-system
+			sfml-graphics
+			sfml-audio
+			sfml-network
+			yaml-cpp
+			${BOX2D_LIB})
+
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
 

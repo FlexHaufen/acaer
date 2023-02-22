@@ -34,7 +34,7 @@ namespace Acaer {
      * 
      */
     struct Sprite_C {
-        Texture2D sprite_texture;           // Sprite Texutre    
+        sf::Texture texture;                // sf::RenderTexture
     };
 
     /**
@@ -48,8 +48,13 @@ namespace Acaer {
         s8 render_layer = 0;                // Order in the renderer
         
         // Debug rec
-        Rectangle rec = {50, 50, 50, 50};   // Rectangle Transform
-        Color color = {200, 0, 200, 255};   // Color of transform   default: Pink #C800C8
+        v2f size = {10, 10};                // Size [px]
+        v2f pos =  {10, 10};                // Position [px]
+        v2f scale =  {1, 1};                // Scale [1].
+
+        f32 rotation = 0.f;
+
+        vColor color = {200, 0, 200, 255};   // Color of transform   default: Pink #C800C8
     };
 
     /**
@@ -57,30 +62,18 @@ namespace Acaer {
      * 
      */
     struct RigidBody_C {
-        f32 mass;                           // Mass of entity
-        f32 inv_mass = 0.f;                 // Inverse mass for easy calculations
-        b8  isMovable;                      // inf. mass
+        enum class BodyType { Static = 0, Kinematic, Dynamic};
+        BodyType type = BodyType::Static;   // Type         [Static, Kinematic, Dynamic]
 
-        f32 restitution;      
-        f32 drag;                           // Decay rate of liniar velocity
-        // f32 angularDrag;                 // Rotational decay rate
+        b8 fixedRoation = true;             // Fixed rotation. On by default
 
-        b8  usesGravity;                    // true: affectet by gravity
-        f32 gravityFactor;                  // gravity multiplyer factor 
+        f32 density = 1.0f;                 // Density      [kg/m^2]
+        f32 friction = 0.5f;                // Friction     [0..1]
+        f32 restitution = 0.0f;             // Restitution  [0..1]
+        f32 restitutionThreshold = 0.f;     // Restitution velocity threshold, [m/s]. 
+                                            // apply restitution above this speed
 
-
-        // privat
-        v2<float> velocity;                 // velocity x / y
-
-    };
-
-    /**
-     * @brief Collision Component.
-     * 
-     */
-    struct Collider_C {
-        b8  isPassible;                     // true: collider is passible
-        Rectangle rec {0, 0, 0, 0,};        // Rectangle Collider
+        b2Body *RuntimeBody = nullptr;      // b2Body at runtime
     };
 
     /**
@@ -100,4 +93,23 @@ namespace Acaer {
     struct Input_C  {
         b8 isControllable = true;           // true: Player is controllable via input
     };
+
+
+	class ScriptableEntity; // Forward declaration
+    /**
+     * @brief Nativ Script component
+     * 
+     */    
+	struct NativeScript_C {
+		ScriptableEntity* Instance = nullptr;
+
+		ScriptableEntity*(*InstantiateScript)();
+		void (*DestroyScript)(NativeScript_C*);
+
+		template<typename T>
+		void Bind() {
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScript_C* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+		}
+	};
 }

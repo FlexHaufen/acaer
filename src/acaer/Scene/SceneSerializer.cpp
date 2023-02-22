@@ -22,59 +22,53 @@
 namespace YAML {
 
     /**
-     * @brief   Custom definiton for saving a Raylib Rectangle struct
+     * @brief   Custom definiton for saving a v2f
      * 
      * @tparam  N/A
      */
 	template<>
-	struct convert<Rectangle> {
-		static Node encode(const Rectangle& rhs) {
+	struct convert<v2f> {
+		static Node encode(const v2f rhs) {
 			Node node;
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
-			node.push_back(rhs.width);
-			node.push_back(rhs.height);
 			node.SetStyle(EmitterStyle::Flow);
 			return node;
 		}
 
-		static bool decode(const Node& node, Rectangle& rhs) {
-			if (!node.IsSequence() || node.size() != 4)
+		static bool decode(const Node& node, v2f& rhs) {
+			if (!node.IsSequence() || node.size() != 2)
 				return false;
-
-			rhs.x       = node[0].as<f32>();
-			rhs.y       = node[1].as<f32>();
-            rhs.width   = node[2].as<f32>();
-			rhs.height  = node[3].as<f32>();
+			rhs.x = node[0].as<f32>(), 
+            rhs.y = node[1].as<f32>();
 			return true;
 		}
 	};
 
     /**
-     * @brief   Custom definiton for saving a Raylib Color struct
+     * @brief   Custom definiton for saving a vColor
      * 
      * @tparam  N/A
      */
 	template<>
-	struct convert<Color> {
-		static Node encode(const Color& rhs) {
+	struct convert<vColor> {
+		static Node encode(const vColor rhs) {
 			Node node;
 			node.push_back(rhs.r);
 			node.push_back(rhs.g);
-			node.push_back(rhs.b);
+            node.push_back(rhs.b);
 			node.push_back(rhs.a);
 			node.SetStyle(EmitterStyle::Flow);
 			return node;
 		}
 
-		static bool decode(const Node& node, Color& rhs) {
+		static bool decode(const Node& node, vColor& rhs) {
 			if (!node.IsSequence() || node.size() != 4)
 				return false;
-
-			rhs.r = node[0].as<u8>();
-			rhs.g = node[1].as<u8>();
-			rhs.b = node[2].as<u8>();
-			rhs.a = node[3].as<u8>();
+			rhs.r = node[0].as<u8>(); 
+            rhs.g = node[1].as<u8>(); 
+            rhs.b = node[2].as<u8>(); 
+            rhs.a = node[3].as<u8>();
 			return true;
 		}
 	};
@@ -102,34 +96,33 @@ namespace YAML {
 
 namespace Acaer {
 
+
     /**
-     * @brief Overwrite operator for saving a Raylib Rectangle struct
+     * @brief Overwrite operator for saving a v2f
      * 
      * @param out       YAML Emitter
-     * @param r         Raylib Rectangle struct
+     * @param v         v2f
      * @return YAML::Emitter& 
      */
-    YAML::Emitter& operator<<(YAML::Emitter& out, const Rectangle& r) {
+    YAML::Emitter& operator<<(YAML::Emitter& out, const v2f& v) {
 		out << YAML::Flow;
-		out << YAML::BeginSeq << r.x << r.y << r.width << r.height << YAML::EndSeq;
+		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
 		return out;
 	}
 
     /**
-     * @brief Overwrite operator for saving a Raylib Rectangle struct
+     * @brief Overwrite operator for saving a vColor
      * 
      * @param out       YAML Emitter
-     * @param c         Raylib Color struct
+     * @param v         vColor
      * @return YAML::Emitter& 
      */
-	YAML::Emitter& operator<<(YAML::Emitter& out, const Color& c) {
+    YAML::Emitter& operator<<(YAML::Emitter& out, const vColor& v) {
 		out << YAML::Flow;
-        // NOTE: The colors are saved as u16 instead of unsigned char's. Because char's will
-        //       be saved as strings and thats shit
-		out << YAML::BeginSeq << (u16)c.r << (u16)c.g << (u16)c.b << (u16)c.a << YAML::EndSeq;
+        // NOTE: cast to u16 is necessary, else the value will be stored as a string
+		out << YAML::BeginSeq << (u16)v.r << (u16)v.g << (u16)v.b << (u16)v.a << YAML::EndSeq;
 		return out;
 	}
-
 
     SceneSerializer::SceneSerializer(const Ref<Scene>& scene) 
     : m_Scene(scene){}
@@ -155,8 +148,24 @@ namespace Acaer {
             out << YAML::Key << "Transform_C";
             out << YAML::BeginMap;
             out << YAML::Key << "render_layer"  << YAML::Value << c.render_layer;
-            out << YAML::Key << "rec"           << YAML::Value << c.rec;
+            out << YAML::Key << "size"          << YAML::Value << c.size;
+            out << YAML::Key << "pos"           << YAML::Value << c.pos;
+            out << YAML::Key << "scale"         << YAML::Value << c.scale;
+            out << YAML::Key << "rotation"      << YAML::Value << c.rotation;
             out << YAML::Key << "color"         << YAML::Value << c.color;
+            out << YAML::EndMap;
+        }
+
+        if (entity.HasComponent<RigidBody_C>()) {
+            auto &c = entity.GetComponent<RigidBody_C>();
+            out << YAML::Key << "RigitBody_C";
+            out << YAML::BeginMap;
+            out << YAML::Key << "type"                  << YAML::Value << (int)c.type;
+            out << YAML::Key << "fixedRoation"          << YAML::Value << c.fixedRoation;
+            out << YAML::Key << "density"               << YAML::Value << c.density;
+            out << YAML::Key << "friction"              << YAML::Value << c.friction;
+            out << YAML::Key << "restitution"           << YAML::Value << c.restitution;
+            out << YAML::Key << "restitutionThreshold"  << YAML::Value << c.restitutionThreshold;
             out << YAML::EndMap;
         }
 
@@ -189,9 +198,21 @@ namespace Acaer {
         auto transform_c = entity["Transform_C"];
         if (transform_c) {
             auto& c = currentEntity.GetOrEmplaceComponent<Transform_C>();
-            c.render_layer = transform_c["render_layer"].as<s8>();
-            c.rec = transform_c["rec"].as<Rectangle>();
-            c.color = transform_c["color"].as<Color>();
+            c.render_layer  = transform_c["render_layer"].as<s8>();
+            c.size          = transform_c["size"].as<v2f>();
+            c.pos           = transform_c["pos"].as<v2f>();
+            c.color         = transform_c["color"].as<vColor>();
+        }
+
+        auto rigitbody_c = entity["RigidBody_C"];
+        if (rigitbody_c) {
+            auto &c = currentEntity.GetOrEmplaceComponent<RigidBody_C>();
+            c.type                  = (RigidBody_C::BodyType)rigitbody_c["type"].as<s8>();
+            c.fixedRoation          = rigitbody_c["fixedRoation"].as<b8>();
+            c.density               = rigitbody_c["density"].as<f32>();
+            c.friction              = rigitbody_c["friction"].as<f32>();
+            c.restitution           = rigitbody_c["restitution"].as<f32>();
+            c.restitutionThreshold  = rigitbody_c["restitutionThreshold"].as<f32>();
         }
 
         auto camera_c = entity["Camera_C"];
