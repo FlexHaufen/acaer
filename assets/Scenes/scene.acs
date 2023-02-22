@@ -1,33 +1,33 @@
 Scene: Untitled
 Entities:
-  - Entity: 3070097601552420407
+  - Entity: 15388050087972653612
     Tag_C:
       tag: player
     Transform_C:
       render_layer: "\x00"
       size: [50, 100]
-      pos: [223.313522, 94.5500107]
+      pos: [249.886414, 44.5500107]
       scale: [1, 1]
       rotation: -0
       color: [34, 255, 0, 255]
     RigitBody_C:
       type: 2
       fixedRoation: true
-      density: 1
+      density: 200
       friction: 0.5
       restitution: 0
-      restitutionThreshold: 0.5
+      restitutionThreshold: 0
     Camera_C:
       zoom: 1
     Input_C:
       isControllable: true
-  - Entity: 1856271085444730808
+  - Entity: 18288878469547698621
     Tag_C:
       tag: ent2
     Transform_C:
       render_layer: "\x00"
       size: [10, 100]
-      pos: [100, 50]
+      pos: [95, 0]
       scale: [1, 1]
       rotation: -0
       color: [0, 251, 255, 255]
@@ -37,14 +37,14 @@ Entities:
       density: 1
       friction: 0.5
       restitution: 0
-      restitutionThreshold: 0.5
-  - Entity: 3459630339912070627
+      restitutionThreshold: 0
+  - Entity: 1630137929771905983
     Tag_C:
       tag: ent1
     Transform_C:
       render_layer: "\x00"
       size: [500, 10]
-      pos: [100, 150]
+      pos: [-150, 145]
       scale: [1, 1]
       rotation: -0
       color: [255, 17, 0, 255]
@@ -54,4 +54,4 @@ Entities:
       density: 1
       friction: 0.5
       restitution: 0
-      restitutionThreshold: 0.5
+      restitutionThreshold: 0

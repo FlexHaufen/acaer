@@ -54,7 +54,7 @@ namespace Acaer {
         }
     #else
         //! ---- DEBUG ----
-        {
+        {   // Ent1
             AC_CORE_TRACE("creating ent1");
             auto ent = m_ActiveScene->CreateEntity("ent1");
             auto &t = ent.AddComponent<Transform_C>();
@@ -64,7 +64,7 @@ namespace Acaer {
             auto &rb = ent.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Static;
         }
-        {
+        {   // Ent2
             AC_CORE_TRACE("creating ent2");
             auto ent = m_ActiveScene->CreateEntity("ent2");
             auto &t = ent.AddComponent<Transform_C>();
@@ -74,7 +74,7 @@ namespace Acaer {
             auto &rb = ent.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Static;
         }
-        {
+        {   // Player
             AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Transform_C>();
@@ -87,6 +87,12 @@ namespace Acaer {
             auto &rb = player.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Dynamic;
             rb.density = 200;
+
+            auto &s = player.AddComponent<Sprite_C>();
+            if (!s.texture.loadFromFile("assets/Textures/Player/Shia.png")) {
+                AC_CORE_WARN("Couldn't load sprite texture");
+            }
+
         }
         //! ----------------
     #endif

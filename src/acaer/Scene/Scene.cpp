@@ -62,6 +62,8 @@ namespace Acaer {
             b2BodyDef bodyDef;
 
             bodyDef.type = (b2BodyType)rb.type;     // NOTE: Type conversion is possible because of same order
+
+            // TODO: Check if line below is correct
             bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
             bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
 
@@ -132,7 +134,8 @@ namespace Acaer {
                 auto& rb = entity.GetComponent<RigidBody_C>();
 
                 b2Body* body = (b2Body*)rb.RuntimeBody;
-                t.pos       = {body->GetPosition().x * AC_PPM, body->GetPosition().y * AC_PPM};
+                // Calculate pos and rotation based on fixture
+                t.pos       = {(body->GetPosition().x * AC_PPM) - t.size.x / 2 , (body->GetPosition().y * AC_PPM) - t.size.y / 2};
                 t.rotation  =  body->GetAngle() * AC_DEG_PER_RAD * -1;
             }
         }
@@ -142,33 +145,49 @@ namespace Acaer {
     void Scene::OnRender(sf::RenderWindow &window) {
         // ** Render **
         {
-            auto group = m_Registry.group<Tag_C>(entt::get<Transform_C, RigidBody_C>);
-            for (auto entity : group) {
-                auto &t = group.get<Transform_C>(entity);
-                auto &tag = group.get<Tag_C>(entity);
-                auto &rb = group.get<RigidBody_C>(entity);
+            auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
+            for (auto e : group) {
 
-                sf::RectangleShape rec;
-                rec.setPosition(sf::Vector2f(t.pos.x, t.pos.y));
-                rec.setRotation(t.rotation);
-                rec.setOrigin(sf::Vector2f(t.size.x / 2.f, t.size.y / 2.f));
-                rec.setSize(sf::Vector2f(t.size.x, t.size.y));
+                Entity entity = {e, this};
 
-                rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
-                rec.setOutlineThickness(AC_RENDER_ENTITY_HITBOX_THICKNESS);
-                rec.setOutlineColor(sf::Color(t.color.r, t.color.a, t.color.b, t.color.a));
-                window.draw(rec);
+                auto &tag = entity.GetComponent<Tag_C>();
+                auto &t = entity.GetComponent<Transform_C>();
+                {   // Render Transform
+                    sf::RectangleShape rec;
+                    rec.setPosition(sf::Vector2f(t.pos.x, t.pos.y));
+                    rec.setRotation(t.rotation);
+                   // rec.setOrigin(sf::Vector2f(t.size.x / 2.f, t.size.y / 2.f));
+                    rec.setSize(sf::Vector2f(t.size.x, t.size.y));
 
-                // Render origin
-                static const f32 radius = 2.f;
-                sf::CircleShape c;
-                c.setRadius(radius);
-                c.setFillColor(sf::Color::Red);
-                c.setPosition(sf::Vector2f(t.pos.x - radius, t.pos.y - radius));
-                window.draw(c);
+                    rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
+                    rec.setOutlineThickness(AC_RENDER_ENTITY_HITBOX_THICKNESS);
+                    rec.setOutlineColor(sf::Color(t.color.r, t.color.a, t.color.b, t.color.a));
+                    window.draw(rec);
+
+
+                    // Render origin
+                    static const f32 radius = 2.f;
+                    sf::CircleShape c;
+                    c.setRadius(radius);
+                    c.setFillColor(sf::Color::Red);
+                    c.setPosition(sf::Vector2f(t.pos.x - radius, t.pos.y - radius));
+                    window.draw(c);
+                }
+                {   // Render Sprite
+                    if (entity.HasComponent<Sprite_C>()) {
+                        auto &s = entity.GetComponent<Sprite_C>();
+
+                        sf::Sprite sprite;
+                        sprite.setTexture(s.texture);
+
+                        // Scale texture to size
+                        sprite.setScale({t.size.x / s.texture.getSize().x, t.size.y / s.texture.getSize().y});
+                        sprite.setPosition(sf::Vector2f(t.pos.x, t.pos.y));
+                        sprite.setRotation(t.rotation);
+                        window.draw(sprite);
+                    }
+                }
             }
-
         }
     }
-
 }

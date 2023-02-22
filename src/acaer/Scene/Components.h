@@ -34,6 +34,7 @@ namespace Acaer {
      * 
      */
     struct Sprite_C {
+        sf::Texture texture;                // sf::RenderTexture
     };
 
     /**
