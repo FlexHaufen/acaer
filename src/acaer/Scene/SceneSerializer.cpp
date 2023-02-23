@@ -148,11 +148,9 @@ namespace Acaer {
             out << YAML::Key << "Transform_C";
             out << YAML::BeginMap;
             out << YAML::Key << "render_layer"  << YAML::Value << c.render_layer;
-            out << YAML::Key << "size"          << YAML::Value << c.size;
             out << YAML::Key << "pos"           << YAML::Value << c.pos;
             out << YAML::Key << "scale"         << YAML::Value << c.scale;
             out << YAML::Key << "rotation"      << YAML::Value << c.rotation;
-            out << YAML::Key << "color"         << YAML::Value << c.color;
             out << YAML::EndMap;
         }
 
@@ -166,6 +164,15 @@ namespace Acaer {
             out << YAML::Key << "friction"              << YAML::Value << c.friction;
             out << YAML::Key << "restitution"           << YAML::Value << c.restitution;
             out << YAML::Key << "restitutionThreshold"  << YAML::Value << c.restitutionThreshold;
+            out << YAML::EndMap;
+        }
+
+        if (entity.HasComponent<Collider_C>()) {
+            auto &c = entity.GetComponent<Collider_C>();
+            out << YAML::Key << "Collider_C";
+            out << YAML::BeginMap;
+            out << YAML::Key << "offset"        << YAML::Value << c.offset;
+            out << YAML::Key << "scale"         << YAML::Value << c.size;
             out << YAML::EndMap;
         }
 
@@ -199,9 +206,9 @@ namespace Acaer {
         if (transform_c) {
             auto& c = currentEntity.GetOrEmplaceComponent<Transform_C>();
             c.render_layer  = transform_c["render_layer"].as<s8>();
-            c.size          = transform_c["size"].as<v2f>();
             c.pos           = transform_c["pos"].as<v2f>();
-            c.color         = transform_c["color"].as<vColor>();
+            c.scale         = transform_c["scale"].as<v2f>();
+            c.rotation      = transform_c["rotation"].as<f32>();
         }
 
         auto rigitbody_c = entity["RigidBody_C"];
@@ -213,6 +220,13 @@ namespace Acaer {
             c.friction              = rigitbody_c["friction"].as<f32>();
             c.restitution           = rigitbody_c["restitution"].as<f32>();
             c.restitutionThreshold  = rigitbody_c["restitutionThreshold"].as<f32>();
+        }
+
+        auto collider_c = entity["Collider_C"];
+        if (collider_c) {
+            auto &c = currentEntity.GetOrEmplaceComponent<Collider_C>();
+            c.offset        = collider_c["offset"].as<v2f>();
+            c.size          = collider_c["size"].as<v2f>();
         }
 
         auto camera_c = entity["Camera_C"];

@@ -27,11 +27,20 @@ namespace Acaer {
          * @brief Renders given sprite
          * 
          * @param window        sf::RenderWindow reference
-         * @param transform     transform
-         * @param sprite        sprite to render
+         * @param transform_c   transform
+         * @param sprite_c      sprite to render
          * @param renderOutline true: Render outline of sprite
          * @param renderOrigin  true: Render origin of transform
          */
         void RenderSprite(sf::RenderWindow &window, Transform_C &transform, Sprite_C &sprite, b8 renderOutline = false, b8 renderOrigin = false);
+   
+        /**
+         * @brief Render hitbox of given collider
+         * 
+         * @param window        sf::RenderWindow reference
+         * @param transform_c   transform
+         * @param collider_c    collider
+         */
+        void RenderHitbox(sf::RenderWindow &window, Transform_C &transform_c, Collider_C &collider_c);
     }
 }

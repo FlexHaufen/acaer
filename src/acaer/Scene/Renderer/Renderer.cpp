@@ -17,6 +17,7 @@
 
 // *** DEFINE ***
 #define AC_OUTLINE_THICKNESS        1
+#define AC_HITBOX_THICKNESS         1
 #define AC_ORIGIN_POINT_RADIUS      2.f
 
 // *** NAMESPACE ***
@@ -38,8 +39,7 @@ namespace Acaer {
             sf::RectangleShape rec;
             rec.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
             rec.setRotation(transform_c.rotation);
-            // rec.setOrigin(sf::Vector2f(t.size.x / 2.f, t.size.y / 2.f));
-            rec.setSize(sf::Vector2f(transform_c.size.x, transform_c.size.y));
+            rec.setSize(sf::Vector2f(sprite_c.texture.getSize() * AC_GLOBAL_SCALE));
 
             rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
             rec.setOutlineThickness(AC_OUTLINE_THICKNESS);
@@ -55,5 +55,17 @@ namespace Acaer {
             c.setPosition(sf::Vector2f(transform_c.pos.x - AC_ORIGIN_POINT_RADIUS, transform_c.pos.y - AC_ORIGIN_POINT_RADIUS));
             window.draw(c);
         }
+    }
+
+    void Renderer::RenderHitbox(sf::RenderWindow &window, Transform_C &transform_c, Collider_C &collider_c) {
+        sf::RectangleShape rec;
+        rec.setPosition(sf::Vector2f(transform_c.pos.x + collider_c.offset.x, transform_c.pos.y + collider_c.offset.y));
+        rec.setRotation(transform_c.rotation);
+        rec.setSize(sf::Vector2f(collider_c.size.x, collider_c.size.y));
+
+        rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
+        rec.setOutlineThickness(AC_HITBOX_THICKNESS);
+        rec.setOutlineColor(sf::Color::Green);
+        window.draw(rec);
     }
 }

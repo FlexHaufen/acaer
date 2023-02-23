@@ -59,12 +59,8 @@ namespace Acaer {
 
             auto &t = entity.GetComponent<Transform_C>();
             auto &rb = entity.GetComponent<RigidBody_C>();
+            auto &c = entity.GetComponent<Collider_C>();
 
-            if (entity.HasComponent<Sprite_C>()) {
-                auto &s = entity.GetComponent<Sprite_C>();
-                t.size.x = (float)s.texture.getSize().x * AC_GLOBAL_SCALE;
-                t.size.y = (float)s.texture.getSize().y * AC_GLOBAL_SCALE;
-            }
 
             b2BodyDef bodyDef;
 
@@ -81,7 +77,7 @@ namespace Acaer {
 
             b2PolygonShape polyShape;
             // TODO: Add ability to don't use scale 
-            polyShape.SetAsBox((t.size.x / 2.f / AC_PPM), (t.size.y / 2.f / AC_PPM));
+            polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM));
             b2FixtureDef fixtureDef;
             fixtureDef.shape        = &polyShape;
             fixtureDef.density      = rb.density;
@@ -139,10 +135,11 @@ namespace Acaer {
                 Entity entity = {e , this};
                 auto& t = entity.GetComponent<Transform_C>();
                 auto& rb = entity.GetComponent<RigidBody_C>();
+                auto& c = entity.GetComponent<Collider_C>();
 
                 b2Body* body = (b2Body*)rb.RuntimeBody;
                 // Calculate pos and rotation based on fixture
-                t.pos       = {(body->GetPosition().x * AC_PPM) - t.size.x / 2 , (body->GetPosition().y * AC_PPM) - t.size.y / 2};
+                t.pos       = {(body->GetPosition().x * AC_PPM) - c.size.x / 2 + c.offset.x , (body->GetPosition().y * AC_PPM) - c.size.y / 2 + c.offset.y};
                 t.rotation  =  body->GetAngle() * AC_DEG_PER_RAD * -1;
             }
         }
@@ -163,6 +160,11 @@ namespace Acaer {
                 if (entity.HasComponent<Sprite_C>()) {
                     auto &s = entity.GetComponent<Sprite_C>();
                     Renderer::RenderSprite(window, t, s, true, true);
+                }
+
+                if (entity.HasComponent<Collider_C>()) {
+                    auto &c = entity.GetComponent<Collider_C>();
+                    Renderer::RenderHitbox(window, t, c);
                 }
             }
         }
