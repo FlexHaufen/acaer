@@ -57,34 +57,37 @@ namespace Acaer {
         for (auto e: view) {
             Entity entity = {e, this};
 
-            auto &t = entity.GetComponent<Transform_C>();
-            auto &rb = entity.GetComponent<RigidBody_C>();
-            auto &c = entity.GetComponent<Collider_C>();
+            // Create Physics Body
+            if (entity.HasComponent<RigidBody_C>()) {
+                auto &t = entity.GetComponent<Transform_C>();
+                auto &rb = entity.GetComponent<RigidBody_C>();
+                auto &c = entity.GetComponent<Collider_C>();
 
 
-            b2BodyDef bodyDef;
+                b2BodyDef bodyDef;
 
-            bodyDef.type = (b2BodyType)rb.type;     // NOTE: Type conversion is possible because of same order
+                bodyDef.type = (b2BodyType)rb.type;     // NOTE: Type conversion is possible because of same order
 
-            // TODO: Check if line below is correct
-            bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
-            bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
+                // TODO: Check if line below is correct
+                bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
+                bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
 
-            b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-            body->SetFixedRotation(rb.fixedRoation);
-            rb.RuntimeBody = body;
+                b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+                body->SetFixedRotation(rb.fixedRoation);
+                rb.RuntimeBody = body;
 
 
-            b2PolygonShape polyShape;
-            // TODO: Add ability to don't use scale 
-            polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM));
-            b2FixtureDef fixtureDef;
-            fixtureDef.shape        = &polyShape;
-            fixtureDef.density      = rb.density;
-            fixtureDef.restitution  = rb.restitution;
-            fixtureDef.friction     = rb.friction;
-            fixtureDef.restitutionThreshold = rb.restitutionThreshold;
-            body->CreateFixture(&fixtureDef);
+                b2PolygonShape polyShape;
+                // TODO: Add ability to don't use scale 
+                polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM));
+                b2FixtureDef fixtureDef;
+                fixtureDef.shape        = &polyShape;
+                fixtureDef.density      = rb.density;
+                fixtureDef.restitution  = rb.restitution;
+                fixtureDef.friction     = rb.friction;
+                fixtureDef.restitutionThreshold = rb.restitutionThreshold;
+                body->CreateFixture(&fixtureDef);
+            }
         }
     }
 
@@ -111,8 +114,8 @@ namespace Acaer {
             auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
             for (auto entity : group) {
                 auto &t = group.get<Transform_C>(entity);
+                auto &cam = group.get<Camera_C>(entity);
                 static const f32 speed = 5;
-               
                 // ----- Smoothening in x & y
                 sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
                 m_Camera.move(movement * dt * speed);
@@ -120,6 +123,8 @@ namespace Acaer {
                 // ----- No smoothening
                 //m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
                 
+                m_Camera.setSize(sf::Vector2f(AC_WINDOW_X * cam.zoom, AC_WINDOW_Y * cam.zoom));
+
 
                 window.setView(m_Camera);
             }

@@ -63,7 +63,7 @@ namespace Acaer {
             rb.type = RigidBody_C::BodyType::Static;
 
             auto &c = ent.AddComponent<Collider_C>();
-            c.size = {100, 10};
+            c.size = {400, 40};
 
             auto &s = ent.AddComponent<Sprite_C>();
             if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
@@ -86,21 +86,19 @@ namespace Acaer {
             auto &t = player.AddComponent<Transform_C>();
             t.pos = {150, 0};
             player.AddComponent<Input_C>();
-            player.AddComponent<Camera_C>();
+            auto &cam = player.AddComponent<Camera_C>();
+            cam.zoom = 1.5f;
             player.AddComponent<NativeScript_C>().Bind<CharacterController>();
             auto &rb = player.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Dynamic;
             rb.density = 200;
             auto &c = player.AddComponent<Collider_C>();
-            c.size = {50, 100};
+            c.size = {44, 180};
             //c.offset = {10, 10}
-
-
             auto &s = player.AddComponent<Sprite_C>();
             if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
-
         }
         //! ----------------
     #endif
@@ -152,8 +150,8 @@ namespace Acaer {
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
             m_ActiveScene->OnRender(m_Window);
             
-            b8 p = true;
-            ImGui::ShowDemoWindow(&p);
+            //b8 p = true;
+            //ImGui::ShowDemoWindow(&p);
 
             m_ImGuiLayer->OnRender(m_Window);
             m_Window.display();

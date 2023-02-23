@@ -59,7 +59,7 @@
 #define AC_WINDOW_Y                         450
 #define AC_CALC_FPS
 
-#define AC_SCENE_CLEAR_BACKGROUND           sf::Color::Black
+#define AC_SCENE_CLEAR_BACKGROUND           sf::Color(158, 222, 232, 255)   // light blue
 
 #define AC_GLOBAL_SCALE                     4          
 #define AC_RENDER_ENTITY_HITBOX                         // flag

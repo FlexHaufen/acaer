@@ -24,7 +24,7 @@
 namespace Acaer {
 
 
-    void Renderer::RenderSprite(sf::RenderWindow &window, Transform_C &transform_c, Sprite_C &sprite_c, b8 renderOutline, b8 renderOrigin) {
+    void Renderer::RenderSprite(sf::RenderWindow &window, Transform_C &transform_c, const Sprite_C &sprite_c, b8 renderOutline, b8 renderOrigin) {
 
         sf::Sprite sprite;
         sprite.setTexture(sprite_c.texture);
