@@ -70,16 +70,17 @@ namespace Acaer {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
         }
-        //{   // Ent2
-        //    AC_CORE_TRACE("creating ent2");
-        //    auto ent = m_ActiveScene->CreateEntity("ent2");
-        //    auto &t = ent.AddComponent<Transform_C>();
-        //    t.pos = {100, 50};
-        //    //t.size = {10, 100};
-        //    t.color = {0, 251, 255, 255};
-        //    auto &rb = ent.AddComponent<RigidBody_C>();
-        //    rb.type = RigidBody_C::BodyType::Static;
-        //}
+        {   // tree
+            AC_CORE_TRACE("tree");
+            auto ent = m_ActiveScene->CreateEntity("tree");
+            auto &t = ent.AddComponent<Transform_C>();
+            t.pos = {150, -444};
+
+            auto &s = ent.AddComponent<Sprite_C>();
+            if (!s.texture.loadFromFile("assets/Textures/World/fir_tree_1.png")) {
+                AC_CORE_WARN("Couldn't load sprite texture");
+            }
+        }
         {   // Player
             AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");

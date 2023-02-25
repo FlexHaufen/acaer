@@ -1,11 +1,11 @@
 Scene: Untitled
 Entities:
-  - Entity: 10232541466004389457
+  - Entity: 10211543206659668548
     Tag_C:
       tag: player
     Transform_C:
       render_layer: "\x00"
-      pos: [159.522278, -50.4650459]
+      pos: [155.749298, -50.5583344]
       scale: [1, 1]
       rotation: -0
     RigitBody_C:
@@ -22,7 +22,15 @@ Entities:
       zoom: 1.5
     Input_C:
       isControllable: true
-  - Entity: 8549397688149075547
+  - Entity: 6859752153911787191
+    Tag_C:
+      tag: tree
+    Transform_C:
+      render_layer: "\x00"
+      pos: [150, -444]
+      scale: [1, 1]
+      rotation: 0
+  - Entity: 4744496379226693299
     Tag_C:
       tag: ent1
     Transform_C:
