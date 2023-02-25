@@ -91,7 +91,8 @@ namespace Acaer {
             player.AddComponent<NativeScript_C>().Bind<CharacterController>();
             auto &rb = player.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Dynamic;
-            rb.density = 200;
+            rb.density = 5.f;
+            rb.friction = 0.9f;
             auto &c = player.AddComponent<Collider_C>();
             c.size = {44, 180};
             //c.offset = {10, 10}
@@ -124,9 +125,11 @@ namespace Acaer {
         
         AC_CORE_INFO("Setting up EventManager");
         EventManager eventManager(m_Window);
+
         eventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {m_Window.close(); });
         eventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {m_Window.close(); });
-
+        
+        AC_CORE_INFO("Starting scene...");
         m_ActiveScene->OnStart();
         while (m_Window.isOpen() && m_isRunning) {
             

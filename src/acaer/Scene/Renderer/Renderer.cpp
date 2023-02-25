@@ -18,7 +18,11 @@
 // *** DEFINE ***
 #define AC_OUTLINE_THICKNESS        1
 #define AC_HITBOX_THICKNESS         1
+#define AC_HITBOX_COLOR             sf::Color(235, 64, 52, 100) // Red but transparent
+#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235, 64, 52, 255)
+
 #define AC_ORIGIN_POINT_RADIUS      2.f
+
 
 // *** NAMESPACE ***
 namespace Acaer {
@@ -63,9 +67,9 @@ namespace Acaer {
         rec.setRotation(transform_c.rotation);
         rec.setSize(sf::Vector2f(collider_c.size.x, collider_c.size.y));
 
-        rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
+        rec.setFillColor(AC_HITBOX_COLOR);       // Setting the fillcolor to nothing
         rec.setOutlineThickness(AC_HITBOX_THICKNESS);
-        rec.setOutlineColor(sf::Color::Green);
+        rec.setOutlineColor(AC_HITBOX_COLOR_OUTLINE);
         window.draw(rec);
     }
 }

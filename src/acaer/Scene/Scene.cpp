@@ -67,8 +67,6 @@ namespace Acaer {
                 b2BodyDef bodyDef;
 
                 bodyDef.type = (b2BodyType)rb.type;     // NOTE: Type conversion is possible because of same order
-
-                // TODO: Check if line below is correct
                 bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
                 bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
 
@@ -82,7 +80,7 @@ namespace Acaer {
                 polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM));
                 b2FixtureDef fixtureDef;
                 fixtureDef.shape        = &polyShape;
-                fixtureDef.density      = rb.density;
+                fixtureDef.density      = rb.density * AC_PPM;
                 fixtureDef.restitution  = rb.restitution;
                 fixtureDef.friction     = rb.friction;
                 fixtureDef.restitutionThreshold = rb.restitutionThreshold;
@@ -138,11 +136,13 @@ namespace Acaer {
             auto view = m_Registry.view<RigidBody_C>();
             for (auto e : view) {
                 Entity entity = {e , this};
+                auto& tag = entity.GetComponent<Tag_C>();
                 auto& t = entity.GetComponent<Transform_C>();
                 auto& rb = entity.GetComponent<RigidBody_C>();
                 auto& c = entity.GetComponent<Collider_C>();
 
                 b2Body* body = (b2Body*)rb.RuntimeBody;
+
                 // Calculate pos and rotation based on fixture
                 t.pos       = {(body->GetPosition().x * AC_PPM) - c.size.x / 2 + c.offset.x , (body->GetPosition().y * AC_PPM) - c.size.y / 2 + c.offset.y};
                 t.rotation  =  body->GetAngle() * AC_DEG_PER_RAD * -1;
