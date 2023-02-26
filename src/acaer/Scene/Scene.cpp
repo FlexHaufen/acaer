@@ -49,9 +49,15 @@ namespace Acaer {
 		return entity;
     }
 
+    void Scene::DestroyEntity(Entity entity) {
+        // TODO (flex): Delete entity at runtime        
+        //m_Registry.destroy(entity);
+        
+        AC_CORE_WARN("Can't delete entity at runtime...");
+    }
 
     void Scene::OnStart() {
-        m_PhysicsWorld = new b2World({ 0.0f, 10.f});
+        m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
 
         auto view = m_Registry.view<RigidBody_C>();
         for (auto e: view) {
@@ -121,7 +127,7 @@ namespace Acaer {
                 // ----- No smoothening
                 //m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
                 
-                m_Camera.setSize(sf::Vector2f(AC_WINDOW_X * cam.zoom, AC_WINDOW_Y * cam.zoom));
+                m_Camera.setSize(sf::Vector2f(window.getSize().x * cam.zoom, window.getSize().y * cam.zoom));
 
 
                 window.setView(m_Camera);

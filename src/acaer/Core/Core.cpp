@@ -104,6 +104,7 @@ namespace Acaer {
         }
         //! ----------------
     #endif
+        m_EntityBrowserPanel.SetContext(m_ActiveScene);
         m_isRunning = true;
     }
 
@@ -154,8 +155,8 @@ namespace Acaer {
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
             m_ActiveScene->OnRender(m_Window);
             
-            //b8 p = true;
-            //ImGui::ShowDemoWindow(&p);
+            ImGui::ShowDemoWindow();
+            m_EntityBrowserPanel.OnImGuiRender();
 
             m_ImGuiLayer->OnRender(m_Window);
             m_Window.display();

@@ -55,8 +55,8 @@
 
 
 #define AC_WINDOW_RESIZABLE                             // flag
-#define AC_WINDOW_X                         800
-#define AC_WINDOW_Y                         450
+#define AC_WINDOW_X                         1920
+#define AC_WINDOW_Y                         1080
 #define AC_CALC_FPS
 
 #define AC_SCENE_CLEAR_BACKGROUND           sf::Color(158, 222, 232, 255)   // light blue
@@ -66,7 +66,8 @@
 #define AC_RENDER_ENTITY_HITBOX_THICKNESS   1    
 //#define AC_RENDER_ENTITY_REC                            // flag
 
-
+#define AC_GRAVITY_X                        0           // Gravity in x-direction
+#define AC_GRAVITY_Y                       40           // Gravity in y-direction
 #define AC_PHYSICS_VEL_STEPS               10
 #define AC_PHYSICS_POS_STEPS                6
 #define AC_PPM                             30           // pixels per meter     [SFML -> BOX2D]

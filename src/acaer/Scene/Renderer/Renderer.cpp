@@ -43,7 +43,7 @@ namespace Acaer {
             sf::RectangleShape rec;
             rec.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
             rec.setRotation(transform_c.rotation);
-            rec.setSize(sf::Vector2f(sprite_c.texture.getSize() * AC_GLOBAL_SCALE));
+            rec.setSize(sf::Vector2f((f32)sprite_c.texture.getSize().x * AC_GLOBAL_SCALE, (f32)sprite_c.texture.getSize().y * AC_GLOBAL_SCALE));
 
             rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
             rec.setOutlineThickness(AC_OUTLINE_THICKNESS);

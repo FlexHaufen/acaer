@@ -45,7 +45,7 @@ namespace Acaer {
      */
     struct Transform_C {
         //v2 center_pos;
-        s8 render_layer = 0;                // Order in the renderer
+        s8 render_layer = 0;                // Order in the renderer [0..9]
         
         v2f pos =  {10, 10};                // Position [px]
         v2f scale =  {1, 1};                // Scale [1].

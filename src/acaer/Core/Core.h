@@ -16,6 +16,7 @@
 
 
 #include "acaer/ImGui/ImGuiLayer.h"
+#include "acaer/ImGui/Panels/EntityBrowserPanel.h"
 
 //*** DEFINES ***
 
@@ -67,6 +68,7 @@ namespace Acaer {
 
         ImGuiLayer* m_ImGuiLayer;     // Imgui    (for debug)
 
-
+        // * panels *
+        EntityBrowserPanel m_EntityBrowserPanel;
     };
 }
