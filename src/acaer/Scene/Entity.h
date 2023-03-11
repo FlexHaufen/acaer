@@ -80,8 +80,8 @@ namespace Acaer {
          */
         template<typename T>
         void RemoveComponent() {
-            return m_Scene->m_Registry.remove_if_exists<T>(m_EntityHandle)
-        };
+            return m_Scene->m_Registry.remove<T>(m_EntityHandle);
+        }
 
         /**
          * @brief Gets UUID of entity

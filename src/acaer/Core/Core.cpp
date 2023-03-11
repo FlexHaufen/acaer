@@ -155,7 +155,7 @@ namespace Acaer {
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
             m_ActiveScene->OnRender(m_Window);
             
-            ImGui::ShowDemoWindow();
+            //ImGui::ShowDemoWindow();
             m_EntityBrowserPanel.OnImGuiRender();
 
             m_ImGuiLayer->OnRender(m_Window);
