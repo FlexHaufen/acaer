@@ -1,5 +1,5 @@
 /**
- * @file Box2DWrapper.h
+ * @file Convert.h
  * @author flexhaufen
  * @brief Converts diffrent stuff
  * @version 0.1
