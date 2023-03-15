@@ -16,6 +16,8 @@
 
 #include "acaer/Scene/Renderer/Renderer.h"
 
+#include "acaer/Helper/Convert/Convert.h"
+
 // *** DEFINE ***
 
 // *** NAMESPACE ***
@@ -69,28 +71,7 @@ namespace Acaer {
                 auto &rb = entity.GetComponent<RigidBody_C>();
                 auto &c = entity.GetComponent<Collider_C>();
 
-
-                b2BodyDef bodyDef;
-
-                bodyDef.type = (b2BodyType)rb.type;     // NOTE: Type conversion is possible because of same order
-                bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
-                bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
-
-                b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-                body->SetFixedRotation(rb.fixedRoation);
-                rb.RuntimeBody = body;
-
-
-                b2PolygonShape polyShape;
-                // TODO: Add ability to don't use scale 
-                polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM));
-                b2FixtureDef fixtureDef;
-                fixtureDef.shape        = &polyShape;
-                fixtureDef.density      = rb.density * AC_PPM;
-                fixtureDef.restitution  = rb.restitution;
-                fixtureDef.friction     = rb.friction;
-                fixtureDef.restitutionThreshold = rb.restitutionThreshold;
-                body->CreateFixture(&fixtureDef);
+                Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
             }
         }
     }
@@ -150,8 +131,8 @@ namespace Acaer {
                 b2Body* body = (b2Body*)rb.RuntimeBody;
 
                 // Calculate pos and rotation based on fixture
-                t.pos       = {(body->GetPosition().x * AC_PPM) - c.size.x / 2 + c.offset.x , (body->GetPosition().y * AC_PPM) - c.size.y / 2 + c.offset.y};
-                t.rotation  =  body->GetAngle() * AC_DEG_PER_RAD * -1;
+                t.pos       = Convert::getPositionFrom_b2Body(body, c);
+                t.rotation  = Convert::getRotationFrom_b2Body(body);
             }
         }
     }
