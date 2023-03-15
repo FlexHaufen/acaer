@@ -12,7 +12,7 @@
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
-#include "acaer/Scene/Components.h"
+#include "acaer/Scene/Entity/Components.h"
 
 // *** NAMESPACE ***
 namespace Acaer {

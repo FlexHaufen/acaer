@@ -12,9 +12,9 @@
 // *** INCLUDES ***
 #include "acaer/Core/Core.h"
 
-#include "acaer/Scene/Components.h"
-#include "acaer/Scene/Entity.h"
-#include "acaer/Scene/ScriptableEntity.h"
+#include "acaer/Scene/Entity/Components.h"
+#include "acaer/Scene/Entity/Entity.h"
+#include "acaer/Scene/Entity/ScriptableEntity.h"
 #include "acaer/Scene/SceneSerializer.h"
 
 #include "acaer/Core/Events/EventManager.h"

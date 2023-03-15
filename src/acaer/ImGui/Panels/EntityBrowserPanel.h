@@ -14,8 +14,8 @@
 #include "acaer/ac_pch.h"
 
 #include "acaer/Scene/Scene.h"
-#include "acaer/Scene/Entity.h"
-#include "acaer/Scene/Components.h"
+#include "acaer/Scene/Entity/Entity.h"
+#include "acaer/Scene/Entity/Components.h"
 
 
 // *** DEFINE ***

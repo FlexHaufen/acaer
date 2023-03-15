@@ -11,8 +11,8 @@
 
 // *** INCLUDES ***
 #include "acaer/Scene/Renderer/Renderer.h"
-#include "acaer/Scene/Entity.h"
-#include "acaer/Scene/ScriptableEntity.h"
+#include "acaer/Scene/Entity/Entity.h"
+#include "acaer/Scene/Entity/ScriptableEntity.h"
 
 
 // *** DEFINE ***

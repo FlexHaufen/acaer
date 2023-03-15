@@ -9,10 +9,10 @@
  * 
  */
 
-// *** INCLUDES ***
+// *** INCLUDES ***ad
 #include "acaer/Scene/SceneSerializer.h"
-#include "acaer/Scene/Entity.h"
-#include "acaer/Scene/Components.h"
+#include "acaer/Scene/Entity/Entity.h"
+#include "acaer/Scene/Entity/Components.h"
 
 
 
