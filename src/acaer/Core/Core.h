@@ -63,10 +63,11 @@ namespace Acaer {
         bool m_isMinimized = false;     // True when app is minimzed
 
         sf::RenderWindow m_Window;      // Sfml window
+        std::string m_WindowTitle;      // Sfml window title
 
         Ref<Scene> m_ActiveScene;       // Current active scene
 
-        ImGuiLayer* m_ImGuiLayer;     // Imgui    (for debug)
+        ImGuiLayer* m_ImGuiLayer;       // Imgui    (for debug)
 
         // * panels *
         EntityBrowserPanel m_EntityBrowserPanel;

@@ -40,7 +40,9 @@ namespace Acaer {
         
 
         AC_CORE_INFO("Creating Window");
-        m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), "acaer");
+        m_WindowTitle = "acaer v";
+        m_WindowTitle.append(AC_VERSION);
+        m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), m_WindowTitle);
 
         sf::Image icon;
         if (!icon.loadFromFile(AC_WINDOW_ICON_PATH)) {
@@ -148,7 +150,7 @@ namespace Acaer {
            
             #ifdef AC_CALC_FPS
                 u16 fps = u16(1/dt_sec);
-                m_Window.setTitle("arcaer - FPS: " + std::to_string(fps));
+                m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
             #endif
 
             // ---- EVENT HANDLING ----
