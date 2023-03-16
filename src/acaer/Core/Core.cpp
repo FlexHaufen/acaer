@@ -12,9 +12,9 @@
 // *** INCLUDES ***
 #include "acaer/Core/Core.h"
 
-#include "acaer/Scene/Components.h"
-#include "acaer/Scene/Entity.h"
-#include "acaer/Scene/ScriptableEntity.h"
+#include "acaer/Scene/Entity/Components.h"
+#include "acaer/Scene/Entity/Entity.h"
+#include "acaer/Scene/Entity/ScriptableEntity.h"
 #include "acaer/Scene/SceneSerializer.h"
 
 #include "acaer/Core/Events/EventManager.h"
@@ -40,8 +40,18 @@ namespace Acaer {
         
 
         AC_CORE_INFO("Creating Window");
-        m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), "acaer");
+        m_WindowTitle = "acaer v";
+        m_WindowTitle.append(AC_VERSION);
+        m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), m_WindowTitle);
 
+        sf::Image icon;
+        if (!icon.loadFromFile(AC_WINDOW_ICON_PATH)) {
+            AC_CORE_WARN("Can't open application icon");
+        }
+        else {
+            m_Window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+        }
+        
         m_ImGuiLayer->OnAttach(m_Window);
         m_ActiveScene = CreateRef<Scene>();
 
@@ -59,47 +69,52 @@ namespace Acaer {
             auto ent = m_ActiveScene->CreateEntity("ent1");
             auto &t = ent.AddComponent<Transform_C>();
             t.pos = {100, 150};
-            //t.size = {500, 10};
-            //t.color = {255, 17, 0, 255};
             auto &rb = ent.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Static;
+
+            auto &c = ent.AddComponent<Collider_C>();
+            c.size = {400, 40};
+
             auto &s = ent.AddComponent<Sprite_C>();
             if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
         }
-        //{   // Ent2
-        //    AC_CORE_TRACE("creating ent2");
-        //    auto ent = m_ActiveScene->CreateEntity("ent2");
-        //    auto &t = ent.AddComponent<Transform_C>();
-        //    t.pos = {100, 50};
-        //    //t.size = {10, 100};
-        //    t.color = {0, 251, 255, 255};
-        //    auto &rb = ent.AddComponent<RigidBody_C>();
-        //    rb.type = RigidBody_C::BodyType::Static;
-        //}
+        {   // tree
+            AC_CORE_TRACE("tree");
+            auto ent = m_ActiveScene->CreateEntity("tree");
+            auto &t = ent.AddComponent<Transform_C>();
+            t.pos = {150, -444};
+
+            auto &s = ent.AddComponent<Sprite_C>();
+            if (!s.texture.loadFromFile("assets/Textures/World/fir_tree_1.png")) {
+                AC_CORE_WARN("Couldn't load sprite texture");
+            }
+        }
         {   // Player
             AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Transform_C>();
             t.pos = {150, 0};
-            //t.size = { 50, 100};
-            //t.color = {34, 255, 0, 255};
             player.AddComponent<Input_C>();
-            player.AddComponent<Camera_C>();
+            auto &cam = player.AddComponent<Camera_C>();
+            cam.zoom = 1.5f;
             player.AddComponent<NativeScript_C>().Bind<CharacterController>();
             auto &rb = player.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Dynamic;
-            rb.density = 200;
-
+            rb.density = 5.f;
+            rb.friction = 0.9f;
+            auto &c = player.AddComponent<Collider_C>();
+            c.size = {44, 180};
+            //c.offset = {10, 10}
             auto &s = player.AddComponent<Sprite_C>();
             if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
-
         }
         //! ----------------
     #endif
+        m_EntityBrowserPanel.SetContext(m_ActiveScene);
         m_isRunning = true;
     }
 
@@ -122,9 +137,11 @@ namespace Acaer {
         
         AC_CORE_INFO("Setting up EventManager");
         EventManager eventManager(m_Window);
+
         eventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {m_Window.close(); });
         eventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {m_Window.close(); });
-
+        
+        AC_CORE_INFO("Starting scene...");
         m_ActiveScene->OnStart();
         while (m_Window.isOpen() && m_isRunning) {
             
@@ -133,7 +150,7 @@ namespace Acaer {
            
             #ifdef AC_CALC_FPS
                 u16 fps = u16(1/dt_sec);
-                m_Window.setTitle("arcaer - FPS: " + std::to_string(fps));
+                m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
             #endif
 
             // ---- EVENT HANDLING ----
@@ -148,8 +165,8 @@ namespace Acaer {
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
             m_ActiveScene->OnRender(m_Window);
             
-            b8 p = true;
-            ImGui::ShowDemoWindow(&p);
+            //ImGui::ShowDemoWindow();
+            m_EntityBrowserPanel.OnImGuiRender();
 
             m_ImGuiLayer->OnRender(m_Window);
             m_Window.display();

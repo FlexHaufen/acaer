@@ -45,16 +45,13 @@ namespace Acaer {
      */
     struct Transform_C {
         //v2 center_pos;
-        s8 render_layer = 0;                // Order in the renderer
+        s8 render_layer = 0;                // Order in the renderer [0..9]
         
-        // Debug rec
-        v2f size = {10, 10};                // Size [px]
         v2f pos =  {10, 10};                // Position [px]
         v2f scale =  {1, 1};                // Scale [1].
 
-        f32 rotation = 0.f;
+        f32 rotation = 0.f;                 // Rotation
 
-        vColor color = {200, 0, 200, 255};   // Color of transform   default: Pink #C800C8
     };
 
     /**
@@ -74,6 +71,15 @@ namespace Acaer {
                                             // apply restitution above this speed
 
         b2Body *RuntimeBody = nullptr;      // b2Body at runtime
+    };
+
+    /**
+     * @brief ColliderComponent
+     * 
+     */
+    struct Collider_C {
+        v2f size   = {10, 10};              // Size [px]
+        v2f offset = {0, 0};                // Offset [px] relative to pos of Transform. usually {0, 0}
     };
 
     /**

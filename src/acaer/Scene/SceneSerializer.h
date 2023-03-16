@@ -67,14 +67,14 @@ namespace Acaer {
          * @param out       YAML Emitter
          * @param entity    entity to serialize
          */
-        void SceneSerializer::SerializeEntity(YAML::Emitter& out, Entity entity);
+        void SerializeEntity(YAML::Emitter& out, Entity entity);
 
         /**
          * @brief Deserializes given entity
          * 
          * @param entity    YAML Entity itterator
          */
-        void SceneSerializer::DeserializeEntity(YAML::detail::iterator_value& entity);
+        void DeserializeEntity(YAML::detail::iterator_value& entity);
 
     private:
 

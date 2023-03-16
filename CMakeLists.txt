@@ -3,14 +3,14 @@ cmake_minimum_required(VERSION 3.24.1)
 #----------------------------------------------------
 #			   	 PROJECT PROPERTIES
 #----------------------------------------------------
-project(acaer VERSION 0.0.2)
+project(acaer VERSION 0.0.3)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 
 ## Requierments ## 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Set release and debug folder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/debug)
@@ -25,7 +25,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "/O3 /g0 /DNLY_DEBUG")
 #----------------------------------------------------
 #				       RESOURCE
 #----------------------------------------------------
-#set(LYCHEE_APP_ICO "${CMAKE_SOURCE_DIR}/resource/images/acaer.rc")
+set(ACAER_APP_ICO "${CMAKE_SOURCE_DIR}/resource/images/acaer_logo.rc")
 
 #----------------------------------------------------
 #				  SOURCE & INCLUDE
@@ -45,8 +45,8 @@ file(GLOB_RECURSE IMGUI_FILES ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.h
 ### APP ###
 add_executable(${PROJECT_NAME} 	${SRC_FILES} 
 							   	${HEADER_FILES}
-							   	${IMGUI_FILES})
-							   	# ${LYCHEE_APP_ICO})
+							   	${IMGUI_FILES}
+							   	${ACAER_APP_ICO})
 
 
 #----------------------------------------------------

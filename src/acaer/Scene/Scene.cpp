@@ -11,10 +11,12 @@
 
 // *** INCLUDES ***
 #include "acaer/Scene/Scene.h"
-#include "acaer/Scene/Entity.h"
-#include "acaer/Scene/ScriptableEntity.h"
+#include "acaer/Scene/Entity/Entity.h"
+#include "acaer/Scene/Entity/ScriptableEntity.h"
 
 #include "acaer/Scene/Renderer/Renderer.h"
+
+#include "acaer/Helper/Convert/Convert.h"
 
 // *** DEFINE ***
 
@@ -49,46 +51,28 @@ namespace Acaer {
 		return entity;
     }
 
+    void Scene::DestroyEntity(Entity entity) {
+        // TODO (flex): Delete entity at runtime        
+        //m_Registry.destroy(entity);
+        
+        AC_CORE_WARN("Can't delete entity at runtime...");
+    }
 
     void Scene::OnStart() {
-        m_PhysicsWorld = new b2World({ 0.0f, 10.f});
+        m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
 
         auto view = m_Registry.view<RigidBody_C>();
         for (auto e: view) {
             Entity entity = {e, this};
 
-            auto &t = entity.GetComponent<Transform_C>();
-            auto &rb = entity.GetComponent<RigidBody_C>();
+            // Create Physics Body
+            if (entity.HasComponent<RigidBody_C>()) {
+                auto &t = entity.GetComponent<Transform_C>();
+                auto &rb = entity.GetComponent<RigidBody_C>();
+                auto &c = entity.GetComponent<Collider_C>();
 
-            if (entity.HasComponent<Sprite_C>()) {
-                auto &s = entity.GetComponent<Sprite_C>();
-                t.size.x = (float)s.texture.getSize().x * AC_GLOBAL_SCALE;
-                t.size.y = (float)s.texture.getSize().y * AC_GLOBAL_SCALE;
+                Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
             }
-
-            b2BodyDef bodyDef;
-
-            bodyDef.type = (b2BodyType)rb.type;     // NOTE: Type conversion is possible because of same order
-
-            // TODO: Check if line below is correct
-            bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
-            bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
-
-            b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-            body->SetFixedRotation(rb.fixedRoation);
-            rb.RuntimeBody = body;
-
-
-            b2PolygonShape polyShape;
-            // TODO: Add ability to don't use scale 
-            polyShape.SetAsBox((t.size.x / 2.f / AC_PPM), (t.size.y / 2.f / AC_PPM));
-            b2FixtureDef fixtureDef;
-            fixtureDef.shape        = &polyShape;
-            fixtureDef.density      = rb.density;
-            fixtureDef.restitution  = rb.restitution;
-            fixtureDef.friction     = rb.friction;
-            fixtureDef.restitutionThreshold = rb.restitutionThreshold;
-            body->CreateFixture(&fixtureDef);
         }
     }
 
@@ -115,8 +99,8 @@ namespace Acaer {
             auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
             for (auto entity : group) {
                 auto &t = group.get<Transform_C>(entity);
+                auto &cam = group.get<Camera_C>(entity);
                 static const f32 speed = 5;
-               
                 // ----- Smoothening in x & y
                 sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
                 m_Camera.move(movement * dt * speed);
@@ -124,6 +108,8 @@ namespace Acaer {
                 // ----- No smoothening
                 //m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
                 
+                m_Camera.setSize(sf::Vector2f(window.getSize().x * cam.zoom, window.getSize().y * cam.zoom));
+
 
                 window.setView(m_Camera);
             }
@@ -137,13 +123,16 @@ namespace Acaer {
             auto view = m_Registry.view<RigidBody_C>();
             for (auto e : view) {
                 Entity entity = {e , this};
+                auto& tag = entity.GetComponent<Tag_C>();
                 auto& t = entity.GetComponent<Transform_C>();
                 auto& rb = entity.GetComponent<RigidBody_C>();
+                auto& c = entity.GetComponent<Collider_C>();
 
                 b2Body* body = (b2Body*)rb.RuntimeBody;
+
                 // Calculate pos and rotation based on fixture
-                t.pos       = {(body->GetPosition().x * AC_PPM) - t.size.x / 2 , (body->GetPosition().y * AC_PPM) - t.size.y / 2};
-                t.rotation  =  body->GetAngle() * AC_DEG_PER_RAD * -1;
+                t.pos       = Convert::getPositionFrom_b2Body(body, c);
+                t.rotation  = Convert::getRotationFrom_b2Body(body);
             }
         }
     }
@@ -163,6 +152,11 @@ namespace Acaer {
                 if (entity.HasComponent<Sprite_C>()) {
                     auto &s = entity.GetComponent<Sprite_C>();
                     Renderer::RenderSprite(window, t, s, true, true);
+                }
+
+                if (entity.HasComponent<Collider_C>()) {
+                    auto &c = entity.GetComponent<Collider_C>();
+                    Renderer::RenderHitbox(window, t, c);
                 }
             }
         }

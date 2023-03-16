@@ -12,7 +12,7 @@
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
-#include "acaer/Scene/Components.h"
+#include "acaer/Scene/Entity/Components.h"
 
 //*** DEFINES ***
 
@@ -56,6 +56,13 @@ namespace Acaer {
         Entity CreateEntityWithUUID(UUID uuid, const std::string& name = "entity");
 
         /**
+         * @brief Destroys given entity
+         * 
+         * @param entity 
+         */
+        void DestroyEntity(Entity entity);
+
+        /**
          * @brief Update function
          * 
          * @param dt delta time
@@ -91,5 +98,7 @@ namespace Acaer {
 
         friend class Entity;            // Entity class
         friend class SceneSerializer;   // Scene Serializer
+    
+        friend class EntityBrowserPanel;
     };
 }
