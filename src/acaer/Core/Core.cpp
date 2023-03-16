@@ -42,6 +42,14 @@ namespace Acaer {
         AC_CORE_INFO("Creating Window");
         m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), "acaer");
 
+        sf::Image icon;
+        if (!icon.loadFromFile(AC_WINDOW_ICON_PATH)) {
+            AC_CORE_WARN("Can't open application icon");
+        }
+        else {
+            m_Window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+        }
+        
         m_ImGuiLayer->OnAttach(m_Window);
         m_ActiveScene = CreateRef<Scene>();
 

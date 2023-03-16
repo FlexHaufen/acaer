@@ -25,7 +25,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "/O3 /g0 /DNLY_DEBUG")
 #----------------------------------------------------
 #				       RESOURCE
 #----------------------------------------------------
-#set(LYCHEE_APP_ICO "${CMAKE_SOURCE_DIR}/resource/images/acaer.rc")
+set(ACAER_APP_ICO "${CMAKE_SOURCE_DIR}/resource/images/acaer_logo.rc")
 
 #----------------------------------------------------
 #				  SOURCE & INCLUDE
@@ -45,8 +45,8 @@ file(GLOB_RECURSE IMGUI_FILES ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.h
 ### APP ###
 add_executable(${PROJECT_NAME} 	${SRC_FILES} 
 							   	${HEADER_FILES}
-							   	${IMGUI_FILES})
-							   	# ${LYCHEE_APP_ICO})
+							   	${IMGUI_FILES}
+							   	${ACAER_APP_ICO})
 
 
 #----------------------------------------------------

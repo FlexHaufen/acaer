@@ -58,6 +58,7 @@
 #define AC_WINDOW_X                         1920
 #define AC_WINDOW_Y                         1080
 #define AC_CALC_FPS
+#define AC_WINDOW_ICON_PATH                 "resource/images/acaer_logo.png"
 
 #define AC_SCENE_CLEAR_BACKGROUND           sf::Color(158, 222, 232, 255)   // light blue
 
