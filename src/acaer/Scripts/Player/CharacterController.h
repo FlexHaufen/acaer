@@ -25,21 +25,36 @@ namespace Acaer {
     public:
         void OnUpdate(f32 dt) {
             auto& rb = GetComponent<RigidBody_C>();
+            auto& c  = GetComponent<Collider_C>();
 
-
+            // TODO: implement jump flag
+            if (m_CanJump) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                    f32 impulse = rb.RuntimeBody->GetMass() * m_jumpImpulse;
+                    rb.RuntimeBody->ApplyLinearImpulse(b2Vec2(0, -impulse), rb.RuntimeBody->GetWorldCenter(), true);
+                }
+            }
+            
             // TODO: use force instead of lin. vel.
             b2Vec2 vel = rb.RuntimeBody->GetLinearVelocity();
+            m_velFactor = 5.f; // Set std vel factor
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {vel.y = -10.f;}
-            // if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {rb.RuntimeBody->SetLinearVelocity({    0,  10.f});}
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))    {vel.x = -5.f;}
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))    {vel.x = 5.f;}
+            // ** Sprint **
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {m_velFactor = 8.f;}
             
-            rb.RuntimeBody->SetLinearVelocity({vel.x, vel.y});
+            // ** Left / Right **
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))    {vel.x = -m_velFactor;}
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))    {vel.x =  m_velFactor;}
 
-            //auto& t = GetComponent<Transform_C>();
-            //AC_CORE_TRACE("player pos x: {0} | pos y: {1}", t.pos.x, t.pos.y);
+            rb.RuntimeBody->SetLinearVelocity(vel);
         }
+
+    private:
+        // ** Members **
+        b8 m_CanJump = true;
+        f32 m_velFactor;
+
+        const f32 m_jumpImpulse = 2.f;
     };
 
 }
