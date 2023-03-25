@@ -94,26 +94,7 @@ namespace Acaer {
             nsc.Instance->OnUpdate(dt);
         });
 
-        // ** Update Camera **
-        {
-            auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
-            for (auto entity : group) {
-                auto &t = group.get<Transform_C>(entity);
-                auto &cam = group.get<Camera_C>(entity);
-                static const f32 speed = 5;
-                // ----- Smoothening in x & y
-                sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
-                m_Camera.move(movement * dt * speed);
-                
-                // ----- No smoothening
-                //m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
-                
-                m_Camera.setSize(sf::Vector2f(window.getSize().x * cam.zoom, window.getSize().y * cam.zoom));
 
-
-                window.setView(m_Camera);
-            }
-        }
 
         // ** Physics **
         {
@@ -133,6 +114,27 @@ namespace Acaer {
                 // Calculate pos and rotation based on fixture
                 t.pos       = Convert::getPositionFrom_b2Body(body, c);
                 t.rotation  = Convert::getRotationFrom_b2Body(body);
+            }
+        }
+
+        // ** Update Camera **
+        {
+            auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
+            for (auto entity : group) {
+                auto &t = group.get<Transform_C>(entity);
+                auto &cam = group.get<Camera_C>(entity);
+                static const f32 speed = 5;
+                // ----- Smoothening in x & y
+                //sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
+                //m_Camera.move(movement * dt * speed);
+                
+                // ----- No smoothening
+                m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
+                
+                m_Camera.setSize(sf::Vector2f(window.getSize().x * cam.zoom, window.getSize().y * cam.zoom));
+
+
+                window.setView(m_Camera);
             }
         }
     }
