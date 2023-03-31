@@ -53,5 +53,13 @@ namespace Acaer {
         f32 getRotationFrom_b2Body(b2Body* body) {
             return (body->GetAngle() * AC_DEG_PER_RAD * -1);
         }
+
+        vColor sfColor_to_vColor(sf::Color c) {
+            return vColor({c.r, c.g, c.b, c.a}); //rgba
+        }
+
+        sf::Color vColor_to_sfColor(vColor c) {
+            return sf::Color(c.r, c.g, c.b, c.a); //rgba
+        }
     }
 }

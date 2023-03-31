@@ -20,3 +20,4 @@ Custom 2D **pixelart game** programmed in **C++**
 
 ## Acknowledgements
 - [GAME ENGINE series](https://www.youtube.com/watch?v=JxIZbV_XjAs&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT) by [The Cherno](https://www.youtube.com/@TheCherno)
+- [Falling Sand](https://blog.winter.dev/2020/falling-sand-games/) by [Winterdev](https://www.youtube.com/@Winterdev)

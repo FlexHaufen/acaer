@@ -74,11 +74,30 @@ namespace Acaer {
                 Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
             }
         }
+
+        m_World = new World(100, 100);
+
+        //!------- DEBUG --------
+        Cell c;
+        c.type  = CellType::SAND;
+        c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
+        c.color = {255, 0, 255, 255};       // pink
+        //c.props = CellProperties::NONE;
+
+        for (int x = 0; x <= 9; x++) {
+            for (int y = 0; y <= 9; y++) {
+                m_World->SetCell(x, y, c);
+            }
+        }
+        //!---------------------
     }
 
     void Scene::OnEnd() {
         delete m_PhysicsWorld;
 		m_PhysicsWorld = nullptr;
+
+        delete m_World;
+        m_World = nullptr;
     }
 
 
@@ -99,6 +118,7 @@ namespace Acaer {
         // ** Physics **
         {
             m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
+            m_World->OnUpdate();
 
             // retrive transform form box2d
             auto view = m_Registry.view<RigidBody_C>();
@@ -162,5 +182,6 @@ namespace Acaer {
                 }
             }
         }
+        m_World->OnRender(window);
     }
 }

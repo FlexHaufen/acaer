@@ -116,6 +116,9 @@ namespace Acaer {
     #endif
         m_EntityBrowserPanel.SetContext(m_ActiveScene);
         m_isRunning = true;
+
+        // random number seed
+        srand((u32)time(NULL));
     }
 
     Core::~Core() {
