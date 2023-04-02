@@ -52,5 +52,8 @@ namespace Acaer {
          * @param c             color of cell (rgba)
          */
         void RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c);
+
+
+        void RenderChunckBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY);
     }
 }

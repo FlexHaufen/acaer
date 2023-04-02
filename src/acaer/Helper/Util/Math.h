@@ -16,16 +16,25 @@
 
 
 /**
- * @brief generate random int between 0..max
+ * @brief generate random size_t between 0..max
  * @warning This function requires a seed for rand() to be set
  *          e.x. srand(time(NULL))
  * 
- * @param max   Maximum random number
- * @return int  Random number
+ * @param max      Maximum random number
+ * @return size_t  Random number
  */
-int rand_i(int max) {
+inline size_t rand_u(size_t max) {
     if (max < 0) {
-        return -(rand() % (abs(max) + 1));
+        return -(rand() % (abs((int)max) + 1));
     }
     return rand() % (max + 1);
 }
+
+// Pair hash is defined as the (first hash * #) ^ second hash
+struct pair_hash {
+    template<typename T1, typename T2>
+    size_t operator() (const std::pair<T1, T2>& pair) const {
+        return ( std::hash<T1>()(pair.first) * 0x1f1f1f1f)
+            ^ std::hash<T2>()(pair.second);
+    }
+};

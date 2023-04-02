@@ -75,20 +75,37 @@ namespace Acaer {
             }
         }
 
-        m_World = new World(100, 100);
+        m_World = new World(60, 60, 1);
 
         //!------- DEBUG --------
-        Cell c;
-        c.type  = CellType::SAND;
-        c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
-        c.color = {255, 0, 255, 255};       // pink
-        //c.props = CellProperties::NONE;
+        {
+            Cell c;
+            c.type  = CellType::SAND;
+            c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
+            //c.props = CellProperties::NONE;
 
-        for (int x = 0; x <= 9; x++) {
-            for (int y = 0; y <= 9; y++) {
-                m_World->SetCell(x, y, c);
+            c.color = {255, 0, 255, 255};       // pink
+
+            for (int x = 30; x <= 49; x++) {
+                for (int y = 30; y <= 49; y++) {
+                    m_World->SetCell(x, y, c);
+                }
             }
         }
+        /*
+        {
+            Cell c;
+            c.type  = CellType::SAND;
+            //c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
+            c.props = CellProperties::NONE;
+             c.color = {0, 255, 255, 255};       // blue
+
+            // FIXME: still problems on down movement
+            for (int x = 0; x <= 49; x++) {
+                m_World->SetCell(x, 49, c);
+            }
+        }
+        */
         //!---------------------
     }
 
