@@ -16,6 +16,8 @@
 #include "acaer/Scene/World/Cell.h"
 #include "acaer/Scene/World/WorldChunk.h"
 
+#include "acaer/Scene/Renderer/Renderer.h"
+
 //*** DEFINES ***
 #define AC_WORLD_DEFAULT_SCALE 1
 
@@ -41,7 +43,21 @@ namespace Acaer {
             , m_chunkHeight((size_t)(chunkHeight / scale))
             , m_scale(scale) {}
 
+        /**
+         * @brief Update function
+         * 
+         */
+        void OnUpdate();
+
+        /**
+         * @brief Main render update function
+         * 
+         * @param window sf::Window reference
+         */
+        void OnRender(sf::RenderWindow &window);
+
     
+        // ** Cells **
         bool InBounds(int x, int y) {
             if (WorldChunk* chunk = GetChunk(x, y)) {
                 return chunk->InBounds(x, y);
@@ -62,7 +78,15 @@ namespace Acaer {
                 chunk->SetCell(x, y, cell);
             }
         }
-    
+
+    private:
+        // ** Cells **
+        void UpdateCell(int x, int y, Cell& cell) {
+            if      (cell.props & CellProperties::MOVE_DOWN      && CanMoveDown    (x, y, cell)) {}
+            else if (cell.props & CellProperties::MOVE_DOWN_SIDE && CanMoveDownSide(x, y, cell)) {}
+            //else if (cell.props & CellProperties::MOVE_SIDE      && CanMoveSide    (x, y, cell)) {}
+        }
+        
         void MoveCell(int x, int y, int xto, int yto) {
             if (WorldChunk* src = GetChunk(x, y)) {
                 if (WorldChunk* dst = GetChunk(xto, yto)) {
@@ -72,58 +96,26 @@ namespace Acaer {
         }
 
         bool CanMoveDown(int x, int y, const Cell& cell);
+
 	    bool CanMoveDownSide(int x, int y, const Cell& cell);
 
         void CommitCells();
 
-        void OnUpdate();
-        void OnRender(sf::RenderWindow &window);
 
+        // ** Chunks **
+        void UpdateChunk(WorldChunk* chunk);
 
-    	WorldChunk* GetChunk(int x, int y) {
-            auto location = GetChunkLocation(x, y);
+        void RenderChunk(sf::RenderWindow &window, WorldChunk* chunk);
 
-            WorldChunk* chunk = GetChunkDirect(location);
-            if (!chunk) {
-                chunk = CreateChunk(location);
-            }
+        void RemoveEmptyChunks();
 
-            return chunk;
-	    }
+    	WorldChunk* GetChunk(int x, int y);
 
-        WorldChunk* GetChunkDirect(std::pair<int, int> location) {
-            auto itr = m_chunkLookup.find(location);
-            if (itr == m_chunkLookup.end()) {
-                return nullptr;
-            }
-            return itr->second;
-        }
+        WorldChunk* GetChunkDirect(std::pair<int, int> location);
     
-        std::pair<int, int> GetChunkLocation(int x, int y) {
-            return { 
-                (int)floor(float(x) / m_chunkWidth), 
-                (int)floor(float(y) / m_chunkHeight)
-            };
-        }
+        std::pair<int, int> GetChunkLocation(int x, int y);
 
-    private:
-        WorldChunk* CreateChunk(std::pair<int, int> location) {
-            auto [lx, ly] = location;
-
-            // TODO: world bounderies
-            //if (lx < -200 || ly < -200 || lx >  200 || ly >  200) {
-            //    return nullptr;
-            //}
-
-            WorldChunk* chunk = new WorldChunk(m_chunkWidth, m_chunkHeight, lx, ly);
-            m_chunkLookup.insert({ location, chunk });
-            {
-               // std::unique_lock lock(m_chunkMutex);
-                m_chunks.push_back(chunk);
-            }
-
-            return chunk;
-        }
+        WorldChunk* CreateChunk(std::pair<int, int> location);
 
     private:
         //** Members **

@@ -2,7 +2,6 @@
 
 // *** INCLUDES ***
 #include "acaer/Scene/World/World.h"
-#include "acaer/Scene/Renderer/Renderer.h"
 #include "acaer/Helper/Util/Math.h"
 
 
@@ -12,64 +11,121 @@
 namespace Acaer {
 
     void World::OnUpdate() {
-        // Draw cells with mouse
-		// Paste tiles
+		RemoveEmptyChunks();
 
-		// Update cells
-
-		// TODO: Better Update Loop
 		for (WorldChunk* chunk : m_chunks) {
-			for (size_t x = 0; x < chunk->getWidth();  x++) {
-				for (size_t y = 0; y < chunk->getHeight(); y++) {
-					Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
-	
-					int px = x + chunk->getPosX();
-					int py = y + chunk->getPosY();
-	
-					//AC_CORE_TRACE("x: {0}, y: {1}, px {2}, py: {3}", x, y, px, py);
-
-				 	if 		(cell.props & CellProperties::MOVE_DOWN      && CanMoveDown    (px, py, cell)) {}
-					else if (cell.props & CellProperties::MOVE_DOWN_SIDE && CanMoveDownSide(px, py, cell)) {}
-					//else if (cell.props & CellProperties::MOVE_SIDE      && CanMoveSide    (px, py, cell)) {}
-				}
-			}
+			UpdateChunk(chunk);
 		}
  
 		for (WorldChunk* chunk : m_chunks) {
 			chunk->CommitCells();
 		}
- 
-		// Copy sand colors to a texture
-		// Draw the texture on the screen
-		// Remove tiles
     }
 
 	void World::OnRender(sf::RenderWindow &window) {
 
 		//AC_CORE_TRACE("Chunks: {0}", sizeof(m_chunks));
 		for (WorldChunk* chunk : m_chunks) {
+
+			//! Debug
 			Renderer::RenderChunckBorder(window,chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
-			for (size_t x = 0; x < chunk->getWidth();  x++) {
-				for (size_t y = 0; y < chunk->getHeight(); y++) {
-					Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
+			
+			RenderChunk(window, chunk);
+		}
+	}
 
-					int px = x + chunk->getPosX();
-					int py = y + chunk->getPosY();
+	void World::UpdateChunk(WorldChunk* chunk) {
+		for (int x = 0; x < chunk->getWidth();  x++) {
+			for (int y = 0; y < chunk->getHeight(); y++) {
+				Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
+	
+				int px = (int)x + chunk->getPosX();
+				int py = (int)y + chunk->getPosY();
+	
+				UpdateCell(px, py, cell);
+			}
+		}
+	}
 
-					if (cell.type != CellType::EMPTY) {
-						Renderer::RenderCell(window, px, py, cell.color);
-					}
+	void World::RenderChunk(sf::RenderWindow &window, WorldChunk* chunk) {
+		for (int x = 0; x < chunk->getWidth();  x++) {
+			for (int y = 0; y < chunk->getHeight(); y++) {
+				Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
+	
+				int px = (int)x + chunk->getPosX();
+				int py = (int)y + chunk->getPosY();
+	
+				if (cell.type != CellType::EMPTY) {
+					Renderer::RenderCell(window, px, py, cell.color);
 				}
 			}
 		}
 	}
+
+	void World::RemoveEmptyChunks() {
+		for (size_t i = 0; i < m_chunks.size(); i++) {
+			WorldChunk* chunk = m_chunks.at(i);
+	
+			if (chunk->getFillCellCount() == 0) {
+				m_chunkLookup.erase(GetChunkLocation(chunk->getPosX(), chunk->getPosY()));
+				m_chunks[i] = m_chunks.back(); m_chunks.pop_back();
+				i--;
+	
+				delete chunk;
+			}
+		}
+	}
+
+	WorldChunk* World::GetChunk(int x, int y) {
+		auto location = GetChunkLocation(x, y);
+
+		WorldChunk* chunk = GetChunkDirect(location);
+		if (!chunk) {
+			chunk = CreateChunk(location);
+		}
+
+		return chunk;
+	}
+
+	WorldChunk* World::GetChunkDirect(std::pair<int, int> location) {
+		auto itr = m_chunkLookup.find(location);
+		if (itr == m_chunkLookup.end()) {
+			return nullptr;
+		}
+		return itr->second;
+	}
+
+	std::pair<int, int> World::GetChunkLocation(int x, int y) {
+		return { 
+			(int)floor(float(x) / m_chunkWidth), 
+			(int)floor(float(y) / m_chunkHeight)
+		};
+	}
+
+	WorldChunk* World::CreateChunk(std::pair<int, int> location) {
+            auto [lx, ly] = location;
+
+            // TODO: world bounderies
+            //if (lx < -200 || ly < -200 || lx >  200 || ly >  200) {
+            //    return nullptr;
+            //}
+
+            WorldChunk* chunk = new WorldChunk(m_chunkWidth, m_chunkHeight, lx, ly);
+            m_chunkLookup.insert({ location, chunk });
+            {
+               // std::unique_lock lock(m_chunkMutex);
+                m_chunks.push_back(chunk);
+            }
+
+            return chunk;
+        }
+
 
 	bool World::CanMoveDown(int x, int y, const Cell& cell) {
 		bool down = IsEmpty(x, y + 1);	// SFML +y is down
 		if (down) {
 			MoveCell(x, y, x, y + 1);	// SFML +y is down
 		}
-
 		return down;
 	}
 

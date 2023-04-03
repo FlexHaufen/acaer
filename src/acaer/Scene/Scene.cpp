@@ -92,7 +92,6 @@ namespace Acaer {
                 }
             }
         }
-        /*
         {
             Cell c;
             c.type  = CellType::SAND;
@@ -102,10 +101,9 @@ namespace Acaer {
 
             // FIXME: still problems on down movement
             for (int x = 0; x <= 49; x++) {
-                m_World->SetCell(x, 49, c);
+                m_World->SetCell(x, 69, c);
             }
         }
-        */
         //!---------------------
     }
 

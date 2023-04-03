@@ -32,7 +32,8 @@ namespace Acaer {
 			: m_width(width)
 			, m_height(height)
 			, m_x(x * (int)width)
-			, m_y(y * (int)height) {
+			, m_y(y * (int)height)
+			, m_filledCellCount(0) {
 			m_cells = new Cell[width * height];
 		}
 	
@@ -60,17 +61,17 @@ namespace Acaer {
 		void SetCell(size_t index, const Cell& cell) {
 			Cell& dest = m_cells[index];
 
-			//if (dest.type == CellType::EMPTY && cell.type != CellType::EMPTY) // Filling a cell
-			//{
-			//	std::unique_lock lock(m_filledCellCountMutex);
-			//	m_filledCellCount++;
-			//}
+			// Filling a cell
+			if (dest.type == CellType::EMPTY && cell.type != CellType::EMPTY) {
+				//std::unique_lock lock(m_filledCellCountMutex);
+				m_filledCellCount++;
+			}
 
-			//else if (dest.type != CellType::EMPTY && cell.type == CellType::EMPTY) // Removing a filled cell
-			//{
-			//	std::unique_lock lock(m_filledCellCountMutex);
-			//	m_filledCellCount--;
-			//}
+			// Removing a filled cell
+			else if (dest.type != CellType::EMPTY && cell.type == CellType::EMPTY) {
+				//std::unique_lock lock(m_filledCellCountMutex);
+				m_filledCellCount--;
+			}
 
 			dest = cell;
 
@@ -78,7 +79,7 @@ namespace Acaer {
 		}
 	
 		void MoveCell(WorldChunk* source, int x, int y,int xto, int yto) {
-			m_changes.emplace_back(source, source->GetIndex(x, y), GetIndex(xto, yto));
+			m_changes.emplace_back(source, (int)source->GetIndex(x, y), (int)GetIndex(xto, yto));
 		}
 
 		void CommitCells() {
@@ -113,6 +114,7 @@ namespace Acaer {
 			m_changes.clear();
 		}
 
+		const size_t getFillCellCount() { return m_filledCellCount; }
 
 		const size_t getWidth()  { return m_width; }
 		const size_t getHeight() { return m_height; }
@@ -126,5 +128,7 @@ namespace Acaer {
 		const s32 m_x, m_y;
 		Cell* m_cells;
 		std::vector<std::tuple<WorldChunk*, int, int>> m_changes; // source chunk, source, destination
+
+		size_t m_filledCellCount;
 	};
 }

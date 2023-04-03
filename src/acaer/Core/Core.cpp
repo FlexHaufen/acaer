@@ -98,7 +98,7 @@ namespace Acaer {
             t.pos = {150, 0};
             player.AddComponent<Input_C>();
             auto &cam = player.AddComponent<Camera_C>();
-            cam.zoom = 1.5f;
+            cam.zoom = 1.2f;
             player.AddComponent<NativeScript_C>().Bind<CharacterController>();
             auto &rb = player.AddComponent<RigidBody_C>();
             rb.type = RigidBody_C::BodyType::Dynamic;

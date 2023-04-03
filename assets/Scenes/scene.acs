@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 1154410769090279859
+  - Entity: 426731383919646740
     Tag_C:
       tag: player
     Transform_C:
@@ -19,10 +19,10 @@ Entities:
       offset: [0, 0]
       scale: [44, 180]
     Camera_C:
-      zoom: 1.5
+      zoom: 1.20000005
     Input_C:
       isControllable: true
-  - Entity: 16925912775525233551
+  - Entity: 3007737021134297787
     Tag_C:
       tag: tree
     Transform_C:
@@ -30,7 +30,7 @@ Entities:
       pos: [150, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 10210095260673306020
+  - Entity: 4442409281975462488
     Tag_C:
       tag: ent1
     Transform_C:
