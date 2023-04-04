@@ -84,15 +84,14 @@ namespace Acaer {
 
     void Renderer::RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c) {
         sf::RectangleShape rec;
-        rec.setPosition(sf::Vector2f((f32)x * 5.f, (f32)y  * 5.f));
-        rec.setSize(sf::Vector2f(1 * 5.f, 1 * 5.f));
+        rec.setPosition(sf::Vector2f((f32)x * AC_GLOBAL_SCALE, (f32)y  * AC_GLOBAL_SCALE));
+        rec.setSize(sf::Vector2f(1 * AC_GLOBAL_SCALE, 1 * AC_GLOBAL_SCALE));
 
         rec.setFillColor(Convert::vColor_to_sfColor(c));       // Setting the fillcolor to nothing
-        //rec.setOutlineThickness(AC_HITBOX_THICKNESS);
-        //rec.setOutlineColor(AC_HITBOX_COLOR_OUTLINE);
         window.draw(rec);
     }
 
+    //! ----------------- DEBUG -----------------
     void Renderer::RenderChunckBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f((f32)posX * 5.f, (f32)posY * 5.f));

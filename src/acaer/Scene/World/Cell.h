@@ -64,6 +64,6 @@ namespace Acaer {
         CellType       type  = CellType::EMPTY;         // type
         CellProperties props = CellProperties::NONE;    // properties
 
-        vColor         color;                           // color of cell // TODO (flex): will be removed 
+        vColor         color = {0, 0, 0, 0};            // color of cell
     };
 }

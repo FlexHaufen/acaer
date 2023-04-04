@@ -41,7 +41,9 @@ namespace Acaer {
         World(size_t chunkWidth, size_t chunkHeight, f32 scale)
             : m_chunkWidth ((size_t)(chunkWidth / scale))
             , m_chunkHeight((size_t)(chunkHeight / scale))
-            , m_scale(scale) {}
+            , m_scale(scale) {
+            AC_CORE_INFO("Creating World [{0} x {1}, {2}]", chunkWidth, chunkHeight, scale);
+        }
 
         /**
          * @brief Update function

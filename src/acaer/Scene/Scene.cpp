@@ -60,6 +60,7 @@ namespace Acaer {
 
     void Scene::OnStart() {
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
+        m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
         auto view = m_Registry.view<RigidBody_C>();
         for (auto e: view) {
@@ -74,8 +75,6 @@ namespace Acaer {
                 Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
             }
         }
-
-        m_World = new World(60, 60, 1);
 
         //!------- DEBUG --------
         {
