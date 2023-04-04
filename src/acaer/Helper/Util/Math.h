@@ -38,3 +38,19 @@ struct pair_hash {
             ^ std::hash<T2>()(pair.second);
     }
 };
+
+
+/**
+* Returns the the value clamped between min and max.
+*
+* @param a Value to be clamped.
+* @param min Min value of range.
+* @param max Max value of range.
+* @tparam T Any type that implements '>' and '<' operators.
+*/
+template<typename T> 
+T clamp(const T& x, const T& min, const T& max) {
+    if (min > x) { return min; }
+    if (max < x) { return max; }
+    return x;
+}

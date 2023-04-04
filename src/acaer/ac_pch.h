@@ -14,6 +14,7 @@
 // *** INCLUDES ***
 
 #pragma warning(push, 0)
+#include <algorithm>
 #include <string>
 #include <fstream>
 #include <iostream>

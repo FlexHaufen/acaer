@@ -55,5 +55,7 @@ namespace Acaer {
 
 
         void RenderChunckBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY);
+        void RenderChunckDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos);
+
     }
 }

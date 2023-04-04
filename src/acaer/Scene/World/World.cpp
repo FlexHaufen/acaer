@@ -19,6 +19,7 @@ namespace Acaer {
  
 		for (WorldChunk* chunk : m_chunks) {
 			chunk->CommitCells();
+			chunk->UpdateRect();
 		}
     }
 
@@ -29,14 +30,15 @@ namespace Acaer {
 
 			//! Debug
 			Renderer::RenderChunckBorder(window,chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
+			//Renderer::RenderChunckDirtyRect(window, chunk->getMin(), chunk->getMax());
 			
 			RenderChunk(window, chunk);
 		}
 	}
 
 	void World::UpdateChunk(WorldChunk* chunk) {
-		for (int x = 0; x < chunk->getWidth();  x++) {
-			for (int y = 0; y < chunk->getHeight(); y++) {
+		for (int x = chunk->getMin().x; x < chunk->getMax().x; x++) {
+			for (int y = chunk->getMin().y; y < chunk->getMax().y; y++) {
 				Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
 	
 				int px = (int)x + chunk->getPosX();

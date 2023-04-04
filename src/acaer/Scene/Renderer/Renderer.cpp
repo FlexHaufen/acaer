@@ -20,8 +20,15 @@
 // *** DEFINE ***
 #define AC_OUTLINE_THICKNESS        1
 #define AC_HITBOX_THICKNESS         1
+#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235, 64, 52, 255) // Red
 #define AC_HITBOX_COLOR             sf::Color(235, 64, 52, 100) // Red but transparent
-#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235, 64, 52, 255)
+
+
+#define AC_CHUNK_THICKNESS          1
+#define AC_CHUNK_COLOR_OUTLINE      sf::Color(255, 100, 0, 255) // Orange
+#define AC_CHUNK_RECT_COLOR_OUTLINE sf::Color(  0, 128, 0, 255) // Green
+
+
 
 #define AC_ORIGIN_POINT_RADIUS      2.f
 
@@ -92,8 +99,19 @@ namespace Acaer {
         rec.setSize(sf::Vector2f(sizeX * 5.f, sizeY * 5.f));
 
         rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
-        rec.setOutlineThickness(AC_HITBOX_THICKNESS);
-        rec.setOutlineColor(AC_HITBOX_COLOR_OUTLINE);
+        rec.setOutlineThickness(AC_CHUNK_THICKNESS);
+        rec.setOutlineColor(AC_CHUNK_COLOR_OUTLINE);
+        window.draw(rec);
+    }
+
+    void Renderer::RenderChunckDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos) {
+        sf::RectangleShape rec;
+        rec.setPosition(sf::Vector2f((f32)minPos.x * 5.f, (f32)minPos.y * 5.f));
+        rec.setSize(sf::Vector2f((maxPos.x - minPos.x) * 5.f, (maxPos.y - minPos.y) * 5.f));
+
+        rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
+        rec.setOutlineThickness(AC_CHUNK_THICKNESS);
+        rec.setOutlineColor(AC_CHUNK_RECT_COLOR_OUTLINE);
         window.draw(rec);
     }
 

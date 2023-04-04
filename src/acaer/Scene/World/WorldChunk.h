@@ -34,6 +34,8 @@ namespace Acaer {
 			, m_x(x * (int)width)
 			, m_y(y * (int)height)
 			, m_filledCellCount(0) {
+			
+			UpdateRect();
 			m_cells = new Cell[width * height];
 		}
 	
@@ -75,7 +77,7 @@ namespace Acaer {
 
 			dest = cell;
 
-			//KeepAlive(index);
+			KeepAlive(index);
 		}
 	
 		void MoveCell(WorldChunk* source, int x, int y,int xto, int yto) {
@@ -114,6 +116,29 @@ namespace Acaer {
 			m_changes.clear();
 		}
 
+		void KeepAlive(int x, int y) {
+			KeepAlive(GetIndex(x, y));
+		}
+
+		void KeepAlive(size_t index) {
+			int x = index % m_width;
+			int y = index / m_width;
+	
+			m_minW.x = clamp(std::min(x - 2, m_minW.x), 0, (s32)m_width);
+			m_minW.y = clamp(std::min(y - 2, m_minW.y), 0, (s32)m_height);
+			m_maxW.x = clamp(std::max(x + 2, m_maxW.x), 0, (s32)m_width);
+			m_maxW.y = clamp(std::max(y + 2, m_maxW.y), 0, (s32)m_height);
+		}
+
+		void UpdateRect() {
+			// Update current; reset working
+			m_min.x = m_minW.x;  m_minW.x = m_width;
+			m_min.y = m_minW.y;  m_minW.y = m_height;
+			m_max.x = m_maxW.x;  m_maxW.x = -1;
+			m_max.y = m_maxW.y;  m_maxW.y = -1;	
+		}
+ 
+
 		const size_t getFillCellCount() { return m_filledCellCount; }
 
 		const size_t getWidth()  { return m_width; }
@@ -121,11 +146,18 @@ namespace Acaer {
 
 		const s32 getPosX() { return m_x; }
 		const s32 getPosY() { return m_y; }
+
+		const v2<int> getMin() { return m_min; }
+		const v2<int> getMax() { return m_max; }
 		
 	private:
 		// ** Members **
 		const size_t m_width, m_height;
 		const s32 m_x, m_y;
+
+		v2<s32> m_min, m_max;		// Dirty Rect
+		v2<s32> m_minW, m_maxW;		// Working dirty Rect
+
 		Cell* m_cells;
 		std::vector<std::tuple<WorldChunk*, int, int>> m_changes; // source chunk, source, destination
 
