@@ -37,12 +37,12 @@ namespace Acaer {
 	}
 
 	void World::UpdateChunk(WorldChunk* chunk) {
-		for (int x = chunk->getMin().x; x < chunk->getMax().x; x++) {
-			for (int y = chunk->getMin().y; y < chunk->getMax().y; y++) {
+		for (s32 x = chunk->getMin().x; x < chunk->getMax().x; x++) {
+			for (s32 y = chunk->getMin().y; y < chunk->getMax().y; y++) {
 				Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
 	
-				int px = (int)x + chunk->getPosX();
-				int py = (int)y + chunk->getPosY();
+				s32 px = (s32)x + chunk->getPosX();
+				s32 py = (s32)y + chunk->getPosY();
 	
 				UpdateCell(px, py, cell);
 			}
@@ -50,12 +50,12 @@ namespace Acaer {
 	}
 
 	void World::RenderChunk(sf::RenderWindow &window, WorldChunk* chunk) {
-		for (int x = 0; x < chunk->getWidth();  x++) {
-			for (int y = 0; y < chunk->getHeight(); y++) {
+		for (s32 x = 0; x < chunk->getWidth();  x++) {
+			for (s32 y = 0; y < chunk->getHeight(); y++) {
 				Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
 	
-				int px = (int)x + chunk->getPosX();
-				int py = (int)y + chunk->getPosY();
+				s32 px = (s32)x + chunk->getPosX();
+				s32 py = (s32)y + chunk->getPosY();
 	
 				if (cell.type != CellType::EMPTY) {
 					Renderer::RenderCell(window, px, py, cell.color);
@@ -78,7 +78,7 @@ namespace Acaer {
 		}
 	}
 
-	WorldChunk* World::GetChunk(int x, int y) {
+	WorldChunk* World::GetChunk(s32 x, s32 y) {
 		auto location = GetChunkLocation(x, y);
 
 		WorldChunk* chunk = GetChunkDirect(location);
@@ -89,7 +89,7 @@ namespace Acaer {
 		return chunk;
 	}
 
-	WorldChunk* World::GetChunkDirect(std::pair<int, int> location) {
+	WorldChunk* World::GetChunkDirect(std::pair<s32, s32> location) {
 		auto itr = m_chunkLookup.find(location);
 		if (itr == m_chunkLookup.end()) {
 			return nullptr;
@@ -97,14 +97,14 @@ namespace Acaer {
 		return itr->second;
 	}
 
-	std::pair<int, int> World::GetChunkLocation(int x, int y) {
+	std::pair<s32, s32> World::GetChunkLocation(s32 x, s32 y) {
 		return { 
-			(int)floor(float(x) / m_chunkWidth), 
-			(int)floor(float(y) / m_chunkHeight)
+			(s32)floor(float(x) / m_chunkWidth), 
+			(s32)floor(float(y) / m_chunkHeight)
 		};
 	}
 
-	WorldChunk* World::CreateChunk(std::pair<int, int> location) {
+	WorldChunk* World::CreateChunk(std::pair<s32, s32> location) {
             auto [lx, ly] = location;
 
             // TODO: world bounderies
@@ -123,7 +123,7 @@ namespace Acaer {
         }
 
 
-	bool World::CanMoveDown(int x, int y, const Cell& cell) {
+	bool World::CanMoveDown(s32 x, s32 y, const Cell& cell) {
 		bool down = IsEmpty(x, y + 1);	// SFML +y is down
 		if (down) {
 			MoveCell(x, y, x, y + 1);	// SFML +y is down
@@ -131,7 +131,7 @@ namespace Acaer {
 		return down;
 	}
 
-	bool World::CanMoveDownSide(int x, int y, const Cell& cell) {
+	bool World::CanMoveDownSide(s32 x, s32 y, const Cell& cell) {
 		bool downLeft  = IsEmpty(x - 1, y + 1);	// SFML +y is down
 		bool downRight = IsEmpty(x + 1, y + 1);	// SFML +y is down
 

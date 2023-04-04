@@ -58,22 +58,22 @@ namespace Acaer {
 
     
         // ** Cells **
-        bool InBounds(int x, int y) {
+        bool IsInBounds(s32 x, s32 y) {
             if (WorldChunk* chunk = GetChunk(x, y)) {
-                return chunk->InBounds(x, y);
+                return chunk->IsInBounds(x, y);
             }
             return false;
         }
 
-        bool IsEmpty(int x, int y) {
-		    return InBounds(x, y) && GetChunk(x, y)->IsEmpty(x, y);
+        bool IsEmpty(s32 x, s32 y) {
+		    return IsInBounds(x, y) && GetChunk(x, y)->IsEmpty(x, y);
 	    }
  
-        Cell& GetCell(int x, int y) {
+        Cell& GetCell(s32 x, s32 y) {
 		    return GetChunk(x, y)->GetCell(x, y);
 	    }
     
-        void SetCell(int x, int y, const Cell& cell) {
+        void SetCell(s32 x, s32 y, const Cell& cell) {
             if (WorldChunk* chunk = GetChunk(x, y)) {
                 chunk->SetCell(x, y, cell);
             }
@@ -81,13 +81,13 @@ namespace Acaer {
 
     private:
         // ** Cells **
-        void UpdateCell(int x, int y, Cell& cell) {
+        void UpdateCell(s32 x, s32 y, Cell& cell) {
             if      (cell.props & CellProperties::MOVE_DOWN      && CanMoveDown    (x, y, cell)) {}
             else if (cell.props & CellProperties::MOVE_DOWN_SIDE && CanMoveDownSide(x, y, cell)) {}
             //else if (cell.props & CellProperties::MOVE_SIDE      && CanMoveSide    (x, y, cell)) {}
         }
         
-        void MoveCell(int x, int y, int xto, int yto) {
+        void MoveCell(s32 x, s32 y, s32 xto, s32 yto) {
             if (WorldChunk* src = GetChunk(x, y)) {
                 if (WorldChunk* dst = GetChunk(xto, yto)) {
                     dst->MoveCell(src, x, y, xto, yto);
@@ -95,9 +95,9 @@ namespace Acaer {
             }
         }
 
-        bool CanMoveDown(int x, int y, const Cell& cell);
+        bool CanMoveDown(s32 x, s32 y, const Cell& cell);
 
-	    bool CanMoveDownSide(int x, int y, const Cell& cell);
+	    bool CanMoveDownSide(s32 x, s32 y, const Cell& cell);
 
         void CommitCells();
 
@@ -109,13 +109,13 @@ namespace Acaer {
 
         void RemoveEmptyChunks();
 
-    	WorldChunk* GetChunk(int x, int y);
+    	WorldChunk* GetChunk(s32 x, s32 y);
 
-        WorldChunk* GetChunkDirect(std::pair<int, int> location);
+        WorldChunk* GetChunkDirect(std::pair<s32, s32> location);
     
-        std::pair<int, int> GetChunkLocation(int x, int y);
+        std::pair<s32, s32> GetChunkLocation(s32 x, s32 y);
 
-        WorldChunk* CreateChunk(std::pair<int, int> location);
+        WorldChunk* CreateChunk(std::pair<s32, s32> location);
 
     private:
         //** Members **
@@ -124,6 +124,6 @@ namespace Acaer {
         const f32    m_scale = AC_WORLD_DEFAULT_SCALE;   // scale
 
         std::vector<WorldChunk*> m_chunks;
-        std::unordered_map<std::pair<int, int>, WorldChunk*, pair_hash> m_chunkLookup;
+        std::unordered_map<std::pair<s32, s32>, WorldChunk*, pair_hash> m_chunkLookup;
     };
 }

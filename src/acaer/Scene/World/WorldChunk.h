@@ -28,37 +28,40 @@ namespace Acaer {
 	 */
 	class WorldChunk {
 	public:
-		WorldChunk(size_t width, size_t height, int x, int y)
+
+		/**
+		 * @brief Single World Chunck
+		 * 
+		 * @param width 	Chunck width
+		 * @param height 	Chunck height
+		 * @param x 		Chunck x Pos
+		 * @param y 		Chunck y Pos
+		 */
+		WorldChunk(size_t width, size_t height, s32 x, s32 y)
 			: m_width(width)
 			, m_height(height)
-			, m_x(x * (int)width)
-			, m_y(y * (int)height)
+			, m_x(x * (s32)width)
+			, m_y(y * (s32)height)
 			, m_filledCellCount(0) {
 			
 			UpdateRect();
 			m_cells = new Cell[width * height];
 		}
 	
-		~WorldChunk() {
-			delete[] m_cells;
-		}
+
+		~WorldChunk() { delete[] m_cells; }
 	
-		size_t GetIndex(int x, int y) {
-			return (x - m_x) + (y - m_y) * m_width;
-		}	
+		size_t GetIndex(s32 x, s32 y) { return (x - m_x) + (y - m_y) * m_width; }	
 	
-		bool InBounds(int x, int y) {
-			return  x >= m_x && x < int(m_x + m_width) &&
-			  		y >= m_y && y < int(m_y + m_height);
-		}
+		bool IsInBounds(s32 x, s32 y) { return  x >= m_x && x < s32(m_x + m_width) && y >= m_y && y < s32(m_y + m_height);}
 	
-		bool IsEmpty(int x, int y) { return GetCell(x, y).type == CellType::EMPTY; }
+		bool IsEmpty(s32 x, s32 y) { return GetCell(x, y).type == CellType::EMPTY; }
 	
 	
-		Cell& GetCell(int x, int y) { return GetCell(GetIndex(x, y)); }
+		Cell& GetCell(s32 x, s32 y) { return GetCell(GetIndex(x, y)); }
 		Cell& GetCell(size_t index) { return m_cells[index]; }
 	
-		void SetCell(int x, int y, const Cell& cell) { SetCell(GetIndex(x, y), cell); }
+		void SetCell(s32 x, s32 y, const Cell& cell) { SetCell(GetIndex(x, y), cell); }
 
 		void SetCell(size_t index, const Cell& cell) {
 			Cell& dest = m_cells[index];
@@ -80,8 +83,8 @@ namespace Acaer {
 			KeepAlive(index);
 		}
 	
-		void MoveCell(WorldChunk* source, int x, int y,int xto, int yto) {
-			m_changes.emplace_back(source, (int)source->GetIndex(x, y), (int)GetIndex(xto, yto));
+		void MoveCell(WorldChunk* source, s32 x, s32 y,s32 xto, s32 yto) {
+			m_changes.emplace_back(source, (s32)source->GetIndex(x, y), (s32)GetIndex(xto, yto));
 		}
 
 		void CommitCells() {
@@ -116,13 +119,13 @@ namespace Acaer {
 			m_changes.clear();
 		}
 
-		void KeepAlive(int x, int y) {
+		void KeepAlive(s32 x, s32 y) {
 			KeepAlive(GetIndex(x, y));
 		}
 
 		void KeepAlive(size_t index) {
-			int x = index % m_width;
-			int y = index / m_width;
+			s32 x = (s32)(index % m_width);
+			s32 y = (s32)(index / m_width);
 	
 			m_minW.x = clamp(std::min(x - 2, m_minW.x), 0, (s32)m_width);
 			m_minW.y = clamp(std::min(y - 2, m_minW.y), 0, (s32)m_height);
@@ -132,8 +135,8 @@ namespace Acaer {
 
 		void UpdateRect() {
 			// Update current; reset working
-			m_min.x = m_minW.x;  m_minW.x = m_width;
-			m_min.y = m_minW.y;  m_minW.y = m_height;
+			m_min.x = m_minW.x;  m_minW.x = (s32)m_width;
+			m_min.y = m_minW.y;  m_minW.y = (s32)m_height;
 			m_max.x = m_maxW.x;  m_maxW.x = -1;
 			m_max.y = m_maxW.y;  m_maxW.y = -1;	
 		}
@@ -147,8 +150,8 @@ namespace Acaer {
 		const s32 getPosX() { return m_x; }
 		const s32 getPosY() { return m_y; }
 
-		const v2<int> getMin() { return m_min; }
-		const v2<int> getMax() { return m_max; }
+		const v2<s32> getMin() { return m_min; }
+		const v2<s32> getMax() { return m_max; }
 		
 	private:
 		// ** Members **
@@ -159,7 +162,7 @@ namespace Acaer {
 		v2<s32> m_minW, m_maxW;		// Working dirty Rect
 
 		Cell* m_cells;
-		std::vector<std::tuple<WorldChunk*, int, int>> m_changes; // source chunk, source, destination
+		std::vector<std::tuple<WorldChunk*, s32, s32>> m_changes; // source chunk, source, destination
 
 		size_t m_filledCellCount;
 	};
