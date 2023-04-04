@@ -133,5 +133,14 @@ namespace Acaer {
             ImGui::InputFloat("Rotation", &f3);
             f3 = transform.rotation;
         }
+
+        if (entity.HasComponent<Camera_C>()) {
+            ImGui::SeparatorText("Transform");
+            auto &camera = entity.GetComponent<Camera_C>();
+
+            f32 i1 = camera.zoom;
+            ImGui::SliderFloat("zoom", &i1, 0.5, 2);
+            camera.zoom = i1;
+        }
     }
 }

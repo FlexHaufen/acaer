@@ -60,6 +60,7 @@ namespace Acaer {
 
     void Scene::OnStart() {
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
+        m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
         auto view = m_Registry.view<RigidBody_C>();
         for (auto e: view) {
@@ -74,11 +75,43 @@ namespace Acaer {
                 Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
             }
         }
+
+        //!------- DEBUG --------
+        {
+            Cell c;
+            c.type  = CellType::SAND;
+            c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
+            //c.props = CellProperties::NONE;
+
+            c.color = {255, 0, 255, 255};       // pink
+
+            for (int x = 30; x <= 49; x++) {
+                for (int y = 30; y <= 49; y++) {
+                    m_World->SetCell(x, y, c);
+                }
+            }
+        }
+        {
+            Cell c;
+            c.type  = CellType::SAND;
+            //c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
+            c.props = CellProperties::NONE;
+             c.color = {0, 255, 255, 255};       // blue
+
+            // FIXME: still problems on down movement
+            for (int x = 0; x <= 49; x++) {
+                m_World->SetCell(x, 69, c);
+            }
+        }
+        //!---------------------
     }
 
     void Scene::OnEnd() {
         delete m_PhysicsWorld;
 		m_PhysicsWorld = nullptr;
+
+        delete m_World;
+        m_World = nullptr;
     }
 
 
@@ -94,30 +127,12 @@ namespace Acaer {
             nsc.Instance->OnUpdate(dt);
         });
 
-        // ** Update Camera **
-        {
-            auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
-            for (auto entity : group) {
-                auto &t = group.get<Transform_C>(entity);
-                auto &cam = group.get<Camera_C>(entity);
-                static const f32 speed = 5;
-                // ----- Smoothening in x & y
-                sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
-                m_Camera.move(movement * dt * speed);
-                
-                // ----- No smoothening
-                //m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
-                
-                m_Camera.setSize(sf::Vector2f(window.getSize().x * cam.zoom, window.getSize().y * cam.zoom));
 
-
-                window.setView(m_Camera);
-            }
-        }
 
         // ** Physics **
         {
             m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
+            m_World->OnUpdate();
 
             // retrive transform form box2d
             auto view = m_Registry.view<RigidBody_C>();
@@ -133,6 +148,27 @@ namespace Acaer {
                 // Calculate pos and rotation based on fixture
                 t.pos       = Convert::getPositionFrom_b2Body(body, c);
                 t.rotation  = Convert::getRotationFrom_b2Body(body);
+            }
+        }
+
+        // ** Update Camera **
+        {
+            auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
+            for (auto entity : group) {
+                auto &t = group.get<Transform_C>(entity);
+                auto &cam = group.get<Camera_C>(entity);
+                static const f32 speed = 5;
+                // ----- Smoothening in x & y
+                //sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
+                //m_Camera.move(movement * dt * speed);
+                
+                // ----- No smoothening
+                m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
+                
+                m_Camera.setSize(sf::Vector2f(window.getSize().x * cam.zoom, window.getSize().y * cam.zoom));
+
+
+                window.setView(m_Camera);
             }
         }
     }
@@ -160,5 +196,6 @@ namespace Acaer {
                 }
             }
         }
+        m_World->OnRender(window);
     }
 }

@@ -14,6 +14,8 @@
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Entity/Components.h"
 
+#include "acaer/Scene/World/World.h"
+
 //*** DEFINES ***
 
 
@@ -95,6 +97,8 @@ namespace Acaer {
         sf::View m_Camera;              // Camera
 
         b2World* m_PhysicsWorld = nullptr;
+        World* m_World = nullptr;
+
 
         friend class Entity;            // Entity class
         friend class SceneSerializer;   // Scene Serializer

@@ -14,12 +14,21 @@
 #include "acaer/Scene/Entity/Entity.h"
 #include "acaer/Scene/Entity/ScriptableEntity.h"
 
+#include "acaer/Helper/Convert/Convert.h"
+
 
 // *** DEFINE ***
 #define AC_OUTLINE_THICKNESS        1
 #define AC_HITBOX_THICKNESS         1
+#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235, 64, 52, 255) // Red
 #define AC_HITBOX_COLOR             sf::Color(235, 64, 52, 100) // Red but transparent
-#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235, 64, 52, 255)
+
+
+#define AC_CHUNK_THICKNESS          1
+#define AC_CHUNK_COLOR_OUTLINE      sf::Color(255, 100, 0, 255) // Orange
+#define AC_CHUNK_RECT_COLOR_OUTLINE sf::Color(  0, 128, 0, 255) // Green
+
+
 
 #define AC_ORIGIN_POINT_RADIUS      2.f
 
@@ -72,4 +81,37 @@ namespace Acaer {
         rec.setOutlineColor(AC_HITBOX_COLOR_OUTLINE);
         window.draw(rec);
     }
+
+    void Renderer::RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c) {
+        sf::RectangleShape rec;
+        rec.setPosition(sf::Vector2f((f32)x * AC_GLOBAL_SCALE, (f32)y  * AC_GLOBAL_SCALE));
+        rec.setSize(sf::Vector2f(1 * AC_GLOBAL_SCALE, 1 * AC_GLOBAL_SCALE));
+
+        rec.setFillColor(Convert::vColor_to_sfColor(c));       // Setting the fillcolor to nothing
+        window.draw(rec);
+    }
+
+    //! ----------------- DEBUG -----------------
+    void Renderer::RenderChunckBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY) {
+        sf::RectangleShape rec;
+        rec.setPosition(sf::Vector2f((f32)posX * 5.f, (f32)posY * 5.f));
+        rec.setSize(sf::Vector2f(sizeX * 5.f, sizeY * 5.f));
+
+        rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
+        rec.setOutlineThickness(AC_CHUNK_THICKNESS);
+        rec.setOutlineColor(AC_CHUNK_COLOR_OUTLINE);
+        window.draw(rec);
+    }
+
+    void Renderer::RenderChunckDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos) {
+        sf::RectangleShape rec;
+        rec.setPosition(sf::Vector2f((f32)minPos.x * 5.f, (f32)minPos.y * 5.f));
+        rec.setSize(sf::Vector2f((maxPos.x - minPos.x) * 5.f, (maxPos.y - minPos.y) * 5.f));
+
+        rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
+        rec.setOutlineThickness(AC_CHUNK_THICKNESS);
+        rec.setOutlineColor(AC_CHUNK_RECT_COLOR_OUTLINE);
+        window.draw(rec);
+    }
+
 }

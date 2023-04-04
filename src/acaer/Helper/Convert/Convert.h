@@ -45,5 +45,21 @@ namespace Acaer {
          * @return f32  rotation
          */
         f32 getRotationFrom_b2Body(b2Body* body);
+
+        /**
+         * @brief Converts sf::Color to vColor
+         * 
+         * @param c         sf::Color
+         * @return vColor   vColor
+         */
+        vColor sfColor_to_vColor(sf::Color c);
+
+        /**
+         * @brief Converts vColor to sf::Color
+         * 
+         * @param c         vColor
+         * @return vColor   sf::Color
+         */
+        sf::Color vColor_to_sfColor(vColor c);
     }
 }

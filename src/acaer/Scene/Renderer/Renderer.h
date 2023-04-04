@@ -42,5 +42,20 @@ namespace Acaer {
          * @param collider_c    collider
          */
         void RenderHitbox(sf::RenderWindow &window, Transform_C &transform_c, Collider_C &collider_c);
+
+        /**
+         * @brief Renders a single Cell
+         * 
+         * @param window        sf::RenderWindow reference
+         * @param x             pos x
+         * @param y             pos y
+         * @param c             color of cell (rgba)
+         */
+        void RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c);
+
+
+        void RenderChunckBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY);
+        void RenderChunckDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos);
+
     }
 }
