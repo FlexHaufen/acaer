@@ -94,8 +94,8 @@ namespace Acaer {
     //! ----------------- DEBUG -----------------
     void Renderer::RenderChunckBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY) {
         sf::RectangleShape rec;
-        rec.setPosition(sf::Vector2f((f32)posX * 5.f, (f32)posY * 5.f));
-        rec.setSize(sf::Vector2f(sizeX * 5.f, sizeY * 5.f));
+        rec.setPosition(sf::Vector2f((f32)posX * AC_GLOBAL_SCALE, (f32)posY * AC_GLOBAL_SCALE));
+        rec.setSize(sf::Vector2f(sizeX * AC_GLOBAL_SCALE, sizeY * AC_GLOBAL_SCALE));
 
         rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
         rec.setOutlineThickness(AC_CHUNK_THICKNESS);
@@ -105,13 +105,14 @@ namespace Acaer {
 
     void Renderer::RenderChunckDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos) {
         sf::RectangleShape rec;
-        rec.setPosition(sf::Vector2f((f32)minPos.x * 5.f, (f32)minPos.y * 5.f));
-        rec.setSize(sf::Vector2f((maxPos.x - minPos.x) * 5.f, (maxPos.y - minPos.y) * 5.f));
+        rec.setPosition(sf::Vector2f((f32)minPos.x * AC_GLOBAL_SCALE, (f32)minPos.y * AC_GLOBAL_SCALE));
+        rec.setSize(sf::Vector2f((maxPos.x - minPos.x) * AC_GLOBAL_SCALE, (maxPos.y - minPos.y) * AC_GLOBAL_SCALE));
 
         rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
         rec.setOutlineThickness(AC_CHUNK_THICKNESS);
         rec.setOutlineColor(AC_CHUNK_RECT_COLOR_OUTLINE);
         window.draw(rec);
     }
+    //! -----------------------------------------
 
 }

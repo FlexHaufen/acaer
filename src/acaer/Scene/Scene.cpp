@@ -77,6 +77,7 @@ namespace Acaer {
         }
 
         //!------- DEBUG --------
+        /*
         {
             Cell c;
             c.type  = CellType::SAND;
@@ -86,7 +87,7 @@ namespace Acaer {
             c.color = {255, 0, 255, 255};       // pink
 
             for (int x = 30; x <= 49; x++) {
-                for (int y = 30; y <= 49; y++) {
+                for (int y = -30; y <= 0; y++) {
                     m_World->SetCell(x, y, c);
                 }
             }
@@ -103,6 +104,7 @@ namespace Acaer {
                 m_World->SetCell(x, 69, c);
             }
         }
+        */
         //!---------------------
     }
 
@@ -116,6 +118,23 @@ namespace Acaer {
 
 
     void Scene::OnUpdate(f32 dt, sf::RenderWindow &window) {
+
+/*
+        {
+            Cell c;
+            c.type  = CellType::SAND;
+            //c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
+            c.props = CellProperties::NONE;
+            c.color = {0, 255, 255, 255};       // blue
+
+            // FIXME: still problems on down movement
+            //if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            //    sf::Vector2i mPos = sf::Mouse::getPosition() / sf::Vector2i(AC_GLOBAL_SCALE, AC_GLOBAL_SCALE) - window.getSize() / 2;
+            //    m_World->SetCell(mPos.x, mPos.y / AC_GLOBAL_SCALE, c);
+            //}
+        }
+*/
+
 
         // ** Update Scripts **
         m_Registry.view<NativeScript_C>().each([=](auto entity, auto& nsc) {
