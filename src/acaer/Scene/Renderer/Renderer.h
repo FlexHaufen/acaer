@@ -32,7 +32,7 @@ namespace Acaer {
          * @param renderOutline true: Render outline of sprite
          * @param renderOrigin  true: Render origin of transform
          */
-        void RenderSprite(sf::RenderWindow &window, Transform_C &transform_c, const Sprite_C &sprite_c, b8 renderOutline = false, b8 renderOrigin = false);
+        void RenderSprite(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c, b8 renderOutline = false, b8 renderOrigin = false);
    
         /**
          * @brief Render hitbox of given collider
@@ -41,7 +41,7 @@ namespace Acaer {
          * @param transform_c   transform
          * @param collider_c    collider
          */
-        void RenderHitbox(sf::RenderWindow &window, Transform_C &transform_c, Collider_C &collider_c);
+        void RenderHitbox(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c);
 
         /**
          * @brief Renders a single Cell

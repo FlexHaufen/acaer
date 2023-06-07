@@ -24,8 +24,8 @@ namespace Acaer {
     class CharacterController: public ScriptableEntity {
     public:
         void OnUpdate(f32 dt) {
-            auto& rb = GetComponent<RigidBody_C>();
-            auto& c  = GetComponent<Collider_C>();
+            auto& rb = GetComponent<Component::RigidBody>();
+            auto& c  = GetComponent<Component::Collider>();
 
             // TODO: implement jump flag
             if (m_CanJump) {

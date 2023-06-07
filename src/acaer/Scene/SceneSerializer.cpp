@@ -135,17 +135,17 @@ namespace Acaer {
 		out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
 
 
-		if (entity.HasComponent<Tag_C>()) {
-			auto& tag = entity.GetComponent<Tag_C>().tag;
-			out << YAML::Key << "Tag_C";
+		if (entity.HasComponent<Component::Tag>()) {
+			auto& tag = entity.GetComponent<Component::Tag>().tag;
+			out << YAML::Key << "Tag";
 			out << YAML::BeginMap;
 			out << YAML::Key << "tag" << YAML::Value << tag;
 			out << YAML::EndMap;
 		}
 
-        if (entity.HasComponent<Transform_C>()) {
-            auto &c = entity.GetComponent<Transform_C>();
-            out << YAML::Key << "Transform_C";
+        if (entity.HasComponent<Component::Transform>()) {
+            auto &c = entity.GetComponent<Component::Transform>();
+            out << YAML::Key << "Transform";
             out << YAML::BeginMap;
             out << YAML::Key << "render_layer"  << YAML::Value << c.render_layer;
             out << YAML::Key << "pos"           << YAML::Value << c.pos;
@@ -154,8 +154,8 @@ namespace Acaer {
             out << YAML::EndMap;
         }
 
-        if (entity.HasComponent<RigidBody_C>()) {
-            auto &c = entity.GetComponent<RigidBody_C>();
+        if (entity.HasComponent<Component::RigidBody>()) {
+            auto &c = entity.GetComponent<Component::RigidBody>();
             out << YAML::Key << "RigitBody_C";
             out << YAML::BeginMap;
             out << YAML::Key << "type"                  << YAML::Value << (int)c.type;
@@ -167,26 +167,26 @@ namespace Acaer {
             out << YAML::EndMap;
         }
 
-        if (entity.HasComponent<Collider_C>()) {
-            auto &c = entity.GetComponent<Collider_C>();
-            out << YAML::Key << "Collider_C";
+        if (entity.HasComponent<Component::Collider>()) {
+            auto &c = entity.GetComponent<Component::Collider>();
+            out << YAML::Key << "Collider";
             out << YAML::BeginMap;
             out << YAML::Key << "offset"        << YAML::Value << c.offset;
             out << YAML::Key << "scale"         << YAML::Value << c.size;
             out << YAML::EndMap;
         }
 
-        if (entity.HasComponent<Camera_C>()) {
-            auto &c = entity.GetComponent<Camera_C>();
-            out << YAML::Key << "Camera_C";
+        if (entity.HasComponent<Component::Camera>()) {
+            auto &c = entity.GetComponent<Component::Camera>();
+            out << YAML::Key << "Camera";
             out << YAML::BeginMap;
             out << YAML::Key << "zoom"         << YAML::Value << c.zoom;
             out << YAML::EndMap;
         }
 
-        if (entity.HasComponent<Input_C>()) {
-            auto &c = entity.GetComponent<Input_C>();
-            out << YAML::Key << "Input_C";
+        if (entity.HasComponent<Component::Input>()) {
+            auto &c = entity.GetComponent<Component::Input>();
+            out << YAML::Key << "Input";
             out << YAML::BeginMap;
             out << YAML::Key << "isControllable"<< YAML::Value << c.isControllable;
             out << YAML::EndMap;
@@ -198,23 +198,23 @@ namespace Acaer {
         
         
         u64 uuid = entity["Entity"].as<u64>();
-        std::string tag = entity["Tag_C"]["tag"].as<std::string>();
+        std::string tag = entity["Tag"]["tag"].as<std::string>();
 
         Entity currentEntity = m_Scene->CreateEntityWithUUID(uuid, tag);
      
-        auto transform_c = entity["Transform_C"];
+        auto transform_c = entity["Transform"];
         if (transform_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Transform_C>();
+            auto& c = currentEntity.GetOrEmplaceComponent<Component::Transform>();
             c.render_layer  = transform_c["render_layer"].as<s8>();
             c.pos           = transform_c["pos"].as<v2f>();
             c.scale         = transform_c["scale"].as<v2f>();
             c.rotation      = transform_c["rotation"].as<f32>();
         }
 
-        auto rigitbody_c = entity["RigidBody_C"];
+        auto rigitbody_c = entity["RigidBody"];
         if (rigitbody_c) {
-            auto &c = currentEntity.GetOrEmplaceComponent<RigidBody_C>();
-            c.type                  = (RigidBody_C::BodyType)rigitbody_c["type"].as<s8>();
+            auto &c = currentEntity.GetOrEmplaceComponent<Component::RigidBody>();
+            c.type                  = (Component::RigidBody::BodyType)rigitbody_c["type"].as<s8>();
             c.fixedRoation          = rigitbody_c["fixedRoation"].as<b8>();
             c.density               = rigitbody_c["density"].as<f32>();
             c.friction              = rigitbody_c["friction"].as<f32>();
@@ -222,22 +222,22 @@ namespace Acaer {
             c.restitutionThreshold  = rigitbody_c["restitutionThreshold"].as<f32>();
         }
 
-        auto collider_c = entity["Collider_C"];
+        auto collider_c = entity["Collider"];
         if (collider_c) {
-            auto &c = currentEntity.GetOrEmplaceComponent<Collider_C>();
+            auto &c = currentEntity.GetOrEmplaceComponent<Component::Collider>();
             c.offset        = collider_c["offset"].as<v2f>();
             c.size          = collider_c["size"].as<v2f>();
         }
 
-        auto camera_c = entity["Camera_C"];
+        auto camera_c = entity["Camera"];
         if (camera_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Camera_C>();
+            auto& c = currentEntity.GetOrEmplaceComponent<Component::Camera>();
             c.zoom = camera_c["zoom"].as<f32>();
         }
 
-        auto input_c = entity["Input_C"];
+        auto input_c = entity["Input"];
         if (input_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Input_C>();
+            auto& c = currentEntity.GetOrEmplaceComponent<Component::Input>();
             c.isControllable = input_c["isControllable"].as<b8>();
         }
     }

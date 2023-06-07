@@ -17,7 +17,7 @@
 namespace Acaer {
     namespace Convert {
 
-        void create_b2Body(RigidBody_C &rb,Transform_C &t, Collider_C &c, b2World *world) {
+        void create_b2Body(Component::RigidBody &rb,Component::Transform &t, Component::Collider &c, b2World *world) {
             b2BodyDef bodyDef;
 
             bodyDef.type = (b2BodyType)rb.type; // NOTE: Type conversion is possible because of same order
@@ -44,7 +44,7 @@ namespace Acaer {
         }
 
 
-        v2f getPositionFrom_b2Body(b2Body* body, Collider_C c) {
+        v2f getPositionFrom_b2Body(b2Body* body, Component::Collider c) {
             v2f pos = {(body->GetPosition().x * AC_PPM) - c.size.x / 2 + c.offset.x , 
                        (body->GetPosition().y * AC_PPM) - c.size.y / 2 + c.offset.y};
             return pos;

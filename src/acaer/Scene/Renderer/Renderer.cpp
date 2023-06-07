@@ -37,7 +37,11 @@
 namespace Acaer {
 
 
-    void Renderer::RenderSprite(sf::RenderWindow &window, Transform_C &transform_c, const Sprite_C &sprite_c, b8 renderOutline, b8 renderOrigin) {
+    void Renderer::RenderSprite(sf::RenderWindow &window, 
+                                Component::Transform &transform_c,
+                                const Component::Sprite &sprite_c, 
+                                b8 renderOutline, 
+                                b8 renderOrigin) {
 
         sf::Sprite sprite;
         sprite.setTexture(sprite_c.texture);
@@ -70,7 +74,9 @@ namespace Acaer {
         }
     }
 
-    void Renderer::RenderHitbox(sf::RenderWindow &window, Transform_C &transform_c, Collider_C &collider_c) {
+    void Renderer::RenderHitbox(sf::RenderWindow &window, 
+                                Component::Transform &transform_c, 
+                                Component::Collider &collider_c) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f(transform_c.pos.x + collider_c.offset.x, transform_c.pos.y + collider_c.offset.y));
         rec.setRotation(transform_c.rotation);

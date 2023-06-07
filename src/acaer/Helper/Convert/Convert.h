@@ -24,19 +24,19 @@ namespace Acaer {
          * 
          * @param rb        RigidBody_C
          * @param t         Transform_C
-         * @param c         Collider_C
+         * @param c         Collider
          * @param world     Physics World
          */
-        void create_b2Body(RigidBody_C &rb,Transform_C &t, Collider_C &c, b2World *world) ;
+        void create_b2Body(Component::RigidBody &rb,Component::Transform &t, Component::Collider &c, b2World *world) ;
 
         /**
          * @brief Get the Position from b2Body
          * 
          * @param body  b2Body
-         * @param c     Collider_C
+         * @param c     Collider
          * @return v2f  {pos.x, pos.y}
          */
-        v2f getPositionFrom_b2Body(b2Body* body, Collider_C c);
+        v2f getPositionFrom_b2Body(b2Body* body, Component::Collider c);
 
         /**
          * @brief Get the Rotation from b2Body

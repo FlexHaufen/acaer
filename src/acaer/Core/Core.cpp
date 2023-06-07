@@ -67,15 +67,15 @@ namespace Acaer {
         {   // Ent1
             AC_CORE_TRACE("creating ent1");
             auto ent = m_ActiveScene->CreateEntity("ent1");
-            auto &t = ent.AddComponent<Transform_C>();
+            auto &t = ent.AddComponent<Component::Transform>();
             t.pos = {100, 150};
-            auto &rb = ent.AddComponent<RigidBody_C>();
-            rb.type = RigidBody_C::BodyType::Static;
+            auto &rb = ent.AddComponent<Component::RigidBody>();
+            rb.type = Component::RigidBody::BodyType::Static;
 
-            auto &c = ent.AddComponent<Collider_C>();
+            auto &c = ent.AddComponent<Component::Collider>();
             c.size = {400, 40};
 
-            auto &s = ent.AddComponent<Sprite_C>();
+            auto &s = ent.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
@@ -83,10 +83,10 @@ namespace Acaer {
         {   // tree
             AC_CORE_TRACE("tree");
             auto ent = m_ActiveScene->CreateEntity("tree");
-            auto &t = ent.AddComponent<Transform_C>();
+            auto &t = ent.AddComponent<Component::Transform>();
             t.pos = {150, -444};
 
-            auto &s = ent.AddComponent<Sprite_C>();
+            auto &s = ent.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/World/fir_tree_1.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
@@ -94,20 +94,20 @@ namespace Acaer {
         {   // Player
             AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");
-            auto &t = player.AddComponent<Transform_C>();
+            auto &t = player.AddComponent<Component::Transform>();
             t.pos = {150, 0};
-            player.AddComponent<Input_C>();
-            auto &cam = player.AddComponent<Camera_C>();
+            player.AddComponent<Component::Input>();
+            auto &cam = player.AddComponent<Component::Camera>();
             cam.zoom = 1.2f;
-            player.AddComponent<NativeScript_C>().Bind<CharacterController>();
-            auto &rb = player.AddComponent<RigidBody_C>();
-            rb.type = RigidBody_C::BodyType::Dynamic;
+            player.AddComponent<Component::NativeScript>().Bind<CharacterController>();
+            auto &rb = player.AddComponent<Component::RigidBody>();
+            rb.type = Component::RigidBody::BodyType::Dynamic;
             rb.density = 5.f;
             rb.friction = 0.9f;
-            auto &c = player.AddComponent<Collider_C>();
-            c.size = {44, 180};
+            auto &c = player.AddComponent<Component::Collider>();
+            c.size = {44, 150};
             //c.offset = {10, 10}
-            auto &s = player.AddComponent<Sprite_C>();
+            auto &s = player.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }

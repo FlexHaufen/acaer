@@ -42,7 +42,7 @@ namespace Acaer {
 
     Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name) {
         Entity entity = { m_Registry.create(), this };
-		auto& tag = entity.AddComponent<Tag_C>();
+		auto& tag = entity.AddComponent<Component::Tag>();
         tag.uuid = uuid;
 		tag.tag = name;
 
@@ -62,15 +62,15 @@ namespace Acaer {
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
         m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
-        auto view = m_Registry.view<RigidBody_C>();
+        auto view = m_Registry.view<Component::RigidBody>();
         for (auto e: view) {
             Entity entity = {e, this};
 
             // Create Physics Body
-            if (entity.HasComponent<RigidBody_C>()) {
-                auto &t = entity.GetComponent<Transform_C>();
-                auto &rb = entity.GetComponent<RigidBody_C>();
-                auto &c = entity.GetComponent<Collider_C>();
+            if (entity.HasComponent<Component::RigidBody>()) {
+                auto &t = entity.GetComponent<Component::Transform>();
+                auto &rb = entity.GetComponent<Component::RigidBody>();
+                auto &c = entity.GetComponent<Component::Collider>();
 
                 Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
             }
@@ -137,7 +137,7 @@ namespace Acaer {
 
 
         // ** Update Scripts **
-        m_Registry.view<NativeScript_C>().each([=](auto entity, auto& nsc) {
+        m_Registry.view<Component::NativeScript>().each([=](auto entity, auto& nsc) {
             if (!nsc.Instance) {
                 nsc.Instance = nsc.InstantiateScript();
                 nsc.Instance->m_Entity = Entity{ entity, this };
@@ -154,13 +154,13 @@ namespace Acaer {
             m_World->OnUpdate();
 
             // retrive transform form box2d
-            auto view = m_Registry.view<RigidBody_C>();
+            auto view = m_Registry.view<Component::RigidBody>();
             for (auto e : view) {
                 Entity entity = {e , this};
-                auto& tag = entity.GetComponent<Tag_C>();
-                auto& t = entity.GetComponent<Transform_C>();
-                auto& rb = entity.GetComponent<RigidBody_C>();
-                auto& c = entity.GetComponent<Collider_C>();
+                auto& tag = entity.GetComponent<Component::Tag>();
+                auto& t = entity.GetComponent<Component::Transform>();
+                auto& rb = entity.GetComponent<Component::RigidBody>();
+                auto& c = entity.GetComponent<Component::Collider>();
 
                 b2Body* body = (b2Body*)rb.RuntimeBody;
 
@@ -172,10 +172,10 @@ namespace Acaer {
 
         // ** Update Camera **
         {
-            auto group = m_Registry.group<Camera_C>(entt::get<Transform_C>);
+            auto group = m_Registry.group<Component::Camera>(entt::get<Component::Transform>);
             for (auto entity : group) {
-                auto &t = group.get<Transform_C>(entity);
-                auto &cam = group.get<Camera_C>(entity);
+                auto &t = group.get<Component::Transform>(entity);
+                auto &cam = group.get<Component::Camera>(entity);
                 static const f32 speed = 5;
                 // ----- Smoothening in x & y
                 //sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
@@ -196,21 +196,21 @@ namespace Acaer {
     void Scene::OnRender(sf::RenderWindow &window) {
         // ** Render **
         {
-            auto group = m_Registry.group<Tag_C>(entt::get<Transform_C>);
+            auto group = m_Registry.group<Component::Tag>(entt::get<Component::Transform>);
             for (auto e : group) {
 
                 Entity entity = {e, this};
 
-                auto &tag = entity.GetComponent<Tag_C>();
-                auto &t = entity.GetComponent<Transform_C>();
+                auto &tag = entity.GetComponent<Component::Tag>();
+                auto &t = entity.GetComponent<Component::Transform>();
                
-                if (entity.HasComponent<Sprite_C>()) {
-                    auto &s = entity.GetComponent<Sprite_C>();
+                if (entity.HasComponent<Component::Sprite>()) {
+                    auto &s = entity.GetComponent<Component::Sprite>();
                     Renderer::RenderSprite(window, t, s, true, true);
                 }
 
-                if (entity.HasComponent<Collider_C>()) {
-                    auto &c = entity.GetComponent<Collider_C>();
+                if (entity.HasComponent<Component::Collider>()) {
+                    auto &c = entity.GetComponent<Component::Collider>();
                     Renderer::RenderHitbox(window, t, c);
                 }
             }
