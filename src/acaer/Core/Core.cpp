@@ -72,8 +72,8 @@ namespace Acaer {
             auto &rb = ent.AddComponent<Component::RigidBody>();
             rb.type = Component::RigidBody::BodyType::Static;
 
-            auto &c = ent.AddComponent<Component::Collider>();
-            c.size = {400, 40};
+            auto &c = ent.AddComponent<Component::ColliderContainer>();
+            c.container[0].size = {400, 40};
 
             auto &s = ent.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
@@ -104,8 +104,8 @@ namespace Acaer {
             rb.type = Component::RigidBody::BodyType::Dynamic;
             rb.density = 5.f;
             rb.friction = 0.9f;
-            auto &c = player.AddComponent<Component::Collider>();
-            c.size = {44, 150};
+            auto &c = player.AddComponent<Component::ColliderContainer>();
+            c.container[0].size = {44, 150};
             //c.offset = {10, 10}
             auto &s = player.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {

@@ -25,7 +25,7 @@ namespace Acaer {
     public:
         void OnUpdate(f32 dt) {
             auto& rb = GetComponent<Component::RigidBody>();
-            auto& c  = GetComponent<Component::Collider>();
+            //auto& c  = GetComponent<Component::Collider>();
 
             // TODO: implement jump flag
             if (m_CanJump) {

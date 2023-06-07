@@ -86,13 +86,33 @@ namespace Acaer {
             b2Body *RuntimeBody = nullptr;      // b2Body at runtime
         };
 
-        /**
-         * @brief ColliderComponent
-         * 
+        
+         /**
+         * @brief Collider Component
+         * @warning This struct may not be used as
+         *          a single component.
+         *          instead use ColliderContainer
          */
         struct Collider {
+            std::string id = "";                // Id of collider
             v2f size   = {10, 10};              // Size [px]
             v2f offset = {0, 0};                // Offset [px] relative to pos of Transform. usually {0, 0}
+        };
+
+        /**
+         * @brief ColliderContainer Component
+         *        By default a single collider is added
+         */
+        struct ColliderContainer {
+           
+
+            std::vector<Collider> container;
+
+            ColliderContainer() {
+                Collider c;
+                c.id = "main";
+                container.push_back(c);
+            }
         };
 
         /**

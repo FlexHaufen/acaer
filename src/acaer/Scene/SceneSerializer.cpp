@@ -167,13 +167,17 @@ namespace Acaer {
             out << YAML::EndMap;
         }
 
-        if (entity.HasComponent<Component::Collider>()) {
-            auto &c = entity.GetComponent<Component::Collider>();
-            out << YAML::Key << "Collider";
-            out << YAML::BeginMap;
-            out << YAML::Key << "offset"        << YAML::Value << c.offset;
-            out << YAML::Key << "scale"         << YAML::Value << c.size;
-            out << YAML::EndMap;
+        if (entity.HasComponent<Component::ColliderContainer>()) {
+            auto &c = entity.GetComponent<Component::ColliderContainer>();
+            out << YAML::Key << "Collider" << YAML::Value << YAML::BeginSeq;
+            for (auto i : c.container) {
+                out << YAML::BeginMap;
+                out << YAML::Key << "id" << YAML::Value << i.id;
+                out << YAML::Key << "offset"        << YAML::Value << i.offset;
+                out << YAML::Key << "size"          << YAML::Value << i.size;
+                out << YAML::EndMap;
+            }
+            out << YAML::EndSeq;
         }
 
         if (entity.HasComponent<Component::Camera>()) {
@@ -224,9 +228,15 @@ namespace Acaer {
 
         auto collider_c = entity["Collider"];
         if (collider_c) {
-            auto &c = currentEntity.GetOrEmplaceComponent<Component::Collider>();
-            c.offset        = collider_c["offset"].as<v2f>();
-            c.size          = collider_c["size"].as<v2f>();
+            auto &cc = currentEntity.GetOrEmplaceComponent<Component::ColliderContainer>();
+            cc.container.clear();   // Needs to be here, because default constructor creates 1 collider
+            for (auto collider : collider_c) {
+                Component::Collider c;
+                c.id        = collider["id"].as<std::string>();
+                c.offset    = collider["offset"].as<v2f>();
+                c.size      = collider["size"].as<v2f>();
+                cc.container.push_back(c);
+            }
         }
 
         auto camera_c = entity["Camera"];

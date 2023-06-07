@@ -70,9 +70,11 @@ namespace Acaer {
             if (entity.HasComponent<Component::RigidBody>()) {
                 auto &t = entity.GetComponent<Component::Transform>();
                 auto &rb = entity.GetComponent<Component::RigidBody>();
-                auto &c = entity.GetComponent<Component::Collider>();
 
-                Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
+                // TODO: decide multiple containers here
+                auto &c = entity.GetComponent<Component::ColliderContainer>();
+
+                Convert::create_b2Body(rb, t, c.container[0], m_PhysicsWorld);
             }
         }
 
@@ -160,12 +162,12 @@ namespace Acaer {
                 auto& tag = entity.GetComponent<Component::Tag>();
                 auto& t = entity.GetComponent<Component::Transform>();
                 auto& rb = entity.GetComponent<Component::RigidBody>();
-                auto& c = entity.GetComponent<Component::Collider>();
+                auto& c = entity.GetComponent<Component::ColliderContainer>();
 
                 b2Body* body = (b2Body*)rb.RuntimeBody;
 
                 // Calculate pos and rotation based on fixture
-                t.pos       = Convert::getPositionFrom_b2Body(body, c);
+                t.pos       = Convert::getPositionFrom_b2Body(body, c.container[0]);
                 t.rotation  = Convert::getRotationFrom_b2Body(body);
             }
         }
@@ -209,9 +211,9 @@ namespace Acaer {
                     Renderer::RenderSprite(window, t, s, true, true);
                 }
 
-                if (entity.HasComponent<Component::Collider>()) {
-                    auto &c = entity.GetComponent<Component::Collider>();
-                    Renderer::RenderHitbox(window, t, c);
+                if (entity.HasComponent<Component::ColliderContainer>()) {
+                    auto &c = entity.GetComponent<Component::ColliderContainer>();
+                    Renderer::RenderHitbox(window, t, c.container[0]);
                 }
             }
         }
