@@ -44,6 +44,15 @@ namespace Acaer {
         void RenderHitbox(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c);
 
         /**
+         * @brief Renders all sensors of given collider
+         * 
+         * @param window        sf::RenderWindow reference
+         * @param transform_c   transform
+         * @param collider_c    collider
+         */
+        void RenderSensor(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c);
+
+        /**
          * @brief Renders a single Cell
          * 
          * @param window        sf::RenderWindow reference

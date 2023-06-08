@@ -19,10 +19,14 @@
 
 // *** DEFINE ***
 #define AC_OUTLINE_THICKNESS        1
-#define AC_HITBOX_THICKNESS         1
-#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235, 64, 52, 255) // Red
-#define AC_HITBOX_COLOR             sf::Color(235, 64, 52, 100) // Red but transparent
 
+#define AC_HITBOX_THICKNESS         1
+#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235,  64,  52, 255) // Red
+#define AC_HITBOX_COLOR             sf::Color(235,  64,  52, 100) // Red but transparent
+
+#define AC_SENSOR_THICKNESS         1
+#define AC_SENSOR_COLOR_OUTLINE     sf::Color(  5, 252,  46, 255) // Green
+#define AC_SENSOR_COLOR             sf::Color(  5, 252,  46, 100) // Green but transparent
 
 #define AC_CHUNK_THICKNESS          1
 #define AC_CHUNK_COLOR_OUTLINE      sf::Color(255, 100, 0, 255) // Orange
@@ -86,6 +90,23 @@ namespace Acaer {
         rec.setOutlineThickness(AC_HITBOX_THICKNESS);
         rec.setOutlineColor(AC_HITBOX_COLOR_OUTLINE);
         window.draw(rec);
+    }
+
+    void Renderer::RenderSensor(sf::RenderWindow &window, 
+                                Component::Transform &transform_c, 
+                                Component::Collider &collider_c) {
+        
+        for (auto i : collider_c.sensors) {
+            sf::RectangleShape rec;
+            rec.setPosition(sf::Vector2f(transform_c.pos.x + i.offset.x, transform_c.pos.y + i.offset.y));
+            rec.setRotation(transform_c.rotation);
+            rec.setSize(sf::Vector2f(i.size.x, i.size.y));
+
+            rec.setFillColor(AC_SENSOR_COLOR);       // Setting the fillcolor to nothing
+            rec.setOutlineThickness(AC_SENSOR_THICKNESS);
+            rec.setOutlineColor(AC_SENSOR_COLOR_OUTLINE);
+            window.draw(rec);
+        }
     }
 
     void Renderer::RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c) {

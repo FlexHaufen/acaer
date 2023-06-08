@@ -19,6 +19,7 @@
 #include "acaer/Helper/Convert/Convert.h"
 
 // *** DEFINE ***
+#define AC_RENDER_COLLIDERS
 
 // *** NAMESPACE ***
 namespace Acaer {
@@ -70,11 +71,8 @@ namespace Acaer {
             if (entity.HasComponent<Component::RigidBody>()) {
                 auto &t = entity.GetComponent<Component::Transform>();
                 auto &rb = entity.GetComponent<Component::RigidBody>();
-
-                // TODO: decide multiple containers here
-                auto &c = entity.GetComponent<Component::ColliderContainer>();
-
-                Convert::create_b2Body(rb, t, c.container[0], m_PhysicsWorld);
+                auto &c = entity.GetComponent<Component::Collider>();
+                Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
             }
         }
 
@@ -162,12 +160,12 @@ namespace Acaer {
                 auto& tag = entity.GetComponent<Component::Tag>();
                 auto& t = entity.GetComponent<Component::Transform>();
                 auto& rb = entity.GetComponent<Component::RigidBody>();
-                auto& c = entity.GetComponent<Component::ColliderContainer>();
+                auto& c = entity.GetComponent<Component::Collider>();
 
                 b2Body* body = (b2Body*)rb.RuntimeBody;
 
                 // Calculate pos and rotation based on fixture
-                t.pos       = Convert::getPositionFrom_b2Body(body, c.container[0]);
+                t.pos       = Convert::getPositionFrom_b2Body(body, c);
                 t.rotation  = Convert::getRotationFrom_b2Body(body);
             }
         }
@@ -206,15 +204,20 @@ namespace Acaer {
                 auto &tag = entity.GetComponent<Component::Tag>();
                 auto &t = entity.GetComponent<Component::Transform>();
                
+                // render Sprite
                 if (entity.HasComponent<Component::Sprite>()) {
                     auto &s = entity.GetComponent<Component::Sprite>();
                     Renderer::RenderSprite(window, t, s, true, true);
                 }
 
-                if (entity.HasComponent<Component::ColliderContainer>()) {
-                    auto &c = entity.GetComponent<Component::ColliderContainer>();
-                    Renderer::RenderHitbox(window, t, c.container[0]);
+                // Render Colliders
+                #ifdef AC_RENDER_COLLIDERS
+                if (entity.HasComponent<Component::Collider>()) {
+                    auto &c = entity.GetComponent<Component::Collider>();
+                    Renderer::RenderHitbox(window, t, c);
+                    Renderer::RenderSensor(window, t, c);
                 }
+                #endif
             }
         }
         m_World->OnRender(window);

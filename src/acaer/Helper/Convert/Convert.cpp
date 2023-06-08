@@ -29,18 +29,30 @@ namespace Acaer {
             rb.RuntimeBody = body;
 
             
-            b2PolygonShape polyShape;
-            // TODO: Add ability to don't use scale 
-            polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM));
             
+            // ** main fixture **
             b2FixtureDef fixtureDef;
+            b2PolygonShape polyShape;
+            polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM)); // TODO: Add ability to don't use scale 
             fixtureDef.shape        = &polyShape;
             fixtureDef.density      = rb.density;
             fixtureDef.restitution  = rb.restitution;
             fixtureDef.friction     = rb.friction;
             fixtureDef.restitutionThreshold = rb.restitutionThreshold;
-
             body->CreateFixture(&fixtureDef);
+
+            for (auto i : c.sensors) {
+                b2FixtureDef fixtureDefSensor;
+                b2PolygonShape polyShapeSensor;
+                polyShapeSensor.SetAsBox((i.size.x / 2.f / AC_PPM), (i.size.y / 2.f / AC_PPM)); // TODO: Add ability to don't use scale
+                fixtureDefSensor.shape      = &polyShapeSensor;
+                fixtureDefSensor.isSensor   = true;
+
+                // TODO: Fix UserData
+                // NOTE: No idea what this does and if it works - need to check
+                // https://gamedev.stackexchange.com/questions/196951/how-do-i-correctly-use-userdata-in-box2d
+                fixtureDefSensor.userData.pointer  = reinterpret_cast<uintptr_t>(&i.id);
+            }
         }
 
 

@@ -22,12 +22,12 @@ namespace Acaer {
         /**
          * @brief Create a b2Body object
          * 
-         * @param rb        RigidBody_C
-         * @param t         Transform_C
-         * @param c         Collider
+         * @param rb        RigidBody
+         * @param t         Transform
+         * @param cc        ColliderContainer
          * @param world     Physics World
          */
-        void create_b2Body(Component::RigidBody &rb,Component::Transform &t, Component::Collider &c, b2World *world) ;
+        void create_b2Body(Component::RigidBody &rb,Component::Transform &t, Component::Collider &cc, b2World *world) ;
 
         /**
          * @brief Get the Position from b2Body
