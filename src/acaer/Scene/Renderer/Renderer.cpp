@@ -20,13 +20,9 @@
 // *** DEFINE ***
 #define AC_OUTLINE_THICKNESS        1
 
-#define AC_HITBOX_THICKNESS         1
-#define AC_HITBOX_COLOR_OUTLINE     sf::Color(235,  64,  52, 255) // Red
-#define AC_HITBOX_COLOR             sf::Color(235,  64,  52, 100) // Red but transparent
-
-#define AC_SENSOR_THICKNESS         1
-#define AC_SENSOR_COLOR_OUTLINE     sf::Color(  5, 252,  46, 255) // Green
-#define AC_SENSOR_COLOR             sf::Color(  5, 252,  46, 100) // Green but transparent
+#define AC_SPRITE_OUTLINE_COLOR     sf::Color(sf::Color::White)
+#define AC_COLLIDER_COLOR           sf::Color(235,  64,  52, 255) // Red
+#define AC_SENSOR_COLOR             sf::Color(  5, 252,  46, 255) // Green
 
 #define AC_CHUNK_THICKNESS          1
 #define AC_CHUNK_COLOR_OUTLINE      sf::Color(255, 100, 0, 255) // Orange
@@ -41,12 +37,7 @@
 namespace Acaer {
 
 
-    void Renderer::RenderSprite(sf::RenderWindow &window, 
-                                Component::Transform &transform_c,
-                                const Component::Sprite &sprite_c, 
-                                b8 renderOutline, 
-                                b8 renderOrigin) {
-
+    void Renderer::RenderSprite(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c) {
         sf::Sprite sprite;
         sprite.setTexture(sprite_c.texture);
 
@@ -55,58 +46,6 @@ namespace Acaer {
         sprite.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
         sprite.setRotation(transform_c.rotation);
         window.draw(sprite);
-
-        if (renderOutline) {
-            sf::RectangleShape rec;
-            rec.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
-            rec.setRotation(transform_c.rotation);
-            rec.setSize(sf::Vector2f((f32)sprite_c.texture.getSize().x * AC_GLOBAL_SCALE, (f32)sprite_c.texture.getSize().y * AC_GLOBAL_SCALE));
-
-            rec.setFillColor(sf::Color(0, 0, 0 , 0));       // Setting the fillcolor to nothing
-            rec.setOutlineThickness(AC_OUTLINE_THICKNESS);
-            rec.setOutlineColor(sf::Color::White);
-            window.draw(rec);
-        }
-
-        if (renderOrigin) {
-            // Render origin
-            sf::CircleShape c;
-            c.setRadius(AC_ORIGIN_POINT_RADIUS);
-            c.setFillColor(sf::Color::Red);
-            c.setPosition(sf::Vector2f(transform_c.pos.x - AC_ORIGIN_POINT_RADIUS, transform_c.pos.y - AC_ORIGIN_POINT_RADIUS));
-            window.draw(c);
-        }
-    }
-
-    void Renderer::RenderHitbox(sf::RenderWindow &window, 
-                                Component::Transform &transform_c, 
-                                Component::Collider &collider_c) {
-        sf::RectangleShape rec;
-        rec.setPosition(sf::Vector2f(transform_c.pos.x + collider_c.offset.x, transform_c.pos.y + collider_c.offset.y));
-        rec.setRotation(transform_c.rotation);
-        rec.setSize(sf::Vector2f(collider_c.size.x, collider_c.size.y));
-
-        rec.setFillColor(AC_HITBOX_COLOR);       // Setting the fillcolor to nothing
-        rec.setOutlineThickness(AC_HITBOX_THICKNESS);
-        rec.setOutlineColor(AC_HITBOX_COLOR_OUTLINE);
-        window.draw(rec);
-    }
-
-    void Renderer::RenderSensor(sf::RenderWindow &window, 
-                                Component::Transform &transform_c, 
-                                Component::Collider &collider_c) {
-        
-        for (auto i : collider_c.sensors) {
-            sf::RectangleShape rec;
-            rec.setPosition(sf::Vector2f(transform_c.pos.x + i.offset.x, transform_c.pos.y + i.offset.y));
-            rec.setRotation(transform_c.rotation);
-            rec.setSize(sf::Vector2f(i.size.x, i.size.y));
-
-            rec.setFillColor(AC_SENSOR_COLOR);       // Setting the fillcolor to nothing
-            rec.setOutlineThickness(AC_SENSOR_THICKNESS);
-            rec.setOutlineColor(AC_SENSOR_COLOR_OUTLINE);
-            window.draw(rec);
-        }
     }
 
     void Renderer::RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c) {
@@ -118,8 +57,43 @@ namespace Acaer {
         window.draw(rec);
     }
 
-    //! ----------------- DEBUG -----------------
-    void Renderer::RenderChunckBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY) {
+    //! ---------------------------------- DEBUG ----------------------------------
+
+    void Renderer::RenderCollider(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c) {
+        sf::RectangleShape rec;
+        rec.setPosition(sf::Vector2f(transform_c.pos.x + collider_c.offset.x, transform_c.pos.y + collider_c.offset.y));
+        rec.setRotation(transform_c.rotation);
+        rec.setSize(sf::Vector2f(collider_c.size.x, collider_c.size.y));
+        RenderRectWithOutline(window, rec, AC_COLLIDER_COLOR, true);            
+    }
+
+    void Renderer::RenderSensors(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c) {
+        for (auto i : collider_c.sensors) {
+            sf::RectangleShape rec;
+            rec.setPosition(sf::Vector2f(transform_c.pos.x + i.offset.x, transform_c.pos.y + i.offset.y));
+            rec.setRotation(transform_c.rotation);
+            rec.setSize(sf::Vector2f(i.size.x, i.size.y));
+            RenderRectWithOutline(window, rec, AC_SENSOR_COLOR, true);            
+        }
+    }
+
+    void Renderer::RenderTransformOrigin(sf::RenderWindow &window, Component::Transform &transform_c){
+        sf::CircleShape c;
+        c.setRadius(AC_ORIGIN_POINT_RADIUS);
+        c.setFillColor(sf::Color::Red);
+        c.setPosition(sf::Vector2f(transform_c.pos.x - AC_ORIGIN_POINT_RADIUS, transform_c.pos.y - AC_ORIGIN_POINT_RADIUS));
+        window.draw(c);
+    }
+
+    void Renderer::RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c) {
+        sf::RectangleShape rec;
+        rec.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
+        rec.setRotation(transform_c.rotation);
+        rec.setSize(sf::Vector2f((f32)sprite_c.texture.getSize().x * AC_GLOBAL_SCALE, (f32)sprite_c.texture.getSize().y * AC_GLOBAL_SCALE));
+        RenderRectWithOutline(window, rec, AC_SPRITE_OUTLINE_COLOR, false); 
+    }
+
+    void Renderer::RenderChunkBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f((f32)posX * AC_GLOBAL_SCALE, (f32)posY * AC_GLOBAL_SCALE));
         rec.setSize(sf::Vector2f(sizeX * AC_GLOBAL_SCALE, sizeY * AC_GLOBAL_SCALE));
@@ -130,7 +104,7 @@ namespace Acaer {
         window.draw(rec);
     }
 
-    void Renderer::RenderChunckDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos) {
+    void Renderer::RenderChunkDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f((f32)minPos.x * AC_GLOBAL_SCALE, (f32)minPos.y * AC_GLOBAL_SCALE));
         rec.setSize(sf::Vector2f((maxPos.x - minPos.x) * AC_GLOBAL_SCALE, (maxPos.y - minPos.y) * AC_GLOBAL_SCALE));
@@ -140,6 +114,18 @@ namespace Acaer {
         rec.setOutlineColor(AC_CHUNK_RECT_COLOR_OUTLINE);
         window.draw(rec);
     }
-    //! -----------------------------------------
+    
+    //! ---------------------------------------------------------------------------
 
+    void Renderer::RenderRectWithOutline(sf::RenderWindow &window, sf::RectangleShape &rec, sf::Color color, b8 isFilled) {
+        if (isFilled) {
+            rec.setFillColor(sf::Color(color.a, color.g, color.b, 100));       // Setting the fillcolor to nothing
+        }
+        else {
+            rec.setFillColor(sf::Color(0, 0, 0, 0));    // transparent
+        }
+        rec.setOutlineColor(color);
+        rec.setOutlineThickness(AC_OUTLINE_THICKNESS);
+        window.draw(rec);
+    }
 }

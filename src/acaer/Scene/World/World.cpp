@@ -29,8 +29,8 @@ namespace Acaer {
 		for (WorldChunk* chunk : m_chunks) {
 
 			//! Debug
-			Renderer::RenderChunckBorder(window,chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
-			//Renderer::RenderChunckDirtyRect(window, chunk->getMin(), chunk->getMax());
+			Renderer::RenderChunkBorder(window,chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
+			//Renderer::RenderChunkDirtyRect(window, chunk->getMin(), chunk->getMax());
 			
 			RenderChunk(window, chunk);
 		}

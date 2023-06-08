@@ -19,7 +19,7 @@
 #include "acaer/Helper/Convert/Convert.h"
 
 // *** DEFINE ***
-#define AC_RENDER_COLLIDERS
+#define AC_DEBUG_RENDER
 
 // *** NAMESPACE ***
 namespace Acaer {
@@ -207,16 +207,21 @@ namespace Acaer {
                 // render Sprite
                 if (entity.HasComponent<Component::Sprite>()) {
                     auto &s = entity.GetComponent<Component::Sprite>();
-                    Renderer::RenderSprite(window, t, s, true, true);
+                    Renderer::RenderSprite(window, t, s);
+
+                    #ifdef AC_DEBUG_RENDER
+                        Renderer::RenderSpriteOutline(window, t, s);
+                    #endif
                 }
 
-                // Render Colliders
-                #ifdef AC_RENDER_COLLIDERS
-                if (entity.HasComponent<Component::Collider>()) {
-                    auto &c = entity.GetComponent<Component::Collider>();
-                    Renderer::RenderHitbox(window, t, c);
-                    Renderer::RenderSensor(window, t, c);
-                }
+                #ifdef AC_DEBUG_RENDER
+                    Renderer::RenderTransformOrigin(window, t);
+                    // Render Colliders
+                    if (entity.HasComponent<Component::Collider>()) {
+                        auto &c = entity.GetComponent<Component::Collider>();
+                        Renderer::RenderCollider(window, t, c);
+                        Renderer::RenderSensors(window, t, c);
+                    }
                 #endif
             }
         }
