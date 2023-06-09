@@ -18,40 +18,52 @@ namespace Acaer {
     namespace Convert {
 
         void create_b2Body(Component::RigidBody &rb,Component::Transform &t, Component::Collider &c, b2World *world) {
+            
+            
+            // TODO: reconsider Box2d body definition with sensors,
+            //       main fixture, etc.
+            
+            // ** Box2d Body definition **
             b2BodyDef bodyDef;
+            bodyDef.type = (b2BodyType)rb.type;                         // NOTE: Type conversion is possible because of same order
+            bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);   // Position
+            bodyDef.angle = t.rotation / AC_DEG_PER_RAD;                // Angle
 
-            bodyDef.type = (b2BodyType)rb.type; // NOTE: Type conversion is possible because of same order
-            bodyDef.position.Set(t.pos.x / AC_PPM, t.pos.y / AC_PPM);
-            bodyDef.angle = t.rotation / AC_DEG_PER_RAD;
-
-            b2Body* body = world->CreateBody(&bodyDef);
-            body->SetFixedRotation(rb.fixedRoation);
+            b2Body* body = world->CreateBody(&bodyDef);                 // Create body in world
+            body->SetFixedRotation(rb.fixedRoation);                    // Fix rotation
             rb.RuntimeBody = body;
 
             
-            
-            // ** main fixture **
-            b2FixtureDef fixtureDef;
+            // ** Main FixtureDef **
             b2PolygonShape polyShape;
             polyShape.SetAsBox((c.size.x / 2.f / AC_PPM), (c.size.y / 2.f / AC_PPM)); // TODO: Add ability to don't use scale 
-            fixtureDef.shape        = &polyShape;
-            fixtureDef.density      = rb.density;
-            fixtureDef.restitution  = rb.restitution;
-            fixtureDef.friction     = rb.friction;
-            fixtureDef.restitutionThreshold = rb.restitutionThreshold;
-            body->CreateFixture(&fixtureDef);
 
+            b2FixtureDef mainFixture;
+            mainFixture.shape        = &polyShape;
+            mainFixture.density      = rb.density;
+            mainFixture.restitution  = rb.restitution;
+            mainFixture.friction     = rb.friction;
+            mainFixture.restitutionThreshold = rb.restitutionThreshold;
+            body->CreateFixture(&mainFixture);
+
+            // ** Sensors **
             for (auto i : c.sensors) {
-                b2FixtureDef fixtureDefSensor;
+
                 b2PolygonShape polyShapeSensor;
-                polyShapeSensor.SetAsBox((i.size.x / 2.f / AC_PPM), (i.size.y / 2.f / AC_PPM)); // TODO: Add ability to don't use scale
-                fixtureDefSensor.shape      = &polyShapeSensor;
-                fixtureDefSensor.isSensor   = true;
+                v2f sensorSize = {(i.size.x / 2.f / AC_PPM), (i.size.y / 2.f / AC_PPM)};
+                b2Vec2 offsetPosition((i.offset.x / 2.f / AC_PPM), (i.offset.x / 2.f / AC_PPM));
+                polyShapeSensor.SetAsBox(sensorSize.x, sensorSize.y, offsetPosition, 0); // TODO: Add ability to don't use scale
+                
+                b2FixtureDef sensorFixture;
+                sensorFixture.shape      = &polyShapeSensor;
+                sensorFixture.isSensor   = true;
 
                 // TODO: Fix UserData
                 // NOTE: No idea what this does and if it works - need to check
                 // https://gamedev.stackexchange.com/questions/196951/how-do-i-correctly-use-userdata-in-box2d
-                fixtureDefSensor.userData.pointer  = reinterpret_cast<uintptr_t>(&i.id);
+                sensorFixture.userData.pointer  = reinterpret_cast<uintptr_t>(&i.userData);
+
+                body->CreateFixture(&sensorFixture);
             }
         }
 

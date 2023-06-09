@@ -107,7 +107,10 @@ namespace Acaer {
             auto &c = player.AddComponent<Component::Collider>();
             c.size = {44, 150};
 
-            Component::Collider::Sensor sns = {"main", {10, 10}, {10, 10}};
+            Component::Collider::Sensor sns;
+            sns.userData.id = "main";
+            sns.size = {10, 10};
+            sns.offset = {50, 10};
             c.sensors.push_back(sns);
 
             //c.offset = {10, 10}
@@ -179,6 +182,6 @@ namespace Acaer {
             m_Window.display();
         }
         m_ActiveScene->OnEnd();
-        AC_CORE_WARN("Core stopped runnging");
+        AC_CORE_WARN("Core stopped running");
     }
 }

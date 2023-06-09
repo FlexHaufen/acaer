@@ -98,7 +98,11 @@ namespace Acaer {
              * 
              */
             struct Sensor {
-                std::string id = "";            // Id of sensor
+                struct UserData {
+                    std::string id = "";            // Id of sensor
+                    b8  isColliding = false;        // Collider Flag [true / false]
+                } userData;
+
                 v2f size   = {10, 10};          // Size [px]
                 v2f offset = {0, 0};            // Offset [px] relative to pos of Transform. usually {0, 0}
             };
