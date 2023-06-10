@@ -19,10 +19,6 @@ namespace Acaer {
 
         void create_b2Body(Component::RigidBody &rb,Component::Transform &t, Component::Collider &c, b2World *world) {
             
-            
-            // TODO: reconsider Box2d body definition with sensors,
-            //       main fixture, etc.
-            
             // ** Box2d Body definition **
             b2BodyDef bodyDef;
             bodyDef.type = (b2BodyType)rb.type;                         // NOTE: Type conversion is possible because of same order
@@ -44,25 +40,28 @@ namespace Acaer {
             mainFixture.restitution  = rb.restitution;
             mainFixture.friction     = rb.friction;
             mainFixture.restitutionThreshold = rb.restitutionThreshold;
+            
+            // TODO: Creat UserData for mainFixture
+            // Creating userdata
+            //UserData::FixtureUserData* userData = new UserData::FixtureUserData;
+            //userData->name = tag.name;
+            //mainFixture.userData.pointer = reinterpret_cast<uintptr_t>(userData);
             body->CreateFixture(&mainFixture);
 
             // ** Sensors **
-            for (auto i : c.sensors) {
+            for (auto [key, val] : c.sensors) {
 
                 b2PolygonShape polyShapeSensor;
-                v2f sensorSize = {(i.size.x / 2.f / AC_PPM), (i.size.y / 2.f / AC_PPM)};
-                b2Vec2 offsetPosition((i.offset.x / 2.f / AC_PPM), (i.offset.x / 2.f / AC_PPM));
-                polyShapeSensor.SetAsBox(sensorSize.x, sensorSize.y, offsetPosition, 0); // TODO: Add ability to don't use scale
+                v2f sensorSize = {(val.size.x / 2.f / AC_PPM), (val.size.y / 2.f / AC_PPM)};
+                b2Vec2 offsetPosition((val.offset.x / 2.f / AC_PPM), (val.offset.y / 2.f / AC_PPM));
+                polyShapeSensor.SetAsBox(sensorSize.x, sensorSize.y, offsetPosition, 0);
                 
                 b2FixtureDef sensorFixture;
                 sensorFixture.shape      = &polyShapeSensor;
                 sensorFixture.isSensor   = true;
 
-                // TODO: Fix UserData
-                // NOTE: No idea what this does and if it works - need to check
-                // https://gamedev.stackexchange.com/questions/196951/how-do-i-correctly-use-userdata-in-box2d
-                sensorFixture.userData.pointer  = reinterpret_cast<uintptr_t>(&i.userData);
-
+                // Creating userdata
+                sensorFixture.userData.pointer = reinterpret_cast<uintptr_t>(val.userData);
                 body->CreateFixture(&sensorFixture);
             }
         }

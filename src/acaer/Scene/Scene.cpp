@@ -76,7 +76,7 @@ namespace Acaer {
             }
         }
 
-        // TODO: Add Contactlisteners here
+        // ** ContactListener **
         m_PhysicsWorld->SetContactListener(&m_ContactListener);
 
         //!------- DEBUG --------
@@ -170,13 +170,6 @@ namespace Acaer {
                 // Calculate pos and rotation based on fixture
                 t.pos       = Convert::getPositionFrom_b2Body(body, c);
                 t.rotation  = Convert::getRotationFrom_b2Body(body);
-
-                if (!c.sensors.empty()) {
-                    if (c.sensors[0].userData.isColliding) {
-                        
-                        AC_CORE_TRACE("sensor collides");
-                    }
-                }
             }
         }
 

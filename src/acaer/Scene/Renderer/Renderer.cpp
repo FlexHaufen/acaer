@@ -68,11 +68,11 @@ namespace Acaer {
     }
 
     void Renderer::RenderSensors(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c) {
-        for (auto i : collider_c.sensors) {
+        for (auto [key, val] : collider_c.sensors) {
             sf::RectangleShape rec;
-            rec.setPosition(sf::Vector2f(transform_c.pos.x + i.offset.x, transform_c.pos.y + i.offset.y));
+            rec.setPosition(sf::Vector2f(transform_c.pos.x + val.offset.x, transform_c.pos.y + val.offset.y));
             rec.setRotation(transform_c.rotation);
-            rec.setSize(sf::Vector2f(i.size.x, i.size.y));
+            rec.setSize(sf::Vector2f(val.size.x, val.size.y));
             RenderRectWithOutline(window, rec, AC_SENSOR_COLOR, true);            
         }
     }

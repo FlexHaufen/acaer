@@ -105,15 +105,14 @@ namespace Acaer {
             rb.density = 5.f;
             rb.friction = 0.9f;
             auto &c = player.AddComponent<Component::Collider>();
-            c.size = {44, 150};
+            c.size = {44, 180};
 
             Component::Collider::Sensor sns;
-            sns.userData.id = "main";
-            sns.size = {10, 10};
-            sns.offset = {50, 10};
-            c.sensors.push_back(sns);
+            sns.userData->name = "foot";
+            sns.size = {40, 10};
+            sns.offset = {0, 180};
+            c.sensors.emplace(sns.userData->name, sns);
 
-            //c.offset = {10, 10}
             auto &s = player.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");

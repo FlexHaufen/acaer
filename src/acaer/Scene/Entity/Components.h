@@ -24,6 +24,18 @@ namespace Acaer {
     class ScriptableEntity; // Forward declaration
 
     /**
+     * @brief This namespace contains custom userData
+     *        For Box2D
+     */
+    namespace UserData {
+        struct SensorUserData {
+            UUID uuid;                          // tag (name)
+            std::string name;                   // uuid of entity (64bit)
+            b8 isColliding = false;
+        };
+    }
+
+    /**
      * @brief This namespace contains all components
      *        that an entity can have
      */
@@ -98,18 +110,17 @@ namespace Acaer {
              * 
              */
             struct Sensor {
-                struct UserData {
-                    std::string id = "";            // Id of sensor
-                    b8  isColliding = false;        // Collider Flag [true / false]
-                } userData;
+                UserData::SensorUserData* userData = nullptr;
 
                 v2f size   = {10, 10};          // Size [px]
                 v2f offset = {0, 0};            // Offset [px] relative to pos of Transform. usually {0, 0}
+            
+                Sensor() { userData = new UserData::SensorUserData(); }
             };
 
-            v2f size   = {10, 10};              // Size [px]
-            v2f offset = {0, 0};                // Offset [px] relative to pos of Transform. usually {0, 0}
-            std::vector<Sensor> sensors;        // Vector for sensors
+            v2f size   = {10, 10};                  // Size [px]
+            v2f offset = {0, 0};                    // Offset [px] relative to pos of Transform. usually {0, 0}
+            std::map<std::string, Sensor> sensors;  // Map for sensors
         };
 
         /**

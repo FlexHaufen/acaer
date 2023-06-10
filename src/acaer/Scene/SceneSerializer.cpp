@@ -174,11 +174,11 @@ namespace Acaer {
             out << YAML::Key << "offset"        << YAML::Value << c.offset;
             out << YAML::Key << "size"          << YAML::Value << c.size;
             out << YAML::Key << "Sensors"       << YAML::BeginSeq;
-            for (auto i : c.sensors) {
+            for (auto [key, val] : c.sensors) {
                 out << YAML::BeginMap;
-                out << YAML::Key << "id"            << YAML::Value << i.userData.id;
-                out << YAML::Key << "offset"        << YAML::Value << i.offset;
-                out << YAML::Key << "size"          << YAML::Value << i.size;
+                out << YAML::Key << "name"          << YAML::Value << val.userData->name;
+                out << YAML::Key << "offset"        << YAML::Value << val.offset;
+                out << YAML::Key << "size"          << YAML::Value << val.size;
                 out << YAML::EndMap;
             }
             out << YAML::EndSeq;
@@ -238,10 +238,10 @@ namespace Acaer {
             c.size      = collider_c["size"].as<v2f>();
             for (auto sensor : collider_c["Sensors"]) {
                 Component::Collider::Sensor s;
-                s.userData.id   = sensor["id"].as<std::string>();
-                s.offset        = sensor["offset"].as<v2f>();
-                s.size          = sensor["size"].as<v2f>();
-                c.sensors.push_back(s);
+                s.userData->name    = sensor["name"].as<std::string>();
+                s.offset            = sensor["offset"].as<v2f>();
+                s.size              = sensor["size"].as<v2f>();
+                c.sensors.emplace(s.userData->name, s);
             }
         }
 
