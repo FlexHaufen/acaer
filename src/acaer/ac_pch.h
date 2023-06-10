@@ -19,6 +19,7 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
+#include <map>
 #include <functional>
 
 // ** External **
@@ -52,7 +53,7 @@
 
 
 // *** DEFINES ***
-#define AC_VERSION                          "0.0.4a"
+#define AC_VERSION                          "0.0.5a"
 
 
 #define AC_WINDOW_RESIZABLE                             // flag
@@ -63,7 +64,7 @@
 
 #define AC_SCENE_CLEAR_BACKGROUND           sf::Color(158, 222, 232, 255)   // light blue
 
-#define AC_GLOBAL_SCALE                     4          
+#define AC_GLOBAL_SCALE                     4.f          
 #define AC_RENDER_ENTITY_HITBOX                         // flag
 #define AC_RENDER_ENTITY_HITBOX_THICKNESS   1    
 //#define AC_RENDER_ENTITY_REC                            // flag

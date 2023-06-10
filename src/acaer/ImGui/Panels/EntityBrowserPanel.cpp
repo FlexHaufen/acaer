@@ -57,7 +57,7 @@ namespace Acaer {
 
 
     void EntityBrowserPanel::DrawEntityNode(Entity entity) {
-        auto &tag = entity.GetComponent<Tag_C>().tag;
+        auto &tag = entity.GetComponent<Component::Tag>().tag;
 
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
         if (m_SelectionContext == entity) {
@@ -96,10 +96,10 @@ namespace Acaer {
 
     void EntityBrowserPanel::DrawComponents(Entity entity) {
 
-        if (entity.HasComponent<Tag_C>()) {
+        if (entity.HasComponent<Component::Tag>()) {
             ImGui::SeparatorText("Tag");
-            auto &tag = entity.GetComponent<Tag_C>().tag;
-            auto &uuid = entity.GetComponent<Tag_C>().uuid;         
+            auto &tag = entity.GetComponent<Component::Tag>().tag;
+            auto &uuid = entity.GetComponent<Component::Tag>().uuid;         
 
             char buffer[256];
             memset(buffer, 0, sizeof(buffer));  // very dangerous
@@ -113,9 +113,9 @@ namespace Acaer {
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), std::to_string(uuid).c_str());
         }
 
-        if (entity.HasComponent<Transform_C>()) {
+        if (entity.HasComponent<Component::Transform>()) {
             ImGui::SeparatorText("Transform");
-            auto &transform = entity.GetComponent<Transform_C>();
+            auto &transform = entity.GetComponent<Component::Transform>();
 
             s32 i1 = transform.render_layer;
             ImGui::SliderInt("render layer", &i1, 0, 9);
@@ -134,9 +134,9 @@ namespace Acaer {
             f3 = transform.rotation;
         }
 
-        if (entity.HasComponent<Camera_C>()) {
+        if (entity.HasComponent<Component::Camera>()) {
             ImGui::SeparatorText("Transform");
-            auto &camera = entity.GetComponent<Camera_C>();
+            auto &camera = entity.GetComponent<Component::Camera>();
 
             f32 i1 = camera.zoom;
             ImGui::SliderFloat("zoom", &i1, 0.5, 2);

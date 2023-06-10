@@ -8,11 +8,12 @@
  * @copyright Copyright (c) 2023
  * 
  */
-# pragma once
+#pragma once
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Entity/Components.h"
+#include "acaer/Scene/ContactListener/ContactListener.h"
 
 #include "acaer/Scene/World/World.h"
 
@@ -88,7 +89,7 @@ namespace Acaer {
          * @param transform transform to render
          * @param tag       tag component
          */
-        void RenderTransform(Transform_C &transform, Tag_C &tag);
+        void RenderTransform(Component::Transform &transform, Component::Tag &tag);
 
 
         // ** Members **
@@ -99,6 +100,7 @@ namespace Acaer {
         b2World* m_PhysicsWorld = nullptr;
         World* m_World = nullptr;
 
+        ContactListener m_ContactListener;
 
         friend class Entity;            // Entity class
         friend class SceneSerializer;   // Scene Serializer

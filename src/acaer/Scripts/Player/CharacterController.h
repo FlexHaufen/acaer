@@ -24,17 +24,16 @@ namespace Acaer {
     class CharacterController: public ScriptableEntity {
     public:
         void OnUpdate(f32 dt) {
-            auto& rb = GetComponent<RigidBody_C>();
-            auto& c  = GetComponent<Collider_C>();
+            auto& rb = GetComponent<Component::RigidBody>();
+            auto& c  = GetComponent<Component::Collider>();
 
-            // TODO: implement jump flag
-            if (m_CanJump) {
+            if (c.sensors["foot"].userData->isColliding) {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
                     f32 impulse = rb.RuntimeBody->GetMass() * m_jumpImpulse;
                     rb.RuntimeBody->ApplyLinearImpulse(b2Vec2(0, -impulse), rb.RuntimeBody->GetWorldCenter(), true);
                 }
             }
-            
+
             // TODO: use force instead of lin. vel.
             b2Vec2 vel = rb.RuntimeBody->GetLinearVelocity();
             m_velFactor = 5.f; // Set std vel factor
@@ -51,7 +50,7 @@ namespace Acaer {
 
     private:
         // ** Members **
-        b8 m_CanJump = true;
+        //b8 m_CanJump = true;
         f32 m_velFactor;
 
         const f32 m_jumpImpulse = 2.f;

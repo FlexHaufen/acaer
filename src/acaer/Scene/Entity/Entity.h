@@ -88,14 +88,14 @@ namespace Acaer {
          * 
          * @return UUID 
          */
-        UUID GetUUID() { return GetComponent<Tag_C>().uuid; }
+        UUID GetUUID() { return GetComponent<Component::Tag>().uuid; }
 
         /**
          * @brief Get the tag of entity
          * 
          * @return const std::string& tag
          */
-		const std::string& GetTag() { return GetComponent<Tag_C>().tag; }
+		const std::string& GetTag() { return GetComponent<Component::Tag>().tag; }
 
 
         // *** Custom operators ***
