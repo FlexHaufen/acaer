@@ -29,7 +29,8 @@ namespace Acaer {
 		for (WorldChunk* chunk : m_chunks) {
 
 			//! Debug
-			Renderer::RenderChunkBorder(window,chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
+			// TODO (flex): Add renderer ref
+			//Renderer::RenderChunkBorder(window,chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
 			//Renderer::RenderChunkDirtyRect(window, chunk->getMin(), chunk->getMax());
 			
 			RenderChunk(window, chunk);
@@ -58,7 +59,8 @@ namespace Acaer {
 				s32 py = (s32)y + chunk->getPosY();
 	
 				if (cell.type != CellType::EMPTY) {
-					Renderer::RenderCell(window, px, py, cell.color);
+					// TODO (flex): Add renderer ref
+					//Renderer::RenderCell(window, px, py, cell.color);
 				}
 			}
 		}

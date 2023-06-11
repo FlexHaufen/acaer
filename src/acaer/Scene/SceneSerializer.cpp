@@ -192,15 +192,6 @@ namespace Acaer {
             out << YAML::Key << "zoom"         << YAML::Value << c.zoom;
             out << YAML::EndMap;
         }
-
-        if (entity.HasComponent<Component::Input>()) {
-            auto &c = entity.GetComponent<Component::Input>();
-            out << YAML::Key << "Input";
-            out << YAML::BeginMap;
-            out << YAML::Key << "isControllable"<< YAML::Value << c.isControllable;
-            out << YAML::EndMap;
-        }
-        out << YAML::EndMap;
     }
 
     void SceneSerializer::DeserializeEntity(YAML::detail::iterator_value& entity) {
@@ -249,12 +240,6 @@ namespace Acaer {
         if (camera_c) {
             auto& c = currentEntity.GetOrEmplaceComponent<Component::Camera>();
             c.zoom = camera_c["zoom"].as<f32>();
-        }
-
-        auto input_c = entity["Input"];
-        if (input_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Component::Input>();
-            c.isControllable = input_c["isControllable"].as<b8>();
         }
     }
 

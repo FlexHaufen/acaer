@@ -59,7 +59,28 @@ namespace Acaer {
          * 
          */
         struct Sprite {
+            // TODO (flex): runtime texture reload
             sf::Texture texture;                // sf::RenderTexture
+            sf::Sprite spriteTexture;           // sf::Sprite
+        };
+
+        /**
+         * @brief Sprite Animation Component
+         * 
+         */
+        struct SpriteAnimaton {
+            sf::Texture texture;                // sf::RenderTexture
+            sf::Sprite spriteTexture;           // sf::Sprite
+
+            b8 isAnimated = false;
+
+            v2<u8> frameSize = {32, 32};        // Size (with / height) of 1 frame
+            v2<u8> gridSize = {1, 1};           // Size (row / colum) of texture sheet
+        
+            f32 animationSpeed = 10.f;          // animationSpeed [fps]
+            f32 elapsedTime = 0.f;
+            u16 currentFrame = 0;
+            u16 totalFrames = 0;
         };
 
         /**
@@ -130,15 +151,6 @@ namespace Acaer {
          */
         struct Camera {
             f32 zoom = 1.0f;                    // Camera zoom
-        };
-
-        /**
-         * @brief Input Component.
-         *        Entities with this commponent can be moved 
-         *        by the player
-         */
-        struct Input  {
-            b8 isControllable = true;           // true: Player is controllable via input
         };
 
         /**

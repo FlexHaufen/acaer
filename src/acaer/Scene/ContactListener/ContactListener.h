@@ -36,7 +36,6 @@ namespace Acaer {
                 // Cast the user data back to its original type
                 UserData::SensorUserData* userData = reinterpret_cast<UserData::SensorUserData*>(sensorUserData);
                 userData->isColliding = true;
-                AC_CORE_TRACE("{0}", userData->name);
             }
         }
 

@@ -17,21 +17,21 @@
 //*** DEFINES ***
 
 //*** NAMESPACE ***
-namespace Acaer
-{
+namespace Acaer {
 
-    class Renderer
-    {
+    /**
+     * @brief Renderer Class
+     * 
+     */
+    class Renderer {
 
     public:
-        /**
-         * @brief Renders given sprite
-         *
-         * @param window        sf::RenderWindow reference
-         * @param transform_c   transform
-         * @param sprite_c      sprite to render
-         */
-        static void RenderSprite(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c);
+
+        void InitialzeSprites(Component::SpriteAnimaton &sprite);
+
+
+        void RenderSpriteAnimaton(f32 dt, sf::RenderWindow &window, Component::Transform &transform_c, Component::SpriteAnimaton &sprite_c);
+
 
         /**
          * @brief Renders a single Cell
@@ -41,7 +41,7 @@ namespace Acaer
          * @param y             pos y
          * @param c             color of cell (rgba)
          */
-        static void RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c);
+        void RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c);
 
         //! ---------------------------------- DEBUG ----------------------------------
         /**
@@ -51,7 +51,7 @@ namespace Acaer
          * @param transform_c   transform
          * @param collider_c    collider
          */
-        static void RenderCollider(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c);
+        void RenderCollider(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c);
 
         /**
          * @brief Renders all sensors components of given collider
@@ -60,7 +60,7 @@ namespace Acaer
          * @param transform_c   transform
          * @param collider_c    collider
          */
-        static void RenderSensors(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c);
+        void RenderSensors(sf::RenderWindow &window, Component::Transform &transform_c, Component::Collider &collider_c);
 
         /**
          * @brief Render the origin point of given transform
@@ -68,7 +68,7 @@ namespace Acaer
          * @param window        sf::RenderWindow reference
          * @param transform_c   transform
          */
-        static void RenderTransformOrigin(sf::RenderWindow &window, Component::Transform &transform_c);
+        void RenderTransformOrigin(sf::RenderWindow &window, Component::Transform &transform_c);
 
         /**
          * @brief Render the outline of given sprite
@@ -77,11 +77,11 @@ namespace Acaer
          * @param transform_c   transform
          * @param sprite_c      sprite
          */
-        static void RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c);
+        void RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::SpriteAnimaton &sprite_c);
 
         // TODO: Add description
-        static void RenderChunkBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY);
-        static void RenderChunkDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos);
+        void RenderChunkBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY);
+        void RenderChunkDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos);
         //! ---------------------------------------------------------------------------
 
     private:
@@ -95,6 +95,6 @@ namespace Acaer
          * @param color         color of rectangle
          * @param isFilled      render filled rectangle
          */
-        static void RenderRectWithOutline(sf::RenderWindow &window, sf::RectangleShape &rec, sf::Color color, b8 isFilled);
+        void RenderRectWithOutline(sf::RenderWindow &window, sf::RectangleShape &rec, sf::Color color, b8 isFilled);
     };
 }

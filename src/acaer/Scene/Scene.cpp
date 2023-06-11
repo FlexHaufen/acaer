@@ -31,6 +31,9 @@ namespace Acaer {
         AC_CORE_INFO("    Width:  {0}", AC_WINDOW_X);
         AC_CORE_INFO("    Height: {0}", AC_WINDOW_Y);
         m_Camera.setSize(sf::Vector2f(AC_WINDOW_X, AC_WINDOW_Y));
+
+        AC_CORE_INFO("Setting up Renderer");
+        m_Renderer = new Renderer();
     }
 
     Scene::~Scene() {
@@ -63,21 +66,34 @@ namespace Acaer {
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
         m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
-        auto view = m_Registry.view<Component::RigidBody>();
-        for (auto e: view) {
-            Entity entity = {e, this};
-
-            // Create Physics Body
-            if (entity.HasComponent<Component::RigidBody>()) {
-                auto &t = entity.GetComponent<Component::Transform>();
-                auto &rb = entity.GetComponent<Component::RigidBody>();
-                auto &c = entity.GetComponent<Component::Collider>();
-                Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
-            }
-        }
-
         // ** ContactListener **
         m_PhysicsWorld->SetContactListener(&m_ContactListener);
+        {
+            auto view = m_Registry.view<Component::RigidBody>();
+            for (auto e: view) {
+                Entity entity = {e, this};
+
+                // Create Physics Body
+                if (entity.HasComponent<Component::RigidBody>()) {
+                    auto &t = entity.GetComponent<Component::Transform>();
+                    auto &rb = entity.GetComponent<Component::RigidBody>();
+                    auto &c = entity.GetComponent<Component::Collider>();
+                    Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
+                }
+            }
+        }
+        {
+            auto view = m_Registry.view<Component::SpriteAnimaton>();
+            for (auto e: view) {
+                Entity entity = {e, this};
+
+                // Create Physics Body
+                if (entity.HasComponent<Component::SpriteAnimaton>()) {
+                    auto &s = entity.GetComponent<Component::SpriteAnimaton>();
+                    m_Renderer->InitialzeSprites(s);
+                }
+            }
+        }
 
         //!------- DEBUG --------
         /*
@@ -196,7 +212,7 @@ namespace Acaer {
     }
 
 
-    void Scene::OnRender(sf::RenderWindow &window) {
+    void Scene::OnRender(f32 dt, sf::RenderWindow &window) {
         // ** Render **
         {
             auto group = m_Registry.group<Component::Tag>(entt::get<Component::Transform>);
@@ -207,23 +223,22 @@ namespace Acaer {
                 auto &tag = entity.GetComponent<Component::Tag>();
                 auto &t = entity.GetComponent<Component::Transform>();
                
-                // render Sprite
-                if (entity.HasComponent<Component::Sprite>()) {
-                    auto &s = entity.GetComponent<Component::Sprite>();
-                    Renderer::RenderSprite(window, t, s);
-
+                if (entity.HasComponent<Component::SpriteAnimaton>()) {
+                    auto &sa = entity.GetComponent<Component::SpriteAnimaton>();
                     #ifdef AC_DEBUG_RENDER
-                        Renderer::RenderSpriteOutline(window, t, s);
+                        m_Renderer->RenderSpriteOutline(window, t, sa);
                     #endif
+          
+                    m_Renderer->RenderSpriteAnimaton(dt, window, t, sa);
                 }
 
                 #ifdef AC_DEBUG_RENDER
-                    Renderer::RenderTransformOrigin(window, t);
+                    m_Renderer->RenderTransformOrigin(window, t);
                     // Render Colliders
                     if (entity.HasComponent<Component::Collider>()) {
                         auto &c = entity.GetComponent<Component::Collider>();
-                        Renderer::RenderCollider(window, t, c);
-                        Renderer::RenderSensors(window, t, c);
+                        m_Renderer->RenderCollider(window, t, c);
+                        m_Renderer->RenderSensors(window, t, c);
                     }
                 #endif
             }

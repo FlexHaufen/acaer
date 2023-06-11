@@ -36,16 +36,40 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
+    void Renderer::InitialzeSprites(Component::SpriteAnimaton &sprite) {
+        if (sprite.texture.getSize() == sf::Vector2u(0, 0)) {
+            // TODO (flex): Add Default texture
+            // TODO (flex): Use tag component to identify sprite
+            AC_CORE_WARN("Renderer could not find valid texture");
+            return;
+        }
+        sprite.spriteTexture.setTexture(sprite.texture);
 
-    void Renderer::RenderSprite(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c) {
-        sf::Sprite sprite;
-        sprite.setTexture(sprite_c.texture);
+        if (sprite.isAnimated) {
+            sprite.totalFrames = (sprite.gridSize.x * sprite.gridSize.y);
+        }
+    }
 
-        // Scale texture to size
-        sprite.setScale({AC_GLOBAL_SCALE, AC_GLOBAL_SCALE});
-        sprite.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
-        sprite.setRotation(transform_c.rotation);
-        window.draw(sprite);
+    void Renderer::RenderSpriteAnimaton(f32 dt, sf::RenderWindow &window, Component::Transform &transform_c, Component::SpriteAnimaton &sprite) {
+        if (sprite.isAnimated) {
+            
+            sprite.elapsedTime += dt;
+
+            if (sprite.elapsedTime >= 1.0f / sprite.animationSpeed) {
+                sprite.currentFrame = (sprite.currentFrame + 1) % sprite.totalFrames;    
+                // Calculate coords
+                v2<s16> coords = {
+                    .x = (sprite.currentFrame % sprite.gridSize.y) * sprite.frameSize.x,
+                    .y = (sprite.currentFrame / sprite.gridSize.y) * sprite.frameSize.y
+                };
+                sprite.spriteTexture.setTextureRect(sf::IntRect(coords.x, coords.y, sprite.frameSize.x, sprite.frameSize.y));
+                sprite.elapsedTime = 0.f;
+            }
+        }
+        sprite.spriteTexture.setScale({AC_GLOBAL_SCALE, AC_GLOBAL_SCALE});
+        sprite.spriteTexture.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
+        sprite.spriteTexture.setRotation(transform_c.rotation);
+        window.draw(sprite.spriteTexture);
     }
 
     void Renderer::RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c) {
@@ -85,11 +109,19 @@ namespace Acaer {
         window.draw(c);
     }
 
-    void Renderer::RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c) {
+    void Renderer::RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::SpriteAnimaton &sprite_c) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
         rec.setRotation(transform_c.rotation);
-        rec.setSize(sf::Vector2f((f32)sprite_c.texture.getSize().x * AC_GLOBAL_SCALE, (f32)sprite_c.texture.getSize().y * AC_GLOBAL_SCALE));
+
+        if (sprite_c.isAnimated) {
+            rec.setSize(sf::Vector2f((f32)sprite_c.frameSize.y * AC_GLOBAL_SCALE, 
+                                     (f32)sprite_c.frameSize.y * AC_GLOBAL_SCALE));
+        }
+        else {
+            rec.setSize(sf::Vector2f((f32)sprite_c.texture.getSize().x * AC_GLOBAL_SCALE, 
+                                     (f32)sprite_c.texture.getSize().y * AC_GLOBAL_SCALE));
+        }
         RenderRectWithOutline(window, rec, AC_SPRITE_OUTLINE_COLOR, false); 
     }
 

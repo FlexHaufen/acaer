@@ -75,7 +75,7 @@ namespace Acaer {
             auto &c = ent.AddComponent<Component::Collider>();
             c.size = {400, 40};
 
-            auto &s = ent.AddComponent<Component::Sprite>();
+            auto &s = ent.AddComponent<Component::SpriteAnimaton>();
             if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
@@ -86,7 +86,7 @@ namespace Acaer {
             auto &t = ent.AddComponent<Component::Transform>();
             t.pos = {150, -444};
 
-            auto &s = ent.AddComponent<Component::Sprite>();
+            auto &s = ent.AddComponent<Component::SpriteAnimaton>();
             if (!s.texture.loadFromFile("assets/Textures/World/fir_tree_1.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
@@ -96,7 +96,6 @@ namespace Acaer {
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Component::Transform>();
             t.pos = {150, 0};
-            player.AddComponent<Component::Input>();
             auto &cam = player.AddComponent<Component::Camera>();
             cam.zoom = 1.2f;
             player.AddComponent<Component::NativeScript>().Bind<CharacterController>();
@@ -113,10 +112,13 @@ namespace Acaer {
             sns.offset = {0, 180};
             c.sensors.emplace(sns.userData->name, sns);
 
-            auto &s = player.AddComponent<Component::Sprite>();
-            if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
+            auto &s = player.AddComponent<Component::SpriteAnimaton>();
+            if (!s.texture.loadFromFile("assets/Textures/Player/run_anim_temp-Sheet.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
+            s.gridSize = {1, 8};
+            s.frameSize = {48, 48};
+            s.isAnimated = true;
         }
         //! ----------------
     #endif
@@ -172,7 +174,7 @@ namespace Acaer {
 
             // ---- RENDER LOOP ----
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
-            m_ActiveScene->OnRender(m_Window);
+            m_ActiveScene->OnRender(dt_sec, m_Window);
             
             //ImGui::ShowDemoWindow();
             m_EntityBrowserPanel.OnImGuiRender();

@@ -1,11 +1,11 @@
 Scene: Untitled
 Entities:
-  - Entity: 4641130846421276317
+  - Entity: 12121571409837481392
     Tag:
       tag: player
     Transform:
       render_layer: "\x00"
-      pos: [41.7414322, -50.4499855]
+      pos: [128, -50.4499855]
       scale: [1, 1]
       rotation: -0
     RigitBody_C:
@@ -24,33 +24,31 @@ Entities:
           size: [40, 10]
     Camera:
       zoom: 1.20000005
-    Input:
-      isControllable: true
-  - Entity: 3181791846682471510
-    Tag:
-      tag: tree
-    Transform:
-      render_layer: "\x00"
-      pos: [150, -444]
-      scale: [1, 1]
-      rotation: 0
-  - Entity: 8318683219282618997
-    Tag:
-      tag: ent1
-    Transform:
-      render_layer: "\x00"
-      pos: [-100, 130]
-      scale: [1, 1]
-      rotation: -0
-    RigitBody_C:
-      type: 0
-      fixedRoation: true
-      density: 1
-      friction: 0.5
-      restitution: 0
-      restitutionThreshold: 0
-    Collider:
-      offset: [0, 0]
-      size: [400, 40]
-      Sensors:
-        []
+    ? Entity: 14529058825499465708
+      Tag:
+        tag: tree
+      Transform:
+        render_layer: "\x00"
+        pos: [150, -444]
+        scale: [1, 1]
+        rotation: 0
+      ? Entity: 18089634680522742997
+        Tag:
+          tag: ent1
+        Transform:
+          render_layer: "\x00"
+          pos: [-100, 130]
+          scale: [1, 1]
+          rotation: -0
+        RigitBody_C:
+          type: 0
+          fixedRoation: true
+          density: 1
+          friction: 0.5
+          restitution: 0
+          restitutionThreshold: 0
+        Collider:
+          offset: [0, 0]
+          size: [400, 40]
+          Sensors:
+            []

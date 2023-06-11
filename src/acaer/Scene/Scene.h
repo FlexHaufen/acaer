@@ -76,9 +76,10 @@ namespace Acaer {
         /**
          * @brief Main render update function
          * 
+         * @param dt delta time
          * @param window sf::Window reference
          */
-        void OnRender(sf::RenderWindow &window);
+        void OnRender(f32 dt, sf::RenderWindow &window);
 
 
     private:
@@ -99,6 +100,8 @@ namespace Acaer {
 
         b2World* m_PhysicsWorld = nullptr;
         World* m_World = nullptr;
+
+        Renderer* m_Renderer = nullptr; // Renderer
 
         ContactListener m_ContactListener;
 
