@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2023
  * 
  */
-# pragma once
+#pragma once
 
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"

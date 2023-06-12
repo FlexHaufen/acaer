@@ -15,6 +15,9 @@
 #include "acaer/Scene/Entity/Components.h"
 #include "acaer/Scene/ContactListener/ContactListener.h"
 
+#include "acaer/Scene/Renderer/Renderer.h"
+#include "acaer/Scene/Handlers/SpriteHandler.h"
+
 #include "acaer/Scene/World/World.h"
 
 //*** DEFINES ***
@@ -102,6 +105,7 @@ namespace Acaer {
         World* m_World = nullptr;
 
         Renderer* m_Renderer = nullptr; // Renderer
+        SpriteHandler m_SpriteHandler;  // Animator
 
         ContactListener m_ContactListener;
 

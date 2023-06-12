@@ -27,10 +27,7 @@ namespace Acaer {
 
     public:
 
-        void InitialzeSprites(Component::SpriteAnimaton &sprite);
-
-
-        void RenderSpriteAnimaton(f32 dt, sf::RenderWindow &window, Component::Transform &transform_c, Component::SpriteAnimaton &sprite_c);
+        void RenderSprite(sf::RenderWindow &window, Component::Sprite &sprite_c);
 
 
         /**
@@ -77,7 +74,7 @@ namespace Acaer {
          * @param transform_c   transform
          * @param sprite_c      sprite
          */
-        void RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::SpriteAnimaton &sprite_c);
+        void RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c);
 
         // TODO: Add description
         void RenderChunkBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY);

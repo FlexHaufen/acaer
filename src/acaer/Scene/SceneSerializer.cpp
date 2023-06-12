@@ -192,6 +192,7 @@ namespace Acaer {
             out << YAML::Key << "zoom"         << YAML::Value << c.zoom;
             out << YAML::EndMap;
         }
+        out << YAML::EndMap;
     }
 
     void SceneSerializer::DeserializeEntity(YAML::detail::iterator_value& entity) {

@@ -54,33 +54,32 @@ namespace Acaer {
             Tag(const Tag&) = default;
         };
 
-        /**
-         * @brief Sprite Component
-         * 
-         */
-        struct Sprite {
-            // TODO (flex): runtime texture reload
-            sf::Texture texture;                // sf::RenderTexture
-            sf::Sprite spriteTexture;           // sf::Sprite
+
+        struct SpriteAnimatior {
+            struct Animation {
+                u8 framePos     = 0;            // Animation pos on spritesheet
+                u8 frameLenght  = 8;            // How many frames in animation
+                v2<u8> frameSize;               // Size (with / height) of 1 frame
+
+                b8 isMirrored   = false;        // Mirror animation
+
+                u16 currentFrame = 0;;
+                f32 animationSpeed = 10.f;      // animationSpeed [fps]
+                f32 elapsedTime = 0.f;
+            };
+
+            std::string currentAnimation;
+            std::map<std::string, Animation> pool;
         };
 
         /**
          * @brief Sprite Animation Component
          * 
          */
-        struct SpriteAnimaton {
+        struct Sprite {
+            // TODO (flex): runtime texture reload
             sf::Texture texture;                // sf::RenderTexture
             sf::Sprite spriteTexture;           // sf::Sprite
-
-            b8 isAnimated = false;
-
-            v2<u8> frameSize = {32, 32};        // Size (with / height) of 1 frame
-            v2<u8> gridSize = {1, 1};           // Size (row / colum) of texture sheet
-        
-            f32 animationSpeed = 10.f;          // animationSpeed [fps]
-            f32 elapsedTime = 0.f;
-            u16 currentFrame = 0;
-            u16 totalFrames = 0;
         };
 
         /**

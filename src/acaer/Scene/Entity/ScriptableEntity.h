@@ -34,5 +34,4 @@ namespace Acaer {
 		Entity m_Entity;
 		friend class Scene;
 	};
-
 }

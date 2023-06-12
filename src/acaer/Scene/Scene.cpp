@@ -14,7 +14,6 @@
 #include "acaer/Scene/Entity/Entity.h"
 #include "acaer/Scene/Entity/ScriptableEntity.h"
 
-#include "acaer/Scene/Renderer/Renderer.h"
 
 #include "acaer/Helper/Convert/Convert.h"
 
@@ -63,7 +62,10 @@ namespace Acaer {
     }
 
     void Scene::OnStart() {
+
+        AC_CORE_INFO("Setting up PhysicsWorld");
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
+        AC_CORE_INFO("Setting up World");
         m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
         // ** ContactListener **
@@ -82,15 +84,17 @@ namespace Acaer {
                 }
             }
         }
+
+        AC_CORE_INFO("Setting up SpriteHandler");
         {
-            auto view = m_Registry.view<Component::SpriteAnimaton>();
+            auto view = m_Registry.view<Component::Sprite>();
             for (auto e: view) {
                 Entity entity = {e, this};
 
                 // Create Physics Body
-                if (entity.HasComponent<Component::SpriteAnimaton>()) {
-                    auto &s = entity.GetComponent<Component::SpriteAnimaton>();
-                    m_Renderer->InitialzeSprites(s);
+                if (entity.HasComponent<Component::Sprite>()) {
+                    auto &s = entity.GetComponent<Component::Sprite>();
+                    m_SpriteHandler.OnStart(s);
                 }
             }
         }
@@ -209,6 +213,26 @@ namespace Acaer {
                 window.setView(m_Camera);
             }
         }
+
+        // ** Update Sprites **
+        {
+            auto view = m_Registry.view<Component::Sprite>();
+            for (auto e : view) {
+                Entity entity = {e, this};
+                auto &s = entity.GetComponent<Component::Sprite>();
+                auto &t = entity.GetComponent<Component::Transform>();
+
+                // Update Dynamic Sprites
+                if (entity.HasComponent<Component::SpriteAnimatior>()) {
+                    auto &sa = entity.GetComponent<Component::SpriteAnimatior>();
+                    m_SpriteHandler.HandleDynamicSprite(dt, s, sa, t);
+                }
+                // Update Static Sprites
+                else {
+                    m_SpriteHandler.HandleStaticSprite(s, t);
+                }
+            }
+        }
     }
 
 
@@ -223,13 +247,15 @@ namespace Acaer {
                 auto &tag = entity.GetComponent<Component::Tag>();
                 auto &t = entity.GetComponent<Component::Transform>();
                
-                if (entity.HasComponent<Component::SpriteAnimaton>()) {
-                    auto &sa = entity.GetComponent<Component::SpriteAnimaton>();
+                if (entity.HasComponent<Component::Sprite>()) {
+                    auto &s = entity.GetComponent<Component::Sprite>();
+                   
+                    m_Renderer->RenderSprite(window, s);
+
                     #ifdef AC_DEBUG_RENDER
-                        m_Renderer->RenderSpriteOutline(window, t, sa);
+                        m_Renderer->RenderSpriteOutline(window, t, s);
                     #endif
-          
-                    m_Renderer->RenderSpriteAnimaton(dt, window, t, sa);
+
                 }
 
                 #ifdef AC_DEBUG_RENDER

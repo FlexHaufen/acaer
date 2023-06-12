@@ -75,7 +75,7 @@ namespace Acaer {
             auto &c = ent.AddComponent<Component::Collider>();
             c.size = {400, 40};
 
-            auto &s = ent.AddComponent<Component::SpriteAnimaton>();
+            auto &s = ent.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
@@ -86,7 +86,7 @@ namespace Acaer {
             auto &t = ent.AddComponent<Component::Transform>();
             t.pos = {150, -444};
 
-            auto &s = ent.AddComponent<Component::SpriteAnimaton>();
+            auto &s = ent.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/World/fir_tree_1.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
@@ -104,21 +104,31 @@ namespace Acaer {
             rb.density = 5.f;
             rb.friction = 0.9f;
             auto &c = player.AddComponent<Component::Collider>();
-            c.size = {44, 180};
+            c.size = {192, 192};
 
             Component::Collider::Sensor sns;
             sns.userData->name = "foot";
-            sns.size = {40, 10};
-            sns.offset = {0, 180};
+            sns.size = {60, 10};
+            sns.offset = {66, 192};
             c.sensors.emplace(sns.userData->name, sns);
 
-            auto &s = player.AddComponent<Component::SpriteAnimaton>();
+            auto &s = player.AddComponent<Component::Sprite>();
             if (!s.texture.loadFromFile("assets/Textures/Player/run_anim_temp-Sheet.png")) {
                 AC_CORE_WARN("Couldn't load sprite texture");
             }
-            s.gridSize = {1, 8};
-            s.frameSize = {48, 48};
-            s.isAnimated = true;
+            auto &sa = player.AddComponent<Component::SpriteAnimatior>();
+            sa.currentAnimation = "run_left";
+            sa.pool.emplace("run_right", Component::SpriteAnimatior::Animation{
+                                            .framePos = 1,
+                                            .frameLenght = 8,
+                                            .frameSize {48, 48}
+                                        });
+            sa.pool.emplace("run_left", Component::SpriteAnimatior::Animation{
+                                            .framePos = 1,
+                                            .frameLenght = 8,
+                                            .frameSize {48, 48},
+                                            .isMirrored = true
+                                        });
         }
         //! ----------------
     #endif
