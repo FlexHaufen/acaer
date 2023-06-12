@@ -119,12 +119,12 @@ namespace Acaer {
             auto &sa = player.AddComponent<Component::SpriteAnimatior>();
             sa.currentAnimation = "run_left";
             sa.pool.emplace("run_right", Component::SpriteAnimatior::Animation{
-                                            .framePos = 1,
+                                            .framePos = 0,
                                             .frameLenght = 8,
                                             .frameSize {48, 48}
                                         });
             sa.pool.emplace("run_left", Component::SpriteAnimatior::Animation{
-                                            .framePos = 1,
+                                            .framePos = 0,
                                             .frameLenght = 8,
                                             .frameSize {48, 48},
                                             .isMirrored = true

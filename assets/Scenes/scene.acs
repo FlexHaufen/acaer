@@ -1,11 +1,11 @@
 Scene: Untitled
 Entities:
-  - Entity: 12295451304393369578
+  - Entity: 1751657271382444995
     Tag:
       tag: player
     Transform:
       render_layer: "\x00"
-      pos: [-66.5202789, -62.4499855]
+      pos: [-22.2436295, -62.4499855]
       scale: [1, 1]
       rotation: -0
     RigitBody_C:
@@ -24,7 +24,7 @@ Entities:
           size: [60, 10]
     Camera:
       zoom: 1.20000005
-  - Entity: 859574770777212797
+  - Entity: 3424974218870461269
     Tag:
       tag: tree
     Transform:
@@ -32,7 +32,7 @@ Entities:
       pos: [150, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 3981672908929439562
+  - Entity: 3425867241991393479
     Tag:
       tag: ent1
     Transform:
