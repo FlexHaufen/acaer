@@ -33,13 +33,9 @@ namespace Acaer {
     Core::Core() {
         Log::Init();
 
-        AC_CORE_INFO("ACAER v{0}", AC_VERSION);
-        AC_CORE_INFO("----------------------");
-
         AC_CORE_INFO("Initializing Core");
         
-
-        AC_CORE_INFO("Creating Window");
+        AC_CORE_INFO("Creating main window");
         m_WindowTitle = "acaer v";
         m_WindowTitle.append(AC_VERSION);
         m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), m_WindowTitle);

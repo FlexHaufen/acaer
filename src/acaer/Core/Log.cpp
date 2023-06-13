@@ -46,6 +46,9 @@ namespace Acaer {
 		s_ClientLogger->set_level(spdlog::level::info);
 		s_ClientLogger->flush_on(spdlog::level::info);
 
+		AC_CORE_INFO("-------------------------------------");
+		AC_CORE_INFO("Acaer v{0}", AC_VERSION);
+		AC_CORE_INFO("-------------------------------------");
 		AC_CORE_INFO("Logger Initialized");
 	}
 }

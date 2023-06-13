@@ -86,7 +86,7 @@ namespace Acaer {
         }
 
         sf::Color b2Color_to_sfColor(b2Color c) {
-            return sf::Color((f32)c.r*255, (f32)c.g*255, (f32)c.b*255, (f32)c.a*255);
+            return sf::Color((u8)(c.r*255), (u8)(c.g*255), (u8)(c.b*255), (u8)(c.a*255));
         }
     }
 }
