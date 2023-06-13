@@ -23,7 +23,9 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-    Scene::Scene() {
+    // FIXME (flex): Dont init debugrenderer in constructor
+    Scene::Scene(sf::RenderWindow &window) 
+    : m_DebugRenderer(window) {
         AC_CORE_INFO("Initializing Scene");
 
         AC_CORE_INFO("Setting up Camera:");
@@ -65,6 +67,8 @@ namespace Acaer {
 
         AC_CORE_INFO("Setting up PhysicsWorld");
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
+        m_PhysicsWorld->SetDebugDraw(&m_DebugRenderer);
+
         AC_CORE_INFO("Setting up World");
         m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
@@ -258,17 +262,21 @@ namespace Acaer {
 
                 }
 
-                #ifdef AC_DEBUG_RENDER
-                    m_Renderer->RenderTransformOrigin(window, t);
-                    // Render Colliders
-                    if (entity.HasComponent<Component::Collider>()) {
-                        auto &c = entity.GetComponent<Component::Collider>();
-                        m_Renderer->RenderCollider(window, t, c);
-                        m_Renderer->RenderSensors(window, t, c);
-                    }
-                #endif
+                //#ifdef AC_DEBUG_RENDER
+                //    m_Renderer->RenderTransformOrigin(window, t);
+                //    // Render Colliders
+                //    if (entity.HasComponent<Component::Collider>()) {
+                //        auto &c = entity.GetComponent<Component::Collider>();
+                //        m_Renderer->RenderCollider(window, t, c);
+                //        m_Renderer->RenderSensors(window, t, c);
+                //    }
+                //#endif
             }
+
         }
         m_World->OnRender(window);
+
+
+        m_PhysicsWorld->DebugDraw();
     }
 }

@@ -16,6 +16,8 @@
 #include "acaer/Scene/ContactListener/ContactListener.h"
 
 #include "acaer/Scene/Renderer/Renderer.h"
+#include "acaer/Scene/Renderer/DebugRenderer.h"
+
 #include "acaer/Scene/Handlers/SpriteHandler.h"
 
 #include "acaer/Scene/World/World.h"
@@ -34,7 +36,7 @@ namespace Acaer {
     class Scene {
 
     public:
-        Scene();
+        Scene(sf::RenderWindow &window);
         ~Scene();
 
         static Ref<Scene> Copy(Ref<Scene> other);
@@ -105,6 +107,7 @@ namespace Acaer {
         World* m_World = nullptr;
 
         Renderer* m_Renderer = nullptr; // Renderer
+        DebugRenderer m_DebugRenderer;
         SpriteHandler m_SpriteHandler;  // Animator
 
         ContactListener m_ContactListener;

@@ -61,5 +61,14 @@ namespace Acaer {
          * @return vColor   sf::Color
          */
         sf::Color vColor_to_sfColor(vColor c);
+
+
+        /**
+         * @brief Coverts v2Color to sf::Color
+         * 
+         * @param c             b2Color
+         * @return sf::Color    sf::Color
+         */
+        sf::Color b2Color_to_sfColor(b2Color c);
     }
 }

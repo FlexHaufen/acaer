@@ -53,7 +53,7 @@ namespace Acaer {
         }
         
         m_ImGuiLayer->OnAttach(m_Window);
-        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene = CreateRef<Scene>(m_Window);
 
     #ifdef AC_SCENE_LOAD_ON_OPEN
         AC_CORE_INFO("Loading scene...");
@@ -186,9 +186,8 @@ namespace Acaer {
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
             m_ActiveScene->OnRender(dt_sec, m_Window);
             
-            //ImGui::ShowDemoWindow();
+            ImGui::ShowDemoWindow();
             m_EntityBrowserPanel.OnImGuiRender();
-
             m_ImGuiLayer->OnRender(m_Window);
             m_Window.display();
         }
