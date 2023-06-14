@@ -81,7 +81,7 @@ namespace Acaer {
             t.pos = {150, -444};
 
             auto &s = ent.AddComponent<Component::Sprite>();
-            s.texturepath = "assets/Textures/World/fir_ree_1.png";
+            s.texturepath = "assets/Textures/World/fir_tree_1.png";
         }
         {   // Player
             AC_CORE_TRACE("creating player");
