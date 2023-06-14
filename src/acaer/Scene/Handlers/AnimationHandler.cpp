@@ -21,7 +21,11 @@ namespace Acaer {
         static v2<s32> frameCoord;
 
         // Get currently active animation
-        Component::SpriteAnimatior::Animation &currentAnimation = spriteAnimator.pool[spriteAnimator.currentAnimation];
+        if (!spriteAnimator.pool.contains(spriteAnimator.currentAnimation)) {
+            AC_CORE_WARN("Animation [{0}] not found!", spriteAnimator.currentAnimation);
+        }
+
+        Component::SpriteAnimatior::Animation &currentAnimation = spriteAnimator.pool.at(spriteAnimator.currentAnimation);
         currentAnimation.elapsedTime += dt;
         if (currentAnimation.elapsedTime >= 1.0f / currentAnimation.animationSpeed) {
 

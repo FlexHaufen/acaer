@@ -67,7 +67,11 @@ namespace Acaer {
 
         AC_CORE_INFO("Setting up PhysicsWorld");
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
-        m_PhysicsWorld->SetDebugDraw(&m_DebugRenderer);
+
+        #ifdef AC_DEBUG_RENDER
+            AC_CORE_INFO("Setting up Debug Renderer");
+            m_PhysicsWorld->SetDebugDraw(&m_DebugRenderer);
+        #endif
 
         AC_CORE_INFO("Setting up World");
         m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
@@ -252,32 +256,26 @@ namespace Acaer {
                 auto &tag = entity.GetComponent<Component::Tag>();
                 auto &t = entity.GetComponent<Component::Transform>();
                
+                #ifdef AC_DEBUG_RENDER
+                    m_DebugRenderer.RenderTransformOrigin(window, t);
+                #endif
+
                 if (entity.HasComponent<Component::Sprite>()) {
                     auto &s = entity.GetComponent<Component::Sprite>();
                    
                     m_Renderer->RenderSprite(window, s);
 
                     #ifdef AC_DEBUG_RENDER
-                        m_Renderer->RenderSpriteOutline(window, t, s);
+                        m_DebugRenderer.RenderSpriteOutline(window, t, s);
                     #endif
 
                 }
-
-                //#ifdef AC_DEBUG_RENDER
-                //    m_Renderer->RenderTransformOrigin(window, t);
-                //    // Render Colliders
-                //    if (entity.HasComponent<Component::Collider>()) {
-                //        auto &c = entity.GetComponent<Component::Collider>();
-                //        m_Renderer->RenderCollider(window, t, c);
-                //        m_Renderer->RenderSensors(window, t, c);
-                //    }
-                //#endif
             }
-
         }
         m_World->OnRender(window);
 
-
-        m_PhysicsWorld->DebugDraw();
+        #ifdef AC_DEBUG_RENDER
+            m_PhysicsWorld->DebugDraw();
+        #endif
     }
 }
