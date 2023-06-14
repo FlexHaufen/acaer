@@ -78,6 +78,7 @@ namespace Acaer {
          */
         struct Sprite {
             // TODO (flex): runtime texture reload
+            std::string texturepath;            // Texturepath
             sf::Texture texture;                // sf::RenderTexture
             sf::Sprite spriteTexture;           // sf::Sprite
         };
@@ -132,8 +133,8 @@ namespace Acaer {
             struct Sensor {
                 UserData::SensorUserData* userData = nullptr;
 
-                v2f size   = {10, 10};          // Size [px]
-                v2f offset = {0, 0};            // Offset [px] relative to pos of Transform. usually {0, 0}
+                v2f size   = {10, 10};              // Size [px]
+                v2f offset = {0, 0};                // Offset [px] relative to center of collider.
             
                 Sensor() { userData = new UserData::SensorUserData(); }
             };

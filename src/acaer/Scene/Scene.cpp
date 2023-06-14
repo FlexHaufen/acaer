@@ -98,7 +98,8 @@ namespace Acaer {
                 // Create Physics Body
                 if (entity.HasComponent<Component::Sprite>()) {
                     auto &s = entity.GetComponent<Component::Sprite>();
-                    m_SpriteHandler.OnStart(s);
+                    auto &t = entity.GetComponent<Component::Tag>();
+                    m_SpriteHandler.OnStart(s, t);
                 }
             }
         }

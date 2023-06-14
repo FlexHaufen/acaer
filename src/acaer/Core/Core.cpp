@@ -72,9 +72,7 @@ namespace Acaer {
             c.size = {400, 40};
 
             auto &s = ent.AddComponent<Component::Sprite>();
-            if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
-                AC_CORE_WARN("Couldn't load sprite texture");
-            }
+            s.texturepath = "assets/Textures/Debug/platform.png";
         }
         {   // tree
             AC_CORE_TRACE("tree");
@@ -83,9 +81,7 @@ namespace Acaer {
             t.pos = {150, -444};
 
             auto &s = ent.AddComponent<Component::Sprite>();
-            if (!s.texture.loadFromFile("assets/Textures/World/fir_tree_1.png")) {
-                AC_CORE_WARN("Couldn't load sprite texture");
-            }
+            s.texturepath = "assets/Textures/World/fir_ree_1.png";
         }
         {   // Player
             AC_CORE_TRACE("creating player");
@@ -105,13 +101,11 @@ namespace Acaer {
             Component::Collider::Sensor sns;
             sns.userData->name = "foot";
             sns.size = {60, 10};
-            sns.offset = {66, 192};
+            sns.offset = {0, 192};
             c.sensors.emplace(sns.userData->name, sns);
 
             auto &s = player.AddComponent<Component::Sprite>();
-            if (!s.texture.loadFromFile("assets/Textures/Player/run_anim_temp-Sheet.png")) {
-                AC_CORE_WARN("Couldn't load sprite texture");
-            }
+            s.texturepath = "assets/Textures/Player/run_anim_temp-Sheet.png";
             auto &sa = player.AddComponent<Component::SpriteAnimatior>();
             sa.currentAnimation = "run_left";
             sa.pool.emplace("run_right", Component::SpriteAnimatior::Animation{
@@ -182,7 +176,7 @@ namespace Acaer {
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
             m_ActiveScene->OnRender(dt_sec, m_Window);
             
-            ImGui::ShowDemoWindow();
+            //ImGui::ShowDemoWindow();
             m_EntityBrowserPanel.OnImGuiRender();
             m_ImGuiLayer->OnRender(m_Window);
             m_Window.display();

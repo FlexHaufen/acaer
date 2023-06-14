@@ -16,6 +16,7 @@
 #include "acaer/Scene/Handlers/AnimationHandler.h"
 
 //*** DEFINES ***
+#define AC_ERROR_TEXTURE_PATH   "assets/Textures/Debug/error_texture.png"
 
 //*** NAMESPACE ***
 namespace Acaer {
@@ -26,13 +27,17 @@ namespace Acaer {
         //~SpriteHandler();
 
 
-        void OnStart(Component::Sprite &sprite) {
+        void OnStart(Component::Sprite &sprite, Component::Tag &tag) {
 
-            if (sprite.texture.getSize() == sf::Vector2u(0, 0)) {
-                // TODO (flex): Add Default texture
-                // TODO (flex): Use tag component to identify sprite
-                AC_CORE_WARN("Renderer could not find valid texture");
-                return;
+            if (!sprite.texture.loadFromFile(sprite.texturepath)) {
+                AC_CORE_WARN("Renderer could not find valid texture of Entity:");
+                AC_CORE_WARN("    - {0}: [{1}]", tag.tag, tag.uuid);
+
+                if (!sprite.texture.loadFromFile(AC_ERROR_TEXTURE_PATH)) {
+                    AC_CORE_ERROR("Failed to load error_texture");
+                    return;
+                }
+
             }
             sprite.spriteTexture.setTexture(sprite.texture);
             sprite.spriteTexture.setScale({AC_GLOBAL_SCALE, AC_GLOBAL_SCALE});
