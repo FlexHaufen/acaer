@@ -27,7 +27,7 @@ namespace Acaer {
         //~SpriteHandler();
 
 
-        void OnStart(Component::Sprite &sprite, Component::Tag &tag) {
+        void OnStart(Component::Sprite &sprite, const Component::Tag &tag) {
 
             if (!sprite.texture.loadFromFile(sprite.texturepath)) {
                 AC_CORE_WARN("Renderer could not find valid texture of Entity:");

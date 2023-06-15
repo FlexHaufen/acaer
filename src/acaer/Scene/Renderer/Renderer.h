@@ -27,7 +27,7 @@ namespace Acaer {
 
     public:
 
-        void RenderSprite(sf::RenderWindow &window, Component::Sprite &sprite_c);
+        void RenderSprite(sf::RenderWindow &window, const Component::Sprite &sprite_c);
 
         /**
          * @brief Renders a single Cell

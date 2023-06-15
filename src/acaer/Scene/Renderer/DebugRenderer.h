@@ -61,7 +61,7 @@ namespace Acaer {
          * @param window        sf::RenderWindow reference
          * @param transform_c   transform
          */
-        void RenderTransformOrigin(sf::RenderWindow &window, Component::Transform &transform_c);
+        void RenderTransformOrigin(sf::RenderWindow &window, const Component::Transform &transform_c);
 
         /**
          * @brief Render the outline of given sprite
@@ -70,7 +70,7 @@ namespace Acaer {
          * @param transform_c   transform
          * @param sprite_c      sprite
          */
-        void RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c);
+        void RenderSpriteOutline(sf::RenderWindow &window, const Component::Transform &transform_c, const Component::Sprite &sprite_c);
 
         /**
          * @brief Render the cunck outline border

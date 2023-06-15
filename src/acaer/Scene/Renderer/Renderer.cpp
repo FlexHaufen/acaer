@@ -20,7 +20,7 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-    void Renderer::RenderSprite(sf::RenderWindow &window, Component::Sprite &sprite) {
+    void Renderer::RenderSprite(sf::RenderWindow &window, const Component::Sprite &sprite) {
         window.draw(sprite.spriteTexture);
     }
 

@@ -88,15 +88,6 @@ namespace Acaer {
 
 
     private:
-        
-        /**
-         * @brief Renders given transform
-         * 
-         * @param transform transform to render
-         * @param tag       tag component
-         */
-        void RenderTransform(Component::Transform &transform, Component::Tag &tag);
-
 
         // ** Members **
         entt::registry m_Registry;      // entt Registry

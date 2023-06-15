@@ -124,7 +124,7 @@ namespace Acaer {
         DrawSegment(p1, p2, b2Color(0, 1, 0));
     }
 
-    void DebugRenderer::RenderTransformOrigin(sf::RenderWindow &window, Component::Transform &transform_c){
+    void DebugRenderer::RenderTransformOrigin(sf::RenderWindow &window, const Component::Transform &transform_c){
         sf::CircleShape c;
         c.setRadius(AC_ORIGIN_POINT_RADIUS);
         c.setFillColor(sf::Color::Red);
@@ -132,7 +132,7 @@ namespace Acaer {
         window.draw(c);
     }
 
-    void DebugRenderer::RenderSpriteOutline(sf::RenderWindow &window, Component::Transform &transform_c, const Component::Sprite &sprite_c) {
+    void DebugRenderer::RenderSpriteOutline(sf::RenderWindow &window, const Component::Transform &transform_c, const Component::Sprite &sprite_c) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
         rec.setRotation(transform_c.rotation);
