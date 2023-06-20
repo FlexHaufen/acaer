@@ -32,4 +32,21 @@ namespace Acaer {
         rec.setFillColor(Convert::vColor_to_sfColor(c));       // Setting the fillcolor to nothing
         m_Window.draw(rec);
     }
+
+    void Renderer::RenderChunk(WorldChunk *chunk) {
+        for (s32 x = 0; x < chunk->getWidth();  x++) {
+            for (s32 y = 0; y < chunk->getHeight(); y++) {
+                Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
+    
+                s32 px = (s32)x + chunk->getPosX();
+                s32 py = (s32)y + chunk->getPosY();
+    
+                if (cell.type != CellType::EMPTY) {
+                    // TODO (flex): Add renderer ref
+                    RenderCell(px, py, cell.color);
+                }
+            }
+        }
+    }
+
 }

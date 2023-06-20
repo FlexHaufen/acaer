@@ -154,6 +154,7 @@ namespace Acaer {
         m_Window.draw(rec);
     }
 
+    // FIXME (flex): Not working at the moment
     void DebugRenderer::RenderChunkDirtyRect(v2<s32> minPos, v2<s32> maxPos) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f((f32)minPos.x * AC_GLOBAL_SCALE, (f32)minPos.y * AC_GLOBAL_SCALE));

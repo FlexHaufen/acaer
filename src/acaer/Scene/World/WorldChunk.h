@@ -30,7 +30,7 @@ namespace Acaer {
 	public:
 
 		/**
-		 * @brief Single World Chunck
+		 * @brief Single SandWorld Chunck
 		 * 
 		 * @param width 	Chunck width
 		 * @param height 	Chunck height

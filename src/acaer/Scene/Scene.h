@@ -88,24 +88,22 @@ namespace Acaer {
     private:
 
         // ** Members **
-        entt::registry m_Registry;      // entt Registry
+        sf::View m_Camera;                          // Camera
+        sf::RenderWindow &m_Window;                 // Ref to sf::RenderWindow
+        Renderer*       m_Renderer      = nullptr;  // Renderer
+        DebugRenderer*  m_DebugRenderer = nullptr;  // DebugRenderer
+        SpriteHandler   m_SpriteHandler;            // SpriteHandler
+        
+        entt::registry  m_Registry;                 // entt Registry
+        b2World*        m_PhysicsWorld  = nullptr;  // Simulated Physics World (for RigidBodies)
+        SandWorld*      m_SandWorld     = nullptr;  // Simulated Sand World (for Pixelsimulation)
 
-        sf::View m_Camera;              // Camera
+        ContactListener m_ContactListener;          // Box2D contactlistener
 
-        sf::RenderWindow &m_Window;      // Ref to sf::RenderWindow
+        friend class Entity;                        // Entity class
+        friend class SceneSerializer;               // Scene Serializer
 
-        b2World*        m_PhysicsWorld  = nullptr;
-        World*          m_World         = nullptr;
-
-        Renderer*       m_Renderer      = nullptr; // Renderer
-        DebugRenderer*  m_DebugRenderer = nullptr; // DebugRenderer
-        SpriteHandler   m_SpriteHandler;  // Animator
-
-        ContactListener m_ContactListener;
-
-        friend class Entity;            // Entity class
-        friend class SceneSerializer;   // Scene Serializer
-    
-        friend class EntityBrowserPanel;
+        // * ImGui *
+        friend class EntityBrowserPanel;            // ImGui Panel
     };
 }

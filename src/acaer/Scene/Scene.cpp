@@ -77,7 +77,7 @@ namespace Acaer {
         #endif
 
         AC_CORE_INFO("Setting up World");
-        m_World = new World(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
+        m_SandWorld = new SandWorld(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
         // ** ContactListener **
         m_PhysicsWorld->SetContactListener(&m_ContactListener);
@@ -112,7 +112,7 @@ namespace Acaer {
         }
 
         //!------- DEBUG --------
-        /*
+             
         {
             Cell c;
             c.type  = CellType::SAND;
@@ -123,7 +123,7 @@ namespace Acaer {
 
             for (int x = 30; x <= 49; x++) {
                 for (int y = -30; y <= 0; y++) {
-                    m_World->SetCell(x, y, c);
+                    m_SandWorld->SetCell(x, y, c);
                 }
             }
         }
@@ -136,10 +136,10 @@ namespace Acaer {
 
             // FIXME: still problems on down movement
             for (int x = 0; x <= 49; x++) {
-                m_World->SetCell(x, 69, c);
+                m_SandWorld->SetCell(x, 69, c);
             }
         }
-        */
+        
         //!---------------------
     }
 
@@ -150,8 +150,8 @@ namespace Acaer {
         delete m_PhysicsWorld;
 		m_PhysicsWorld = nullptr;
 
-        delete m_World;
-        m_World = nullptr;
+        delete m_SandWorld;
+        m_SandWorld = nullptr;
 
         delete m_Renderer;
         m_Renderer = nullptr;
@@ -164,7 +164,7 @@ namespace Acaer {
     void Scene::OnUpdate(f32 dt) {
         AC_PROFILE_FUNCTION();
 
-/*
+
         {
             Cell c;
             c.type  = CellType::SAND;
@@ -175,10 +175,10 @@ namespace Acaer {
             // FIXME: still problems on down movement
             //if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             //    sf::Vector2i mPos = sf::Mouse::getPosition() / sf::Vector2i(AC_GLOBAL_SCALE, AC_GLOBAL_SCALE) - window.getSize() / 2;
-            //    m_World->SetCell(mPos.x, mPos.y / AC_GLOBAL_SCALE, c);
+            //    m_SandWorld->SetCell(mPos.x, mPos.y / AC_GLOBAL_SCALE, c);
             //}
         }
-*/
+
 
 
         // ** Update Scripts **
@@ -196,7 +196,7 @@ namespace Acaer {
         // ** Physics **
         {
             m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
-            m_World->OnUpdate();
+            m_SandWorld->OnUpdate();
 
             // retrive transform form box2d
             auto view = m_Registry.view<Component::RigidBody>();
@@ -284,8 +284,14 @@ namespace Acaer {
 
                 }
             }
+
+            for (auto &chunk : m_SandWorld->GetChunkVector()) {
+                m_DebugRenderer->RenderChunkBorder(chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
+			    m_DebugRenderer->RenderChunkDirtyRect(chunk->getMin(), chunk->getMax());
+                m_Renderer->RenderChunk(chunk);
+            }
         }
-        //m_World->OnRender(m_Window);
+        //m_SandWorld->OnRender(m_Renderer, m_DebugRenderer);
 
         #ifdef AC_DEBUG_RENDER
             m_PhysicsWorld->DebugDraw();

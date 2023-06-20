@@ -14,6 +14,8 @@
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Entity/Components.h"
 
+#include "acaer/Scene/World/WorldChunk.h"
+
 //*** DEFINES ***
 
 //*** NAMESPACE ***
@@ -38,6 +40,10 @@ namespace Acaer {
          * @param c             color of cell (rgba)
          */
         void RenderCell(size_t x, size_t y, vColor c);
+
+
+        void RenderChunk(WorldChunk* chunk);
+
 
     private:
         // ** Memberse **
