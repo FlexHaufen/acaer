@@ -50,6 +50,7 @@
 // ** Local **
 #include "acaer/Helper/Types.h"
 #include "acaer/Core/Log.h"
+#include "acaer/Core/Debug/Instrumentor.h"
 
 
 // *** DEFINES ***

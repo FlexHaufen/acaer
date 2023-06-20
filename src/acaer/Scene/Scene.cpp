@@ -66,6 +66,7 @@ namespace Acaer {
     }
 
     void Scene::OnStart() {
+        AC_PROFILE_FUNCTION();
 
         AC_CORE_INFO("Setting up PhysicsWorld");
         m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
@@ -143,6 +144,8 @@ namespace Acaer {
     }
 
     void Scene::OnEnd() {
+        AC_PROFILE_FUNCTION();
+
         // FIXME (flex): make shared pointer
         delete m_PhysicsWorld;
 		m_PhysicsWorld = nullptr;
@@ -159,6 +162,7 @@ namespace Acaer {
 
 
     void Scene::OnUpdate(f32 dt) {
+        AC_PROFILE_FUNCTION();
 
 /*
         {
@@ -253,6 +257,8 @@ namespace Acaer {
 
 
     void Scene::OnRender(f32 dt) {
+        AC_PROFILE_FUNCTION();
+
         // ** Render **
         {
             auto group = m_Registry.group<Component::Tag>(entt::get<Component::Transform>);

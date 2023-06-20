@@ -8,3 +8,6 @@ build/
 # Log files
 *.log
 *.ini
+
+# Progile
+AcaerProfile.json

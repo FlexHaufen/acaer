@@ -34,6 +34,12 @@ namespace Acaer {
         Log::Init();
 
         AC_CORE_INFO("Initializing Core");
+
+        #ifdef AC_PROFILE
+            AC_CORE_WARN("Profiler is enabled and may use unnecessary recources");
+            AC_PROFILE_BEGIN_SESSION("Profile", "AcaerProfile.json");
+        #endif
+
         
         AC_CORE_INFO("Creating main window");
         m_WindowTitle = "acaer v";
@@ -139,10 +145,14 @@ namespace Acaer {
         #endif
 
         m_Window.close();
-        m_ImGuiLayer->OnDetach();        
+        m_ImGuiLayer->OnDetach();      
+
+        AC_PROFILE_END_SESSION();  
     }
 
     void Core::Run() {
+        AC_PROFILE_FUNCTION();
+
         sf::Clock dt_clock;
         sf::Time dt;
         
