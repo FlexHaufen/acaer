@@ -20,16 +20,16 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-    void Renderer::RenderSprite(sf::RenderWindow &window, const Component::Sprite &sprite) {
-        window.draw(sprite.spriteTexture);
+    void Renderer::RenderSprite(const Component::Sprite &sprite) {
+        m_Window.draw(sprite.spriteTexture);
     }
 
-    void Renderer::RenderCell(sf::RenderWindow &window, size_t x, size_t y, vColor c) {
+    void Renderer::RenderCell(size_t x, size_t y, vColor c) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f((f32)x * AC_GLOBAL_SCALE, (f32)y  * AC_GLOBAL_SCALE));
         rec.setSize(sf::Vector2f(1 * AC_GLOBAL_SCALE, 1 * AC_GLOBAL_SCALE));
 
         rec.setFillColor(Convert::vColor_to_sfColor(c));       // Setting the fillcolor to nothing
-        window.draw(rec);
+        m_Window.draw(rec);
     }
 }

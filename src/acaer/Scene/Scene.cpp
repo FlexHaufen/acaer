@@ -24,9 +24,10 @@
 namespace Acaer {
 
     // FIXME (flex): Dont init debugrenderer in constructor
-    Scene::Scene(sf::RenderWindow &window) 
-    : m_DebugRenderer(window) {
+    Scene::Scene(sf::RenderWindow &window) : 
+    m_Window(window) {
         AC_CORE_INFO("Initializing Scene");
+
 
         AC_CORE_INFO("Setting up Camera:");
         AC_CORE_INFO("    Width:  {0}", AC_WINDOW_X);
@@ -34,7 +35,8 @@ namespace Acaer {
         m_Camera.setSize(sf::Vector2f(AC_WINDOW_X, AC_WINDOW_Y));
 
         AC_CORE_INFO("Setting up Renderer");
-        m_Renderer = new Renderer();
+        m_Renderer = new Renderer(window);
+        m_DebugRenderer = new DebugRenderer(window);
     }
 
     Scene::~Scene() {
@@ -70,7 +72,7 @@ namespace Acaer {
 
         #ifdef AC_DEBUG_RENDER
             AC_CORE_INFO("Setting up Debug Renderer");
-            m_PhysicsWorld->SetDebugDraw(&m_DebugRenderer);
+            m_PhysicsWorld->SetDebugDraw(m_DebugRenderer);
         #endif
 
         AC_CORE_INFO("Setting up World");
@@ -141,15 +143,22 @@ namespace Acaer {
     }
 
     void Scene::OnEnd() {
+        // FIXME (flex): make shared pointer
         delete m_PhysicsWorld;
 		m_PhysicsWorld = nullptr;
 
         delete m_World;
         m_World = nullptr;
+
+        delete m_Renderer;
+        m_Renderer = nullptr;
+    
+        delete m_DebugRenderer;
+        m_DebugRenderer = nullptr;
     }
 
 
-    void Scene::OnUpdate(f32 dt, sf::RenderWindow &window) {
+    void Scene::OnUpdate(f32 dt) {
 
 /*
         {
@@ -216,10 +225,8 @@ namespace Acaer {
                 // ----- No smoothening
                 m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
                 
-                m_Camera.setSize(sf::Vector2f(window.getSize().x * cam.zoom, window.getSize().y * cam.zoom));
-
-
-                window.setView(m_Camera);
+                m_Camera.setSize(sf::Vector2f(m_Window.getSize().x * cam.zoom, m_Window.getSize().y * cam.zoom));
+                m_Window.setView(m_Camera);
             }
         }
 
@@ -245,7 +252,7 @@ namespace Acaer {
     }
 
 
-    void Scene::OnRender(f32 dt, sf::RenderWindow &window) {
+    void Scene::OnRender(f32 dt) {
         // ** Render **
         {
             auto group = m_Registry.group<Component::Tag>(entt::get<Component::Transform>);
@@ -257,22 +264,22 @@ namespace Acaer {
                 auto &t = entity.GetComponent<Component::Transform>();
                
                 #ifdef AC_DEBUG_RENDER
-                    m_DebugRenderer.RenderTransformOrigin(window, t);
+                    m_DebugRenderer->RenderTransformOrigin(t);
                 #endif
 
                 if (entity.HasComponent<Component::Sprite>()) {
                     auto &s = entity.GetComponent<Component::Sprite>();
                    
-                    m_Renderer->RenderSprite(window, s);
+                    m_Renderer->RenderSprite(s);
 
                     #ifdef AC_DEBUG_RENDER
-                        m_DebugRenderer.RenderSpriteOutline(window, t, s);
+                        m_DebugRenderer->RenderSpriteOutline(t, s);
                     #endif
 
                 }
             }
         }
-        m_World->OnRender(window);
+        //m_World->OnRender(m_Window);
 
         #ifdef AC_DEBUG_RENDER
             m_PhysicsWorld->DebugDraw();

@@ -74,17 +74,15 @@ namespace Acaer {
          * @brief Update function
          * 
          * @param dt delta time
-         * @param window sf::Window reference
          */
-        void OnUpdate(f32 dt, sf::RenderWindow &window);
+        void OnUpdate(f32 dt);
 
         /**
          * @brief Main render update function
          * 
          * @param dt delta time
-         * @param window sf::Window reference
          */
-        void OnRender(f32 dt, sf::RenderWindow &window);
+        void OnRender(f32 dt);
 
 
     private:
@@ -94,12 +92,14 @@ namespace Acaer {
 
         sf::View m_Camera;              // Camera
 
-        b2World* m_PhysicsWorld = nullptr;
-        World* m_World = nullptr;
+        sf::RenderWindow &m_Window;      // Ref to sf::RenderWindow
 
-        Renderer* m_Renderer = nullptr; // Renderer
-        DebugRenderer m_DebugRenderer;
-        SpriteHandler m_SpriteHandler;  // Animator
+        b2World*        m_PhysicsWorld  = nullptr;
+        World*          m_World         = nullptr;
+
+        Renderer*       m_Renderer      = nullptr; // Renderer
+        DebugRenderer*  m_DebugRenderer = nullptr; // DebugRenderer
+        SpriteHandler   m_SpriteHandler;  // Animator
 
         ContactListener m_ContactListener;
 

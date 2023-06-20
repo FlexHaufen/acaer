@@ -29,7 +29,7 @@
 namespace Acaer {
 
 
-    DebugRenderer::DebugRenderer(sf::RenderWindow& window) : m_Window(window) {
+    DebugRenderer::DebugRenderer(sf::RenderWindow& m_Window) : m_Window(m_Window) {
         // Set the drawing flags
         SetFlags(e_shapeBit | e_jointBit);
     }
@@ -124,15 +124,15 @@ namespace Acaer {
         DrawSegment(p1, p2, b2Color(0, 1, 0));
     }
 
-    void DebugRenderer::RenderTransformOrigin(sf::RenderWindow &window, const Component::Transform &transform_c){
+    void DebugRenderer::RenderTransformOrigin(const Component::Transform &transform_c){
         sf::CircleShape c;
         c.setRadius(AC_ORIGIN_POINT_RADIUS);
         c.setFillColor(sf::Color::Red);
         c.setPosition(sf::Vector2f(transform_c.pos.x - AC_ORIGIN_POINT_RADIUS, transform_c.pos.y - AC_ORIGIN_POINT_RADIUS));
-        window.draw(c);
+        m_Window.draw(c);
     }
 
-    void DebugRenderer::RenderSpriteOutline(sf::RenderWindow &window, const Component::Transform &transform_c, const Component::Sprite &sprite_c) {
+    void DebugRenderer::RenderSpriteOutline(const Component::Transform &transform_c, const Component::Sprite &sprite_c) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y));
         rec.setRotation(transform_c.rotation);
@@ -140,10 +140,10 @@ namespace Acaer {
         // NOTE (flex): d_with & d_heigt need to be absolute
         rec.setSize(sf::Vector2f(abs((f32)sprite_c.spriteTexture.getTextureRect().width)  * AC_GLOBAL_SCALE,
                                 abs((f32)sprite_c.spriteTexture.getTextureRect().height) * AC_GLOBAL_SCALE));
-        RenderRectWithOutline(window, rec, AC_SPRITE_OUTLINE_COLOR, false); 
+        RenderRectWithOutline(rec, AC_SPRITE_OUTLINE_COLOR, false); 
     }
 
-    void DebugRenderer::RenderChunkBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY) {
+    void DebugRenderer::RenderChunkBorder(size_t sizeX, size_t sizeY, int posX, int posY) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f((f32)posX * AC_GLOBAL_SCALE, (f32)posY * AC_GLOBAL_SCALE));
         rec.setSize(sf::Vector2f(sizeX * AC_GLOBAL_SCALE, sizeY * AC_GLOBAL_SCALE));
@@ -151,10 +151,10 @@ namespace Acaer {
         rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
         rec.setOutlineThickness(AC_CHUNK_THICKNESS);
         rec.setOutlineColor(AC_CHUNK_COLOR_OUTLINE);
-        window.draw(rec);
+        m_Window.draw(rec);
     }
 
-    void DebugRenderer::RenderChunkDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos) {
+    void DebugRenderer::RenderChunkDirtyRect(v2<s32> minPos, v2<s32> maxPos) {
         sf::RectangleShape rec;
         rec.setPosition(sf::Vector2f((f32)minPos.x * AC_GLOBAL_SCALE, (f32)minPos.y * AC_GLOBAL_SCALE));
         rec.setSize(sf::Vector2f((maxPos.x - minPos.x) * AC_GLOBAL_SCALE, (maxPos.y - minPos.y) * AC_GLOBAL_SCALE));
@@ -162,10 +162,10 @@ namespace Acaer {
         rec.setFillColor({0,0,0,0});       // Setting the fillcolor to nothing
         rec.setOutlineThickness(AC_CHUNK_THICKNESS);
         rec.setOutlineColor(AC_CHUNK_RECT_COLOR_OUTLINE);
-        window.draw(rec);
+        m_Window.draw(rec);
     }
 
-    void DebugRenderer::RenderRectWithOutline(sf::RenderWindow &window, sf::RectangleShape &rec, sf::Color color, b8 isFilled) {
+    void DebugRenderer::RenderRectWithOutline(sf::RectangleShape &rec, sf::Color color, b8 isFilled) {
         if (isFilled) {
             rec.setFillColor(sf::Color(color.a, color.g, color.b, 100));       // Setting the fillcolor to nothing
         }
@@ -174,7 +174,7 @@ namespace Acaer {
         }
         rec.setOutlineColor(color);
         rec.setOutlineThickness(AC_OUTLINE_THICKNESS);
-        window.draw(rec);
+        m_Window.draw(rec);
     }
 
 }

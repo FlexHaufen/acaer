@@ -58,39 +58,35 @@ namespace Acaer {
         /**
          * @brief Render the origin point of given transform
          *
-         * @param window        sf::RenderWindow reference
          * @param transform_c   transform
          */
-        void RenderTransformOrigin(sf::RenderWindow &window, const Component::Transform &transform_c);
+        void RenderTransformOrigin(const Component::Transform &transform_c);
 
         /**
          * @brief Render the outline of given sprite
          *
-         * @param window        sf::RenderWindow reference
          * @param transform_c   transform
          * @param sprite_c      sprite
          */
-        void RenderSpriteOutline(sf::RenderWindow &window, const Component::Transform &transform_c, const Component::Sprite &sprite_c);
+        void RenderSpriteOutline(const Component::Transform &transform_c, const Component::Sprite &sprite_c);
 
         /**
          * @brief Render the cunck outline border
          * 
-         * @param window        sf::RenderWindow reference
          * @param sizeX         Chunksize x
          * @param sizeY         Chunksize y
          * @param posX          Chunkpos x
          * @param posY          Chunkpos y
          */
-        void RenderChunkBorder(sf::RenderWindow &window, size_t sizeX, size_t sizeY, int posX, int posY);
+        void RenderChunkBorder(size_t sizeX, size_t sizeY, int posX, int posY);
 
         /**
          * @brief Render Dirty Rectangle of simulated Chunk
          * 
-         * @param window        sf::RenderWindow reference
          * @param minPos        maximal pos of rect
          * @param maxPos        minimal pos of rect
          */
-        void RenderChunkDirtyRect(sf::RenderWindow &window, v2<s32> minPos, v2<s32> maxPos);
+        void RenderChunkDirtyRect(v2<s32> minPos, v2<s32> maxPos);
 
     private:
     
@@ -98,12 +94,11 @@ namespace Acaer {
          * @brief Renders a Rect
          *        The fill color will apear slightly transparent (alpha = 100)
          *
-         * @param window        sf::RenderWindow reference
          * @param rec           sf::RectangleShape reference
          * @param color         color of rectangle
          * @param isFilled      render filled rectangle
          */
-        void RenderRectWithOutline(sf::RenderWindow &window, sf::RectangleShape &rec, sf::Color color, b8 isFilled);
+        void RenderRectWithOutline(sf::RectangleShape &rec, sf::Color color, b8 isFilled);
 
     private:
 

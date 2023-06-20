@@ -169,12 +169,12 @@ namespace Acaer {
             //ImGui::SFML::ProcessEvent();          // TODO: Add ImGui Events
 
             // ---- UPDATE HANDLING ----
-            m_ActiveScene->OnUpdate(dt_sec, m_Window);
+            m_ActiveScene->OnUpdate(dt_sec);
             m_ImGuiLayer->OnUpdate(m_Window, dt);
 
             // ---- RENDER LOOP ----
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
-            m_ActiveScene->OnRender(dt_sec, m_Window);
+            m_ActiveScene->OnRender(dt_sec);
             
             //ImGui::ShowDemoWindow();
             m_EntityBrowserPanel.OnImGuiRender();
