@@ -50,6 +50,9 @@ namespace Acaer {
 		m_pEntityBrowser = new EntityBrowserPanel();
 		m_PanelStack.PushPanel(m_pEntityBrowser);
 
+		m_pSceneEditor = new SceneEditorPanel();
+		m_PanelStack.PushPanel(m_pSceneEditor);
+
 		for (auto* panels : m_PanelStack) {
 			panels->SetContext(context);
 		}

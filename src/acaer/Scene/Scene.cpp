@@ -215,9 +215,7 @@ namespace Acaer {
 
         // ** Update Camera **
         {
-            static b8 freeCam = false;
-            
-            if (freeCam) {
+            if (m_useFreeCamera) {
                 // TODO (flex): Add freecam here
             }
             else {

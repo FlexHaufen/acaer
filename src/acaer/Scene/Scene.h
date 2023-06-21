@@ -86,13 +86,12 @@ namespace Acaer {
          */
         void OnRender(f32 dt);
 
-
-        sf::RenderWindow& GetRenderWindow() { return m_Window; }
-
     private:
 
         // ** Members **
         Camera m_Camera;                            // Camera
+        b8 m_useFreeCamera;                         // True: When camera shall be free            
+
         sf::RenderWindow &m_Window;                 // Ref to sf::RenderWindow
         Renderer*       m_Renderer      = nullptr;  // Renderer
         DebugRenderer*  m_DebugRenderer = nullptr;  // DebugRenderer
@@ -107,7 +106,10 @@ namespace Acaer {
         friend class Entity;                        // Entity class
         friend class SceneSerializer;               // Scene Serializer
 
+
+        // FIXME (flex): Get workaround "friend class"
         // * ImGui *
         friend class EntityBrowserPanel;            // ImGui Panel
+        friend class SceneEditorPanel;              // ImGui Panel
     };
 }
