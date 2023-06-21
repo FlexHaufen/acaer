@@ -215,17 +215,17 @@ namespace Acaer {
 
         // ** Update Camera **
         {
-            auto group = m_Registry.group<Component::CameraController>(entt::get<Component::Transform>);
-            for (auto entity : group) {
-                auto &t = group.get<Component::Transform>(entity);
-                auto &cam = group.get<Component::CameraController>(entity);
-                
-                static b8 freeCam = false;
+            static b8 freeCam = false;
+            
+            if (freeCam) {
+                // TODO (flex): Add freecam here
+            }
+            else {
+                auto group = m_Registry.group<Component::CameraController>(entt::get<Component::Transform>);
+                for (auto entity : group) {
+                    auto &t = group.get<Component::Transform>(entity);
+                    auto &cam = group.get<Component::CameraController>(entity);
 
-                if (freeCam) {
-                    // TODO (flex): Add freecam here
-                }
-                else {
                     m_Camera.OnUpdate(m_Window, t.pos, cam.zoom, dt);
                 }
             }
