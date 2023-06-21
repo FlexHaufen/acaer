@@ -55,9 +55,9 @@ namespace Acaer {
         /**
          * @brief Get the Chunks of a World object
          * 
-         * @return std::vector<WorldChunk*> World Chunks
+         * @return std::vector<WorldChunk*>& World Chunks
          */
-        std::vector<WorldChunk*> GetChunkVector() { return m_chunks; }
+        std::vector<WorldChunk*>& GetChunkVector() { return m_chunks; }
 
         // ** Cells **
         bool IsInBounds(s32 x, s32 y) {

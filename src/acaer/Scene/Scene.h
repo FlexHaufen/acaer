@@ -18,6 +18,8 @@
 #include "acaer/Scene/Renderer/Renderer.h"
 #include "acaer/Scene/Renderer/DebugRenderer.h"
 
+#include "acaer/Scene/Camera/Camera.h"
+
 #include "acaer/Scene/Handlers/SpriteHandler.h"
 
 #include "acaer/Scene/World/World.h"
@@ -88,7 +90,7 @@ namespace Acaer {
     private:
 
         // ** Members **
-        sf::View m_Camera;                          // Camera
+        Camera m_Camera;                            // Camera
         sf::RenderWindow &m_Window;                 // Ref to sf::RenderWindow
         Renderer*       m_Renderer      = nullptr;  // Renderer
         DebugRenderer*  m_DebugRenderer = nullptr;  // DebugRenderer

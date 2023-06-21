@@ -143,7 +143,7 @@ namespace Acaer {
 // *** DEFINES ***
 // NOTE (flex): The Profiler may be desabled here
 
-#define AC_PROFILE
+//#define AC_PROFILE
 #ifdef AC_PROFILE
 
     // NOTE (flex): Compilers may be added here.

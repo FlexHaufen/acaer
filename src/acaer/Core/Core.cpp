@@ -94,7 +94,7 @@ namespace Acaer {
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Component::Transform>();
             t.pos = {150, 0};
-            auto &cam = player.AddComponent<Component::Camera>();
+            auto &cam = player.AddComponent<Component::CameraController>();
             cam.zoom = 1.2f;
             player.AddComponent<Component::NativeScript>().Bind<CharacterController>();
             auto &rb = player.AddComponent<Component::RigidBody>();

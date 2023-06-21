@@ -11,6 +11,8 @@
 namespace Acaer {
 
     void SandWorld::OnUpdate() {
+		AC_PROFILE_FUNCTION();
+
 		RemoveEmptyChunks();
 
 		for (WorldChunk* chunk : m_chunks) {
@@ -24,6 +26,8 @@ namespace Acaer {
     }
 
 	void SandWorld::UpdateChunk(WorldChunk* chunk) {
+		AC_PROFILE_FUNCTION();
+
 		for (s32 x = chunk->getMin().x; x < chunk->getMax().x; x++) {
 			for (s32 y = chunk->getMin().y; y < chunk->getMax().y; y++) {
 				Cell& cell = chunk->GetCell(x + y * chunk->getWidth());
@@ -37,6 +41,8 @@ namespace Acaer {
 	}
 
 	void SandWorld::RemoveEmptyChunks() {
+		AC_PROFILE_FUNCTION();
+
 		for (size_t i = 0; i < m_chunks.size(); i++) {
 			WorldChunk* chunk = m_chunks.at(i);
 	
@@ -51,6 +57,8 @@ namespace Acaer {
 	}
 
 	WorldChunk* SandWorld::GetChunk(s32 x, s32 y) {
+		AC_PROFILE_FUNCTION();
+
 		auto location = GetChunkLocation(x, y);
 
 		WorldChunk* chunk = GetChunkDirect(location);
@@ -77,6 +85,8 @@ namespace Acaer {
 	}
 
 	WorldChunk* SandWorld::CreateChunk(std::pair<s32, s32> location) {
+		AC_PROFILE_FUNCTION();
+
             auto [lx, ly] = location;
 
             // TODO: world bounderies

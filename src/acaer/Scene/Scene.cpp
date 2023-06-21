@@ -23,7 +23,6 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-    // FIXME (flex): Dont init debugrenderer in constructor
     Scene::Scene(sf::RenderWindow &window) : 
     m_Window(window) {
         AC_CORE_INFO("Initializing Scene");
@@ -32,7 +31,6 @@ namespace Acaer {
         AC_CORE_INFO("Setting up Camera:");
         AC_CORE_INFO("    Width:  {0}", AC_WINDOW_X);
         AC_CORE_INFO("    Height: {0}", AC_WINDOW_Y);
-        m_Camera.setSize(sf::Vector2f(AC_WINDOW_X, AC_WINDOW_Y));
 
         AC_CORE_INFO("Setting up Renderer");
         m_Renderer = new Renderer(window);
@@ -166,11 +164,11 @@ namespace Acaer {
 
 
         {
-            Cell c;
-            c.type  = CellType::SAND;
+            //Cell c;
+            //c.type  = CellType::SAND;
             //c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
-            c.props = CellProperties::NONE;
-            c.color = {0, 255, 255, 255};       // blue
+            //c.props = CellProperties::NONE;
+            //c.color = {0, 255, 255, 255};       // blue
 
             // FIXME: still problems on down movement
             //if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -196,7 +194,7 @@ namespace Acaer {
         // ** Physics **
         {
             m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
-            m_SandWorld->OnUpdate();
+            //m_SandWorld->OnUpdate();
 
             // retrive transform form box2d
             auto view = m_Registry.view<Component::RigidBody>();
@@ -217,20 +215,19 @@ namespace Acaer {
 
         // ** Update Camera **
         {
-            auto group = m_Registry.group<Component::Camera>(entt::get<Component::Transform>);
+            auto group = m_Registry.group<Component::CameraController>(entt::get<Component::Transform>);
             for (auto entity : group) {
                 auto &t = group.get<Component::Transform>(entity);
-                auto &cam = group.get<Component::Camera>(entity);
-                static const f32 speed = 5;
-                // ----- Smoothening in x & y
-                //sf::Vector2f movement = sf::Vector2f(t.pos.x, t.pos.y) - m_Camera.getCenter();
-                //m_Camera.move(movement * dt * speed);
+                auto &cam = group.get<Component::CameraController>(entity);
                 
-                // ----- No smoothening
-                m_Camera.setCenter(sf::Vector2(t.pos.x, t.pos.y));
-                
-                m_Camera.setSize(sf::Vector2f(m_Window.getSize().x * cam.zoom, m_Window.getSize().y * cam.zoom));
-                m_Window.setView(m_Camera);
+                static b8 freeCam = false;
+
+                if (freeCam) {
+                    // TODO (flex): Add freecam here
+                }
+                else {
+                    m_Camera.OnUpdate(m_Window, t.pos, cam.zoom, dt);
+                }
             }
         }
 
@@ -285,13 +282,12 @@ namespace Acaer {
                 }
             }
 
-            for (auto &chunk : m_SandWorld->GetChunkVector()) {
-                m_DebugRenderer->RenderChunkBorder(chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
-			    m_DebugRenderer->RenderChunkDirtyRect(chunk->getMin(), chunk->getMax());
-                m_Renderer->RenderChunk(chunk);
-            }
+            //for (auto &chunk : m_SandWorld->GetChunkVector()) {
+            //    m_DebugRenderer->RenderChunkBorder(chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
+			//    m_DebugRenderer->RenderChunkDirtyRect(chunk->getMin(), chunk->getMax());
+            //    m_Renderer->RenderChunk(chunk);
+            //}
         }
-        //m_SandWorld->OnRender(m_Renderer, m_DebugRenderer);
 
         #ifdef AC_DEBUG_RENDER
             m_PhysicsWorld->DebugDraw();

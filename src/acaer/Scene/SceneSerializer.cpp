@@ -185,8 +185,8 @@ namespace Acaer {
             out << YAML::EndMap;
         }
 
-        if (entity.HasComponent<Component::Camera>()) {
-            auto &c = entity.GetComponent<Component::Camera>();
+        if (entity.HasComponent<Component::CameraController>()) {
+            auto &c = entity.GetComponent<Component::CameraController>();
             out << YAML::Key << "Camera";
             out << YAML::BeginMap;
             out << YAML::Key << "zoom"         << YAML::Value << c.zoom;
@@ -239,7 +239,7 @@ namespace Acaer {
 
         auto camera_c = entity["Camera"];
         if (camera_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Component::Camera>();
+            auto& c = currentEntity.GetOrEmplaceComponent<Component::CameraController>();
             c.zoom = camera_c["zoom"].as<f32>();
         }
     }

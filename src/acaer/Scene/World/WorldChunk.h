@@ -64,6 +64,8 @@ namespace Acaer {
 		void SetCell(s32 x, s32 y, const Cell& cell) { SetCell(GetIndex(x, y), cell); }
 
 		void SetCell(size_t index, const Cell& cell) {
+			AC_PROFILE_FUNCTION();
+
 			Cell& dest = m_cells[index];
 
 			// Filling a cell
@@ -88,6 +90,8 @@ namespace Acaer {
 		}
 
 		void CommitCells() {
+			AC_PROFILE_FUNCTION();
+
 			// remove moves that have their destinations filled
 			for (size_t i = 0; i < m_changes.size(); i++) {
 				const Cell& dest = m_cells[std::get<_DEST>(m_changes[i])];

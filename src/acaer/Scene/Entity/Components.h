@@ -145,11 +145,11 @@ namespace Acaer {
         };
 
         /**
-         * @brief Camera Component.
+         * @brief CameraController Component.
          * @attention There may only be one per Scene
          * 
          */
-        struct Camera {
+        struct CameraController {
             f32 zoom = 1.0f;                    // Camera zoom
         };
 
