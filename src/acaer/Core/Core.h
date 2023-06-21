@@ -77,9 +77,6 @@ namespace Acaer {
         Ref<EventManager> m_EventManager;   // Event manager
         Ref<Scene> m_ActiveScene;           // Current active scene
 
-        ImGuiLayer* m_ImGuiLayer;       // Imgui    (for debug)
-    
-        // * panels *
-        EntityBrowserPanel m_EntityBrowserPanel;
+        Ref<ImGuiLayer> m_ImGuiLayer;       // Imgui    (for debug)
     };
 }

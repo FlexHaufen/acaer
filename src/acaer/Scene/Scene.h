@@ -87,6 +87,8 @@ namespace Acaer {
         void OnRender(f32 dt);
 
 
+        sf::RenderWindow& GetRenderWindow() { return m_Window; }
+
     private:
 
         // ** Members **

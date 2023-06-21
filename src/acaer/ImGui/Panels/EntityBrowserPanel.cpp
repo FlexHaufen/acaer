@@ -17,15 +17,6 @@
 
 // *** NAMESPACE ***
 namespace Acaer {
-    
-
-    EntityBrowserPanel::EntityBrowserPanel(const Ref<Scene> &context) {
-        m_Context = context;
-    }
-
-    void EntityBrowserPanel::SetContext(const Ref<Scene> &context) {
-        m_Context = context;
-    }
 
     void EntityBrowserPanel::OnImGuiRender() {
 		ImGui::Begin("Entity Browser Panel");

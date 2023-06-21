@@ -53,9 +53,11 @@ namespace Acaer {
             m_Window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
         }
         
-        m_ImGuiLayer->OnAttach(m_Window);
         m_ActiveScene = CreateRef<Scene>(m_Window);
         m_EventManager = CreateRef<EventManager>(m_Window);
+        m_ImGuiLayer = CreateRef<ImGuiLayer>(m_Window);
+        
+        m_ImGuiLayer->OnAttach(m_ActiveScene);
 
     #ifdef AC_SCENE_LOAD_ON_OPEN
         AC_CORE_INFO("Loading scene...");
@@ -128,7 +130,6 @@ namespace Acaer {
         }
         //! ----------------
     #endif
-        m_EntityBrowserPanel.SetContext(m_ActiveScene);
         m_isRunning = true;
 
         // random number seed
@@ -180,15 +181,13 @@ namespace Acaer {
             if (!m_isPaused) {
                 // ---- UPDATE HANDLING ----
                 m_ActiveScene->OnUpdate(dt_sec);
-                m_ImGuiLayer->OnUpdate(m_Window, dt);
+                m_ImGuiLayer->OnUpdate(dt);
 
                 // ---- RENDER LOOP ----
                 m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
                 m_ActiveScene->OnRender(dt_sec);
                 
-                //ImGui::ShowDemoWindow();
-                m_EntityBrowserPanel.OnImGuiRender();
-                m_ImGuiLayer->OnRender(m_Window);
+                m_ImGuiLayer->OnRender();
                 m_Window.display();
             }
         }

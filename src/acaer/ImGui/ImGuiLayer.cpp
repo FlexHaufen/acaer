@@ -19,13 +19,12 @@
 //*** NAMESPACE ***
 namespace Acaer {
 
-	ImGuiLayer::ImGuiLayer() {
+	ImGuiLayer::ImGuiLayer(sf::RenderWindow& window) : m_Window(window) {
 		AC_CORE_INFO("Initializing ImGuiLayer");
 	}
 
-	void ImGuiLayer::OnAttach(sf::RenderWindow &window)	{
-		
-		ImGui::SFML::Init(window);
+	void ImGuiLayer::OnAttach(const Ref<Scene> &context)	{
+		ImGui::SFML::Init(m_Window);
 		
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -46,6 +45,14 @@ namespace Acaer {
 
 		// Setup Dear ImGui style
 		SetStyle();
+
+
+		m_pEntityBrowser = new EntityBrowserPanel();
+		m_PanelStack.PushPanel(m_pEntityBrowser);
+
+		for (auto* panels : m_PanelStack) {
+			panels->SetContext(context);
+		}
 	}
 
 	void ImGuiLayer::OnDetach() {
@@ -54,12 +61,16 @@ namespace Acaer {
 	}
 
 	
-	void ImGuiLayer::OnUpdate(sf::RenderWindow &window, sf::Time dt) {
-		ImGui::SFML::Update(window, dt);
+	void ImGuiLayer::OnUpdate(sf::Time dt) {
+		ImGui::SFML::Update(m_Window, dt);
 	}
 
-	void ImGuiLayer::OnRender(sf::RenderWindow &window) {
-		ImGui::SFML::Render(window);
+	void ImGuiLayer::OnRender() {
+
+		for (auto* panels : m_PanelStack) {
+			panels->OnImGuiRender();
+		}
+		ImGui::SFML::Render(m_Window);
 	}
 
 
@@ -67,8 +78,6 @@ namespace Acaer {
 		ImGuiIO &io = ImGui::GetIO();
 		
 	//	io.FontDefault = io.Fonts->AddFontFromFileTTF(AC_FONT_REGULAR, AC_FONT_SIZE);
-		
-		
 		ImGuiStyle * style = &ImGui::GetStyle();
 	
 		style->WindowPadding = ImVec2(15, 15);
