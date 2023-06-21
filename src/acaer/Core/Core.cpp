@@ -17,7 +17,6 @@
 #include "acaer/Scene/Entity/ScriptableEntity.h"
 #include "acaer/Scene/SceneSerializer.h"
 
-#include "acaer/Core/Events/EventManager.h"
 
 // ** Scripts **
 #include "acaer/Scripts/Player/CharacterController.h"
@@ -56,6 +55,7 @@ namespace Acaer {
         
         m_ImGuiLayer->OnAttach(m_Window);
         m_ActiveScene = CreateRef<Scene>(m_Window);
+        m_EventManager = CreateRef<EventManager>(m_Window);
 
     #ifdef AC_SCENE_LOAD_ON_OPEN
         AC_CORE_INFO("Loading scene...");
@@ -157,10 +157,9 @@ namespace Acaer {
         sf::Time dt;
         
         AC_CORE_INFO("Setting up EventManager");
-        EventManager eventManager(m_Window);
-
-        eventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {m_Window.close(); });
-        eventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {m_Window.close(); });
+        m_EventManager->addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) { m_Window.close(); });
+        m_EventManager->addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) { m_Window.close(); });
+        m_EventManager->addKeyPressedCallback(sf::Keyboard::Tab, [&](const sf::Event&) { m_isPaused = !m_isPaused; });
         
         AC_CORE_INFO("Starting scene...");
         m_ActiveScene->OnStart();
@@ -168,28 +167,30 @@ namespace Acaer {
             
             dt = dt_clock.restart();
             f32 dt_sec = dt.asSeconds();
-           
+        
             #ifdef AC_CALC_FPS
                 u16 fps = u16(1/dt_sec);
                 m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
             #endif
 
             // ---- EVENT HANDLING ----
-            eventManager.processEvents(nullptr);
+            m_EventManager->processEvents(nullptr);
             //ImGui::SFML::ProcessEvent();          // TODO: Add ImGui Events
-
-            // ---- UPDATE HANDLING ----
-            m_ActiveScene->OnUpdate(dt_sec);
-            m_ImGuiLayer->OnUpdate(m_Window, dt);
-
-            // ---- RENDER LOOP ----
-            m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
-            m_ActiveScene->OnRender(dt_sec);
             
-            //ImGui::ShowDemoWindow();
-            m_EntityBrowserPanel.OnImGuiRender();
-            m_ImGuiLayer->OnRender(m_Window);
-            m_Window.display();
+            if (!m_isPaused) {
+                // ---- UPDATE HANDLING ----
+                m_ActiveScene->OnUpdate(dt_sec);
+                m_ImGuiLayer->OnUpdate(m_Window, dt);
+
+                // ---- RENDER LOOP ----
+                m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
+                m_ActiveScene->OnRender(dt_sec);
+                
+                //ImGui::ShowDemoWindow();
+                m_EntityBrowserPanel.OnImGuiRender();
+                m_ImGuiLayer->OnRender(m_Window);
+                m_Window.display();
+            }
         }
         m_ActiveScene->OnEnd();
         AC_CORE_WARN("Core stopped running");

@@ -18,6 +18,8 @@
 #include "acaer/ImGui/ImGuiLayer.h"
 #include "acaer/ImGui/Panels/EntityBrowserPanel.h"
 
+#include "acaer/Core/Events/EventManager.h"
+
 //*** DEFINES ***
 
 
@@ -56,19 +58,27 @@ namespace Acaer {
          */
         void Close();
 
+        /**
+         * @brief Get the EventManager
+         * 
+         * @return Ref<EventManager> EventManager
+         */
+        Ref<EventManager> GetEventManager() { return m_EventManager; }
     private:
       
         // ** Members **
         bool m_isRunning = true;        // True when app is running
+        bool m_isPaused = false;        // True when app is paused
         bool m_isMinimized = false;     // True when app is minimzed
 
         sf::RenderWindow m_Window;      // Sfml window
         std::string m_WindowTitle;      // Sfml window title
 
-        Ref<Scene> m_ActiveScene;       // Current active scene
+        Ref<EventManager> m_EventManager;   // Event manager
+        Ref<Scene> m_ActiveScene;           // Current active scene
 
         ImGuiLayer* m_ImGuiLayer;       // Imgui    (for debug)
-
+    
         // * panels *
         EntityBrowserPanel m_EntityBrowserPanel;
     };
