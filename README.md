@@ -3,7 +3,7 @@
 Custom 2D **pixelart game** programmed in **C++**
 
 ## Goal
-- Acaer will be a 2D Pixelart game, where the whole World is simulated.
+- Acaer will be a 2D Pixelart game, where the **whole World** is simulated.
 - There will be almost or none User interface.
 - The world will be procedurally generated and infinite in size.
 - The game will result around magic, crafting & PvE.
@@ -21,3 +21,4 @@ Custom 2D **pixelart game** programmed in **C++**
 ## Acknowledgements
 - [GAME ENGINE series](https://www.youtube.com/watch?v=JxIZbV_XjAs&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT) by [The Cherno](https://www.youtube.com/@TheCherno)
 - [Falling Sand](https://blog.winter.dev/2020/falling-sand-games/) by [Winterdev](https://www.youtube.com/@Winterdev)
+- [FallingSandSurvival](https://github.com/PieKing1215/FallingSandSurvival) by [PieKing1215](https://github.com/PieKing1215)

@@ -17,7 +17,7 @@
 namespace Acaer {
     namespace Convert {
 
-        void create_b2Body(Component::RigidBody &rb,Component::Transform &t, Component::Collider &c, b2World *world) {
+        void create_b2Body(Component::RigidBody &rb, const Component::Transform &t, const Component::Collider &c, b2World *world) {
             
             // ** Box2d Body definition **
             b2BodyDef bodyDef;
@@ -67,22 +67,26 @@ namespace Acaer {
         }
 
 
-        v2f getPositionFrom_b2Body(b2Body* body, Component::Collider c) {
+        v2f getPositionFrom_b2Body(const b2Body* body, const Component::Collider c) {
             v2f pos = {(body->GetPosition().x * AC_PPM) - c.size.x / 2 + c.offset.x , 
                        (body->GetPosition().y * AC_PPM) - c.size.y / 2 + c.offset.y};
             return pos;
         }
     
-        f32 getRotationFrom_b2Body(b2Body* body) {
+        f32 getRotationFrom_b2Body(const b2Body* body) {
             return (body->GetAngle() * AC_DEG_PER_RAD * -1);
         }
 
-        vColor sfColor_to_vColor(sf::Color c) {
+        vColor sfColor_to_vColor(const sf::Color c) {
             return vColor({c.r, c.g, c.b, c.a}); //rgba
         }
 
-        sf::Color vColor_to_sfColor(vColor c) {
+        sf::Color vColor_to_sfColor(const vColor c) {
             return sf::Color(c.r, c.g, c.b, c.a); //rgba
+        }
+
+        sf::Color b2Color_to_sfColor(const b2Color c) {
+            return sf::Color((u8)(c.r*255), (u8)(c.g*255), (u8)(c.b*255), (u8)(c.a*255));
         }
     }
 }

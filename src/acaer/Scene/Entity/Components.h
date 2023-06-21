@@ -54,12 +54,33 @@ namespace Acaer {
             Tag(const Tag&) = default;
         };
 
+
+        struct SpriteAnimatior {
+            struct Animation {
+                u8 framePos     = 0;            // Animation pos on spritesheet
+                u8 frameLenght  = 8;            // How many frames in animation
+                v2<u8> frameSize;               // Size (with / height) of 1 frame
+
+                b8 isMirrored   = false;        // Mirror animation
+
+                u16 currentFrame = 0;;
+                f32 animationSpeed = 10.f;      // animationSpeed [fps]
+                f32 elapsedTime = 0.f;
+            };
+
+            std::string currentAnimation;
+            std::map<std::string, Animation> pool;
+        };
+
         /**
-         * @brief Sprite Component
+         * @brief Sprite Animation Component
          * 
          */
         struct Sprite {
+            // TODO (flex): runtime texture reload
+            std::string texturepath;            // Texturepath
             sf::Texture texture;                // sf::RenderTexture
+            sf::Sprite spriteTexture;           // sf::Sprite
         };
 
         /**
@@ -112,8 +133,8 @@ namespace Acaer {
             struct Sensor {
                 UserData::SensorUserData* userData = nullptr;
 
-                v2f size   = {10, 10};          // Size [px]
-                v2f offset = {0, 0};            // Offset [px] relative to pos of Transform. usually {0, 0}
+                v2f size   = {10, 10};              // Size [px]
+                v2f offset = {0, 0};                // Offset [px] relative to center of collider.
             
                 Sensor() { userData = new UserData::SensorUserData(); }
             };
@@ -124,21 +145,12 @@ namespace Acaer {
         };
 
         /**
-         * @brief Camera Component.
+         * @brief CameraController Component.
          * @attention There may only be one per Scene
          * 
          */
-        struct Camera {
+        struct CameraController {
             f32 zoom = 1.0f;                    // Camera zoom
-        };
-
-        /**
-         * @brief Input Component.
-         *        Entities with this commponent can be moved 
-         *        by the player
-         */
-        struct Input  {
-            b8 isControllable = true;           // true: Player is controllable via input
         };
 
         /**

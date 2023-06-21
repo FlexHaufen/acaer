@@ -13,7 +13,8 @@
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
 
-#include "acaer/Scene/Scene.h"
+#include "acaer/ImGui/ImGuiPanel.h"
+
 #include "acaer/Scene/Entity/Entity.h"
 #include "acaer/Scene/Entity/Components.h"
 
@@ -27,25 +28,9 @@ namespace Acaer {
      * @brief Entity Browser panel
      *        Displays all enities in current scene  
      */
-    class EntityBrowserPanel {
+    class EntityBrowserPanel : public ImGuiPanel {
 
 	public:
-        
-		EntityBrowserPanel() = default;
-
-        /**
-         * @brief Construct a new Entity Browser Panel object
-         * 
-         * @param context current scene
-         */
-		EntityBrowserPanel(const Ref<Scene> &context);
-
-        /**
-         * @brief Set the Context object
-         * 
-         * @param context current scene
-         */
-		void SetContext(const Ref<Scene> &context);
 
         /**
          * @brief ImGui Render
@@ -70,7 +55,6 @@ namespace Acaer {
 
 	private:
         // ** Members **  
-		Ref<Scene> m_Context;           // Current scene
         Entity m_SelectionContext;      // Current selectet entity
     };
 }

@@ -15,6 +15,13 @@
 #include "acaer/Scene/Entity/Components.h"
 #include "acaer/Scene/ContactListener/ContactListener.h"
 
+#include "acaer/Scene/Renderer/Renderer.h"
+#include "acaer/Scene/Renderer/DebugRenderer.h"
+
+#include "acaer/Scene/Camera/Camera.h"
+
+#include "acaer/Scene/Handlers/SpriteHandler.h"
+
 #include "acaer/Scene/World/World.h"
 
 //*** DEFINES ***
@@ -31,7 +38,7 @@ namespace Acaer {
     class Scene {
 
     public:
-        Scene();
+        Scene(sf::RenderWindow &window);
         ~Scene();
 
         static Ref<Scene> Copy(Ref<Scene> other);
@@ -69,42 +76,38 @@ namespace Acaer {
          * @brief Update function
          * 
          * @param dt delta time
-         * @param window sf::Window reference
          */
-        void OnUpdate(f32 dt, sf::RenderWindow &window);
+        void OnUpdate(f32 dt);
 
         /**
          * @brief Main render update function
          * 
-         * @param window sf::Window reference
+         * @param dt delta time
          */
-        void OnRender(sf::RenderWindow &window);
+        void OnRender(f32 dt);
 
+
+        sf::RenderWindow& GetRenderWindow() { return m_Window; }
 
     private:
-        
-        /**
-         * @brief Renders given transform
-         * 
-         * @param transform transform to render
-         * @param tag       tag component
-         */
-        void RenderTransform(Component::Transform &transform, Component::Tag &tag);
-
 
         // ** Members **
-        entt::registry m_Registry;      // entt Registry
+        Camera m_Camera;                            // Camera
+        sf::RenderWindow &m_Window;                 // Ref to sf::RenderWindow
+        Renderer*       m_Renderer      = nullptr;  // Renderer
+        DebugRenderer*  m_DebugRenderer = nullptr;  // DebugRenderer
+        SpriteHandler   m_SpriteHandler;            // SpriteHandler
+        
+        entt::registry  m_Registry;                 // entt Registry
+        b2World*        m_PhysicsWorld  = nullptr;  // Simulated Physics World (for RigidBodies)
+        SandWorld*      m_SandWorld     = nullptr;  // Simulated Sand World (for Pixelsimulation)
 
-        sf::View m_Camera;              // Camera
+        ContactListener m_ContactListener;          // Box2D contactlistener
 
-        b2World* m_PhysicsWorld = nullptr;
-        World* m_World = nullptr;
+        friend class Entity;                        // Entity class
+        friend class SceneSerializer;               // Scene Serializer
 
-        ContactListener m_ContactListener;
-
-        friend class Entity;            // Entity class
-        friend class SceneSerializer;   // Scene Serializer
-    
-        friend class EntityBrowserPanel;
+        // * ImGui *
+        friend class EntityBrowserPanel;            // ImGui Panel
     };
 }

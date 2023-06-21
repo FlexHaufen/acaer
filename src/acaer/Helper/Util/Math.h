@@ -23,7 +23,7 @@
  * @param max      Maximum random number
  * @return size_t  Random number
  */
-inline size_t rand_u(size_t max) {
+inline size_t rand_u(const size_t max) {
     if (max < 0) {
         return -(rand() % (abs((int)max) + 1));
     }

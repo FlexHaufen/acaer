@@ -26,6 +26,9 @@ namespace Acaer {
         void OnUpdate(f32 dt) {
             auto& rb = GetComponent<Component::RigidBody>();
             auto& c  = GetComponent<Component::Collider>();
+            auto& s  = GetComponent<Component::SpriteAnimatior>();
+
+            // FIXME (flex): Animations maby not in this script
 
             if (c.sensors["foot"].userData->isColliding) {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
@@ -36,14 +39,19 @@ namespace Acaer {
 
             // TODO: use force instead of lin. vel.
             b2Vec2 vel = rb.RuntimeBody->GetLinearVelocity();
-            m_velFactor = 5.f; // Set std vel factor
 
             // ** Sprint **
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {m_velFactor = 8.f;}
             
             // ** Left / Right **
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))    {vel.x = -m_velFactor;}
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))    {vel.x =  m_velFactor;}
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))    {
+                vel.x = -m_velFactor;
+                s.currentAnimation = "run_left";
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))    {
+                vel.x =  m_velFactor;
+                s.currentAnimation = "run_right";
+            }
 
             rb.RuntimeBody->SetLinearVelocity(vel);
         }
@@ -51,7 +59,7 @@ namespace Acaer {
     private:
         // ** Members **
         //b8 m_CanJump = true;
-        f32 m_velFactor;
+        f32 m_velFactor = 7.f;
 
         const f32 m_jumpImpulse = 2.f;
     };

@@ -13,6 +13,10 @@
 
 //*** INCLUDES ***
 #include "acaer/ac_pch.h"
+#include "acaer/ImGui/ImGuiPanelStack.h"
+
+// * panels *
+#include "acaer/ImGui/Panels/EntityBrowserPanel.h"
 
 
 //*** DEFINES ***
@@ -22,17 +26,24 @@ namespace Acaer {
 
 	class ImGuiLayer { 
 	public:
-		ImGuiLayer();
+		ImGuiLayer(sf::RenderWindow& window);
 		~ImGuiLayer() = default;
 
-		void OnAttach(sf::RenderWindow &window);
+		void OnAttach(const Ref<Scene> &context);
 		void OnDetach();
 
-		void OnUpdate(sf::RenderWindow &window, sf::Time dt);
-		void OnRender(sf::RenderWindow &window);
+		void OnUpdate(sf::Time dt);
+		void OnRender();
 
-
-		void SetStyle();
 	private:
+		void SetStyle();
+
+	private:
+		sf::RenderWindow &m_Window;
+		ImGuiPanelStack m_PanelStack;
+
+		// * panels *
+		EntityBrowserPanel* m_pEntityBrowser = nullptr;
+
 	};
 }

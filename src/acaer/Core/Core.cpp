@@ -17,7 +17,6 @@
 #include "acaer/Scene/Entity/ScriptableEntity.h"
 #include "acaer/Scene/SceneSerializer.h"
 
-#include "acaer/Core/Events/EventManager.h"
 
 // ** Scripts **
 #include "acaer/Scripts/Player/CharacterController.h"
@@ -33,13 +32,15 @@ namespace Acaer {
     Core::Core() {
         Log::Init();
 
-        AC_CORE_INFO("ACAER v{0}", AC_VERSION);
-        AC_CORE_INFO("----------------------");
-
         AC_CORE_INFO("Initializing Core");
-        
 
-        AC_CORE_INFO("Creating Window");
+        #ifdef AC_PROFILE
+            AC_CORE_WARN("Profiler is enabled and may use unnecessary recources");
+            AC_PROFILE_BEGIN_SESSION("Profile", "AcaerProfile.json");
+        #endif
+
+        
+        AC_CORE_INFO("Creating main window");
         m_WindowTitle = "acaer v";
         m_WindowTitle.append(AC_VERSION);
         m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), m_WindowTitle);
@@ -52,8 +53,11 @@ namespace Acaer {
             m_Window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
         }
         
-        m_ImGuiLayer->OnAttach(m_Window);
-        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene = CreateRef<Scene>(m_Window);
+        m_EventManager = CreateRef<EventManager>(m_Window);
+        m_ImGuiLayer = CreateRef<ImGuiLayer>(m_Window);
+        
+        m_ImGuiLayer->OnAttach(m_ActiveScene);
 
     #ifdef AC_SCENE_LOAD_ON_OPEN
         AC_CORE_INFO("Loading scene...");
@@ -76,9 +80,7 @@ namespace Acaer {
             c.size = {400, 40};
 
             auto &s = ent.AddComponent<Component::Sprite>();
-            if (!s.texture.loadFromFile("assets/Textures/Debug/platform.png")) {
-                AC_CORE_WARN("Couldn't load sprite texture");
-            }
+            s.texturepath = "assets/Textures/Debug/platform.png";
         }
         {   // tree
             AC_CORE_TRACE("tree");
@@ -87,17 +89,14 @@ namespace Acaer {
             t.pos = {150, -444};
 
             auto &s = ent.AddComponent<Component::Sprite>();
-            if (!s.texture.loadFromFile("assets/Textures/World/fir_tree_1.png")) {
-                AC_CORE_WARN("Couldn't load sprite texture");
-            }
+            s.texturepath = "assets/Textures/World/fir_tree_1.png";
         }
         {   // Player
             AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Component::Transform>();
             t.pos = {150, 0};
-            player.AddComponent<Component::Input>();
-            auto &cam = player.AddComponent<Component::Camera>();
+            auto &cam = player.AddComponent<Component::CameraController>();
             cam.zoom = 1.2f;
             player.AddComponent<Component::NativeScript>().Bind<CharacterController>();
             auto &rb = player.AddComponent<Component::RigidBody>();
@@ -105,22 +104,32 @@ namespace Acaer {
             rb.density = 5.f;
             rb.friction = 0.9f;
             auto &c = player.AddComponent<Component::Collider>();
-            c.size = {44, 180};
+            c.size = {192, 192};
 
             Component::Collider::Sensor sns;
             sns.userData->name = "foot";
-            sns.size = {40, 10};
-            sns.offset = {0, 180};
+            sns.size = {60, 10};
+            sns.offset = {0, 192};
             c.sensors.emplace(sns.userData->name, sns);
 
             auto &s = player.AddComponent<Component::Sprite>();
-            if (!s.texture.loadFromFile("assets/Textures/Player/player_raw.png")) {
-                AC_CORE_WARN("Couldn't load sprite texture");
-            }
+            s.texturepath = "assets/Textures/Player/run_anim_temp-Sheet.png";
+            auto &sa = player.AddComponent<Component::SpriteAnimatior>();
+            sa.currentAnimation = "run_left";
+            sa.pool.emplace("run_right", Component::SpriteAnimatior::Animation{
+                                            .framePos = 0,
+                                            .frameLenght = 8,
+                                            .frameSize {48, 48}
+                                        });
+            sa.pool.emplace("run_left", Component::SpriteAnimatior::Animation{
+                                            .framePos = 0,
+                                            .frameLenght = 8,
+                                            .frameSize {48, 48},
+                                            .isMirrored = true
+                                        });
         }
         //! ----------------
     #endif
-        m_EntityBrowserPanel.SetContext(m_ActiveScene);
         m_isRunning = true;
 
         // random number seed
@@ -137,18 +146,21 @@ namespace Acaer {
         #endif
 
         m_Window.close();
-        m_ImGuiLayer->OnDetach();        
+        m_ImGuiLayer->OnDetach();      
+
+        AC_PROFILE_END_SESSION();  
     }
 
     void Core::Run() {
+        AC_PROFILE_FUNCTION();
+
         sf::Clock dt_clock;
         sf::Time dt;
         
         AC_CORE_INFO("Setting up EventManager");
-        EventManager eventManager(m_Window);
-
-        eventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {m_Window.close(); });
-        eventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {m_Window.close(); });
+        m_EventManager->addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) { m_Window.close(); });
+        m_EventManager->addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) { m_Window.close(); });
+        m_EventManager->addKeyPressedCallback(sf::Keyboard::Tab, [&](const sf::Event&) { m_isPaused = !m_isPaused; });
         
         AC_CORE_INFO("Starting scene...");
         m_ActiveScene->OnStart();
@@ -156,29 +168,28 @@ namespace Acaer {
             
             dt = dt_clock.restart();
             f32 dt_sec = dt.asSeconds();
-           
+        
             #ifdef AC_CALC_FPS
                 u16 fps = u16(1/dt_sec);
                 m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
             #endif
 
             // ---- EVENT HANDLING ----
-            eventManager.processEvents(nullptr);
+            m_EventManager->processEvents(nullptr);
             //ImGui::SFML::ProcessEvent();          // TODO: Add ImGui Events
-
-            // ---- UPDATE HANDLING ----
-            m_ActiveScene->OnUpdate(dt_sec, m_Window);
-            m_ImGuiLayer->OnUpdate(m_Window, dt);
-
-            // ---- RENDER LOOP ----
-            m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
-            m_ActiveScene->OnRender(m_Window);
             
-            //ImGui::ShowDemoWindow();
-            m_EntityBrowserPanel.OnImGuiRender();
+            if (!m_isPaused) {
+                // ---- UPDATE HANDLING ----
+                m_ActiveScene->OnUpdate(dt_sec);
+                m_ImGuiLayer->OnUpdate(dt);
 
-            m_ImGuiLayer->OnRender(m_Window);
-            m_Window.display();
+                // ---- RENDER LOOP ----
+                m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
+                m_ActiveScene->OnRender(dt_sec);
+                
+                m_ImGuiLayer->OnRender();
+                m_Window.display();
+            }
         }
         m_ActiveScene->OnEnd();
         AC_CORE_WARN("Core stopped running");

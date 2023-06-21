@@ -17,15 +17,6 @@
 
 // *** NAMESPACE ***
 namespace Acaer {
-    
-
-    EntityBrowserPanel::EntityBrowserPanel(const Ref<Scene> &context) {
-        m_Context = context;
-    }
-
-    void EntityBrowserPanel::SetContext(const Ref<Scene> &context) {
-        m_Context = context;
-    }
 
     void EntityBrowserPanel::OnImGuiRender() {
 		ImGui::Begin("Entity Browser Panel");
@@ -134,9 +125,9 @@ namespace Acaer {
             f3 = transform.rotation;
         }
 
-        if (entity.HasComponent<Component::Camera>()) {
+        if (entity.HasComponent<Component::CameraController>()) {
             ImGui::SeparatorText("Transform");
-            auto &camera = entity.GetComponent<Component::Camera>();
+            auto &camera = entity.GetComponent<Component::CameraController>();
 
             f32 i1 = camera.zoom;
             ImGui::SliderFloat("zoom", &i1, 0.5, 2);

@@ -185,19 +185,11 @@ namespace Acaer {
             out << YAML::EndMap;
         }
 
-        if (entity.HasComponent<Component::Camera>()) {
-            auto &c = entity.GetComponent<Component::Camera>();
+        if (entity.HasComponent<Component::CameraController>()) {
+            auto &c = entity.GetComponent<Component::CameraController>();
             out << YAML::Key << "Camera";
             out << YAML::BeginMap;
             out << YAML::Key << "zoom"         << YAML::Value << c.zoom;
-            out << YAML::EndMap;
-        }
-
-        if (entity.HasComponent<Component::Input>()) {
-            auto &c = entity.GetComponent<Component::Input>();
-            out << YAML::Key << "Input";
-            out << YAML::BeginMap;
-            out << YAML::Key << "isControllable"<< YAML::Value << c.isControllable;
             out << YAML::EndMap;
         }
         out << YAML::EndMap;
@@ -247,14 +239,8 @@ namespace Acaer {
 
         auto camera_c = entity["Camera"];
         if (camera_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Component::Camera>();
+            auto& c = currentEntity.GetOrEmplaceComponent<Component::CameraController>();
             c.zoom = camera_c["zoom"].as<f32>();
-        }
-
-        auto input_c = entity["Input"];
-        if (input_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Component::Input>();
-            c.isControllable = input_c["isControllable"].as<b8>();
         }
     }
 

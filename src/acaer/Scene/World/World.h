@@ -1,7 +1,7 @@
 /**
- * @file World.h
+ * @file SandWorld.h
  * @author flexhaufen
- * @brief World
+ * @brief SandWorld
  * @version 0.1
  * @date 2023-03-31
  * 
@@ -17,6 +17,7 @@
 #include "acaer/Scene/World/WorldChunk.h"
 
 #include "acaer/Scene/Renderer/Renderer.h"
+#include "acaer/Scene/Renderer/DebugRenderer.h"
 
 //*** DEFINES ***
 #define AC_WORLD_DEFAULT_SCALE 1
@@ -26,19 +27,19 @@
 namespace Acaer {
     
     /**
-     * @brief World for Game
+     * @brief SandWorld for Game
      *        cellular automata
      */
-    class World {
+    class SandWorld {
     public:
 
         /**
-         * @brief Construct a new World object
+         * @brief Construct a new SandWorld object
          * 
          * @param width 
          * @param height 
          */
-        World(size_t chunkWidth, size_t chunkHeight, f32 scale)
+        SandWorld(size_t chunkWidth, size_t chunkHeight, f32 scale)
             : m_chunkWidth ((size_t)(chunkWidth / scale))
             , m_chunkHeight((size_t)(chunkHeight / scale))
             , m_scale(scale) {
@@ -52,13 +53,12 @@ namespace Acaer {
         void OnUpdate();
 
         /**
-         * @brief Main render update function
+         * @brief Get the Chunks of a World object
          * 
-         * @param window sf::Window reference
+         * @return std::vector<WorldChunk*>& World Chunks
          */
-        void OnRender(sf::RenderWindow &window);
+        std::vector<WorldChunk*>& GetChunkVector() { return m_chunks; }
 
-    
         // ** Cells **
         bool IsInBounds(s32 x, s32 y) {
             if (WorldChunk* chunk = GetChunk(x, y)) {
@@ -106,8 +106,6 @@ namespace Acaer {
 
         // ** Chunks **
         void UpdateChunk(WorldChunk* chunk);
-
-        void RenderChunk(sf::RenderWindow &window, WorldChunk* chunk);
 
         void RemoveEmptyChunks();
 
