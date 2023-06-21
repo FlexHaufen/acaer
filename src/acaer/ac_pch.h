@@ -54,7 +54,7 @@
 
 
 // *** DEFINES ***
-#define AC_VERSION                          "0.0.5a"
+#define AC_VERSION                          "0.0.6a"
 
 
 #define AC_WINDOW_RESIZABLE                             // flag
