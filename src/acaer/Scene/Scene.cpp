@@ -33,8 +33,8 @@ namespace Acaer {
         AC_CORE_INFO("    Height: {0}", AC_WINDOW_Y);
 
         AC_CORE_INFO("Setting up Renderer");
-        m_Renderer = new Renderer(window);
-        m_DebugRenderer = new DebugRenderer(window);
+        m_Renderer = CreateRef<Renderer>(window);
+        m_DebugRenderer = CreateRef<DebugRenderer>(window);
     }
 
     Scene::~Scene() {
@@ -67,15 +67,15 @@ namespace Acaer {
         AC_PROFILE_FUNCTION();
 
         AC_CORE_INFO("Setting up PhysicsWorld");
-        m_PhysicsWorld = new b2World({AC_GRAVITY_X, AC_GRAVITY_Y});
+        m_PhysicsWorld = CreateRef<b2World>(b2Vec2(AC_GRAVITY_X, AC_GRAVITY_Y));
 
         #ifdef AC_DEBUG_RENDER
             AC_CORE_INFO("Setting up Debug Renderer");
-            m_PhysicsWorld->SetDebugDraw(m_DebugRenderer);
+            m_PhysicsWorld->SetDebugDraw(m_DebugRenderer.get());
         #endif
 
         AC_CORE_INFO("Setting up World");
-        m_SandWorld = new SandWorld(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
+        //m_SandWorld = CreateRef<SandWorld>(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
         // ** ContactListener **
         m_PhysicsWorld->SetContactListener(&m_ContactListener);
@@ -89,7 +89,7 @@ namespace Acaer {
                     auto &t = entity.GetComponent<Component::Transform>();
                     auto &rb = entity.GetComponent<Component::RigidBody>();
                     auto &c = entity.GetComponent<Component::Collider>();
-                    Convert::create_b2Body(rb, t, c, m_PhysicsWorld);
+                    Convert::create_b2Body(rb, t, c, m_PhysicsWorld.get());
                 }
             }
         }
@@ -110,7 +110,7 @@ namespace Acaer {
         }
 
         //!------- DEBUG --------
-             
+        /*     
         {
             Cell c;
             c.type  = CellType::SAND;
@@ -137,25 +137,12 @@ namespace Acaer {
                 m_SandWorld->SetCell(x, 69, c);
             }
         }
-        
+        */
         //!---------------------
     }
 
     void Scene::OnEnd() {
         AC_PROFILE_FUNCTION();
-
-        // FIXME (flex): make shared pointer
-        delete m_PhysicsWorld;
-		m_PhysicsWorld = nullptr;
-
-        delete m_SandWorld;
-        m_SandWorld = nullptr;
-
-        delete m_Renderer;
-        m_Renderer = nullptr;
-    
-        delete m_DebugRenderer;
-        m_DebugRenderer = nullptr;
     }
 
 

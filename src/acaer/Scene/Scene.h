@@ -92,16 +92,16 @@ namespace Acaer {
         Camera m_Camera;                            // Camera
         b8 m_useFreeCamera;                         // True: When camera shall be free            
 
-        sf::RenderWindow &m_Window;                 // Ref to sf::RenderWindow
-        Renderer*       m_Renderer      = nullptr;  // Renderer
-        DebugRenderer*  m_DebugRenderer = nullptr;  // DebugRenderer
-        SpriteHandler   m_SpriteHandler;            // SpriteHandler
+        sf::RenderWindow   &m_Window;               // Ref to sf::RenderWindow
+        Ref<Renderer>       m_Renderer;             // Renderer
+        Ref<DebugRenderer>  m_DebugRenderer;        // DebugRenderer
+        SpriteHandler       m_SpriteHandler;        // SpriteHandler
         
-        entt::registry  m_Registry;                 // entt Registry
-        b2World*        m_PhysicsWorld  = nullptr;  // Simulated Physics World (for RigidBodies)
-        SandWorld*      m_SandWorld     = nullptr;  // Simulated Sand World (for Pixelsimulation)
+        entt::registry      m_Registry;             // entt Registry
+        Ref<b2World>        m_PhysicsWorld;         // Simulated Physics World (for RigidBodies)
+        Ref<SandWorld>      m_SandWorld;            // Simulated Sand World (for Pixelsimulation)
 
-        ContactListener m_ContactListener;          // Box2D contactlistener
+        ContactListener     m_ContactListener;      // Box2D contactlistener
 
         friend class Entity;                        // Entity class
         friend class SceneSerializer;               // Scene Serializer
