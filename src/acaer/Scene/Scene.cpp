@@ -262,6 +262,7 @@ namespace Acaer {
 
                     #ifdef AC_DEBUG_RENDER
                         m_DebugRenderer->RenderSpriteOutline(t, s);
+                        m_DebugRenderer->RenderMouseCoords(m_Window.mapPixelToCoords(sf::Mouse::getPosition(m_Window)));
                     #endif
 
                 }

@@ -24,6 +24,9 @@
 
 #define AC_ORIGIN_POINT_RADIUS      2.f
 
+#define AC_MOUSE_POS_DISPLAY_OFFSET 20
+#define AC_MOUSE_POS_FONT_SIZE      15
+
 
 // *** NAMESPACE ***
 namespace Acaer {
@@ -32,6 +35,11 @@ namespace Acaer {
     DebugRenderer::DebugRenderer(sf::RenderWindow& m_Window) : m_Window(m_Window) {
         // Set the drawing flags
         SetFlags(e_shapeBit | e_jointBit);
+
+        // Font
+        if(!m_Font.loadFromFile(AC_GLOBAL_FONT_PATH)) {
+            AC_CORE_WARN("Could not load Font for DebugRenderer");
+        }
     }
 
     void DebugRenderer::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
@@ -122,6 +130,23 @@ namespace Acaer {
 
         p2 = p1 + k_axisScale * xf.q.GetYAxis();
         DrawSegment(p1, p2, b2Color(0, 1, 0));
+    }
+
+    void DebugRenderer::RenderMouseCoords(const sf::Vector2f &pos) {
+
+        sf::Text text;
+        text.setFont(m_Font);
+
+        text.setPosition(sf::Vector2f(pos.x + AC_MOUSE_POS_DISPLAY_OFFSET, pos.y));
+        
+        text.setString("x: " + std::to_string((s16)pos.x) + "\n" +
+                       "y: " + std::to_string((s16)pos.y));
+
+        text.setCharacterSize(AC_MOUSE_POS_FONT_SIZE);
+        text.setFillColor(sf::Color::Red);
+        text.setStyle(sf::Text::Regular);
+
+        m_Window.draw(text);
     }
 
     void DebugRenderer::RenderTransformOrigin(const Component::Transform &transform_c){

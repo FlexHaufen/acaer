@@ -20,6 +20,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <map>
+#include <filesystem>
 #include <functional>
 
 // ** External **
@@ -62,6 +63,9 @@
 #define AC_WINDOW_Y                         1080
 #define AC_CALC_FPS
 #define AC_WINDOW_ICON_PATH                 "resource/images/acaer_logo.png"
+
+#define AC_GLOBAL_FONT_PATH                 "resource/font/Rilu-Regular.ttf"
+
 
 #define AC_SCENE_CLEAR_BACKGROUND           sf::Color(158, 222, 232, 255)   // light blue
 

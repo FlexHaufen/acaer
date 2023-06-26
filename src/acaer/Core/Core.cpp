@@ -39,6 +39,8 @@ namespace Acaer {
             AC_PROFILE_BEGIN_SESSION("Profile", "AcaerProfile.json");
         #endif
 
+        std::filesystem::current_path("./");
+        AC_CORE_INFO("Running in: {0}",std::filesystem::current_path());
         
         AC_CORE_INFO("Creating main window");
         m_WindowTitle = "acaer v";

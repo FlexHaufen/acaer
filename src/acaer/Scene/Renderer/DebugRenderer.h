@@ -54,6 +54,7 @@ namespace Acaer {
 
 
         // *** CUSTOM ***
+        void RenderMouseCoords(const sf::Vector2f &pos);
 
         /**
          * @brief Render the origin point of given transform
@@ -104,5 +105,6 @@ namespace Acaer {
 
         // ** Members **
         sf::RenderWindow& m_Window;     // Reference to your SFML window
+        sf::Font m_Font;                // Font for debug renderer
     };
 }
