@@ -168,19 +168,16 @@ namespace Acaer {
         m_ActiveScene->OnStart();
         while (m_Window.isOpen() && m_isRunning) {
             
-            dt = dt_clock.restart();
-            f32 dt_sec = dt.asSeconds();
-        
-            #ifdef AC_CALC_FPS
-                u16 fps = u16(1/dt_sec);
-                m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
-            #endif
-
             // ---- EVENT HANDLING ----
             m_EventManager->processEvents(nullptr);
             //ImGui::SFML::ProcessEvent();          // TODO: Add ImGui Events
-            
+
             if (!m_isPaused) {
+                dt = dt_clock.restart();
+                f32 dt_sec = dt.asSeconds();
+                u16 fps = u16(1/dt_sec);
+                m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
+
                 // ---- UPDATE HANDLING ----
                 m_ActiveScene->OnUpdate(dt_sec);
                 m_ImGuiLayer->OnUpdate(dt);
@@ -191,6 +188,9 @@ namespace Acaer {
                 
                 m_ImGuiLayer->OnRender();
                 m_Window.display();
+            } 
+            else {
+                m_Window.setTitle(m_WindowTitle + " - PAUSED");
             }
         }
         m_ActiveScene->OnEnd();
