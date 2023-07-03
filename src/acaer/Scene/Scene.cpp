@@ -70,50 +70,32 @@ namespace Acaer {
     void Scene::OnStart() {
         AC_PROFILE_FUNCTION();
 
+        // ** Phyisics World **
         AC_CORE_INFO("Setting up PhysicsWorld");
         m_PhysicsWorld = CreateRef<b2World>(b2Vec2(AC_GRAVITY_X, AC_GRAVITY_Y));
+
+        // ContactListener
+        m_PhysicsWorld->SetContactListener(&m_ContactListener);
+
+        // Setup box2d bodies
+        m_Registry.view<Component::Transform, Component::RigidBody, Component::Collider>().each([&]( auto e, auto &transform, auto &rigidBody, auto &collider) {
+            Convert::create_b2Body(rigidBody, transform, collider, m_PhysicsWorld.get());
+        });
 
         #ifdef AC_DEBUG_RENDER
             AC_CORE_INFO("Setting up Debug Renderer");
             m_PhysicsWorld->SetDebugDraw(m_DebugRenderer.get());
         #endif
 
+        // ** Sand World **
         AC_CORE_INFO("Setting up World");
         //m_SandWorld = CreateRef<SandWorld>(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
 
-        // ** ContactListener **
-        m_PhysicsWorld->SetContactListener(&m_ContactListener);
-        {
-            // TODO (flex) use lamda
-            auto view = m_Registry.view<Component::RigidBody>();
-            for (auto e: view) {
-                Entity entity = {e, this};
-
-                // Create Physics Body
-                if (entity.HasComponent<Component::RigidBody>()) {
-                    auto &t = entity.GetComponent<Component::Transform>();
-                    auto &rb = entity.GetComponent<Component::RigidBody>();
-                    auto &c = entity.GetComponent<Component::Collider>();
-                    Convert::create_b2Body(rb, t, c, m_PhysicsWorld.get());
-                }
-            }
-        }
-
+        // ** SpriteHandler **
         AC_CORE_INFO("Setting up SpriteHandler");
-        {
-            // TODO (flex) use lamda
-            auto view = m_Registry.view<Component::Sprite>();
-            for (auto e: view) {
-                Entity entity = {e, this};
-
-                if (entity.HasComponent<Component::Sprite>()) {
-                    auto &s = entity.GetComponent<Component::Sprite>();
-                    auto &t = entity.GetComponent<Component::Tag>();
-                    m_SpriteHandler.OnStart(s, t);
-                }
-            }
-        }
-
+        m_Registry.view<Component::Sprite, Component::Tag>().each([&]( auto e, auto &sprite, auto &tag) {
+            m_SpriteHandler.OnStart(sprite, tag);
+        });
 
         // TODO (flex): Add NativeScript::OnStart() here
 
@@ -176,47 +158,37 @@ namespace Acaer {
 
 
         // ** Update Scripts **
-        {
-            m_Registry.view<Component::NativeScript>().each([=](auto entity, auto& nsc) {
-                if (!nsc.Instance) {
-                    nsc.Instance = nsc.InstantiateScript();
-                    nsc.Instance->m_Entity = Entity{ entity, this };
-                    nsc.Instance->OnCreate();
-                }
-                nsc.Instance->OnUpdate(dt);
-            });
-        }
+        m_Registry.view<Component::NativeScript>().each([&](auto entity, auto& nsc) {
+            if (!nsc.Instance) {
+                nsc.Instance = nsc.InstantiateScript();
+                nsc.Instance->m_Entity = Entity{ entity, this };
+                nsc.Instance->OnCreate();
+            }
+            nsc.Instance->OnUpdate(dt);
+        });
 
 
         // ** Physics **
-        {
-            m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
-            //m_SandWorld->OnUpdate();
+        m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
+        //m_SandWorld->OnUpdate();
 
-            // retrive transform form box2d
-            m_Registry.view<Component::Transform, Component::RigidBody, Component::Collider>().each([&]( auto e, auto &transform, auto &rigidBody, auto &collider) {
-                b2Body* body = (b2Body*)rigidBody.RuntimeBody;
+        // retrive transform form box2d
+        m_Registry.view<Component::Transform, Component::RigidBody, Component::Collider>().each([&]( auto e, auto &transform, auto &rigidBody, auto &collider) {
+            b2Body* body = (b2Body*)rigidBody.RuntimeBody;
 
-                // Calculate pos and rotation based on fixture
-                transform.pos       = Convert::getPositionFrom_b2Body(body, collider);
-                transform.rotation  = Convert::getRotationFrom_b2Body(body);
-            });
-        }
+            // Calculate pos and rotation based on fixture
+            transform.pos       = Convert::getPositionFrom_b2Body(body, collider);
+            transform.rotation  = Convert::getRotationFrom_b2Body(body);
+        });
 
         // ** Update Camera **
-        {
-            if (m_useFreeCamera) {
-                // TODO (flex): Add freecam here
-            }
-            else {
-                auto group = m_Registry.group<Component::CameraController>(entt::get<Component::Transform>);
-                for (auto entity : group) {
-                    auto &t = group.get<Component::Transform>(entity);
-                    auto &cam = group.get<Component::CameraController>(entity);
-
-                    m_Camera.OnUpdate(m_Window, t.pos, cam.zoom, dt);
-                }
-            }
+        if (m_useFreeCamera) {
+            // TODO (flex): Add freecam here
+        }
+        else {
+            m_Registry.view<Component::CameraController, Component::Transform>().each([&]( auto e, auto &cam, auto &transform) {
+                m_Camera.OnUpdate(m_Window, transform.pos, cam.zoom, dt);
+            });
         }
 
         // ** Update Sprites **
