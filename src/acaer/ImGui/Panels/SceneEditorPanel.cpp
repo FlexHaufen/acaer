@@ -29,6 +29,7 @@ namespace Acaer {
             ImGui::Checkbox("Free Camera", &c1);
             m_Context->m_useFreeCamera = c1;
 
+            ImGui::SeparatorText("Danger Zone");
         }
 		ImGui::End();
 	}

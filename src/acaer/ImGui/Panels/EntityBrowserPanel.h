@@ -44,14 +44,14 @@ namespace Acaer {
          * 
          * @param entity 
          */
-        void DrawEntityNode(Entity entity);
+        void DrawEntityNode(Entity &entity);
 
         /**
          * @brief Draws entity components
          * 
          * @param entity 
          */
-        void DrawComponents(Entity entity);
+        void DrawComponents(Entity &entity);
 
 	private:
         // ** Members **  

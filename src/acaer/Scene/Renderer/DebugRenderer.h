@@ -56,6 +56,15 @@ namespace Acaer {
         // *** CUSTOM ***
         void RenderMouseCoords(const sf::Vector2f &pos);
 
+
+        /**
+         * @brief Renders given tag on top of the transform origin
+         * 
+         * @param tag_c
+         * @param transform_c 
+         */
+        void RenderTag(const Component::Tag &tag_c, const Component::Transform &transform_c);
+
         /**
          * @brief Render the origin point of given transform
          *

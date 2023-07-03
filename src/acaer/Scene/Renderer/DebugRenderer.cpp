@@ -27,6 +27,9 @@
 #define AC_MOUSE_POS_DISPLAY_OFFSET 20
 #define AC_MOUSE_POS_FONT_SIZE      15
 
+#define AC_TAG_POS_DISPLAY_OFFSET   20
+#define AC_TAG_POS_FONT_SIZE        15
+
 
 // *** NAMESPACE ***
 namespace Acaer {
@@ -149,6 +152,22 @@ namespace Acaer {
         m_Window.draw(text);
     }
 
+    void DebugRenderer::RenderTag(const Component::Tag &tag_c, const Component::Transform &transform_c) {
+        sf::Text text;
+        text.setFont(m_Font);
+
+        text.setPosition(sf::Vector2f(transform_c.pos.x, transform_c.pos.y - AC_TAG_POS_DISPLAY_OFFSET));
+        
+        text.setString(tag_c.tag);
+
+        text.setCharacterSize(AC_TAG_POS_FONT_SIZE);
+        text.setFillColor(sf::Color::Red);
+        text.setStyle(sf::Text::Regular);
+
+        m_Window.draw(text);
+    }
+
+
     void DebugRenderer::RenderTransformOrigin(const Component::Transform &transform_c){
         sf::CircleShape c;
         c.setRadius(AC_ORIGIN_POINT_RADIUS);
@@ -193,10 +212,10 @@ namespace Acaer {
 
     void DebugRenderer::RenderRectWithOutline(sf::RectangleShape &rec, sf::Color color, b8 isFilled) {
         if (isFilled) {
-            rec.setFillColor(sf::Color(color.a, color.g, color.b, 100));       // Setting the fillcolor to nothing
+            rec.setFillColor(sf::Color(color.a, color.g, color.b, 100));    // transparent   
         }
         else {
-            rec.setFillColor(sf::Color(0, 0, 0, 0));    // transparent
+            rec.setFillColor(sf::Color(0, 0, 0, 0));    // Setting the fillcolor to nothing
         }
         rec.setOutlineColor(color);
         rec.setOutlineThickness(AC_OUTLINE_THICKNESS);

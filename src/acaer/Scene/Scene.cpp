@@ -57,10 +57,14 @@ namespace Acaer {
     }
 
     void Scene::DestroyEntity(Entity entity) {
-        // TODO (flex): Delete entity at runtime        
-        //m_Registry.destroy(entity);
-        
-        AC_CORE_WARN("Can't delete entity at runtime...");
+        // Destory Box2d Body
+        if (entity.HasComponent<Component::RigidBody>()) {
+            auto &rb = entity.GetComponent<Component::RigidBody>();
+            m_PhysicsWorld->DestroyBody(rb.RuntimeBody);
+        }
+
+        // Destory Body from registry
+        m_Registry.destroy(entity); 
     }
 
     void Scene::OnStart() {
@@ -80,6 +84,7 @@ namespace Acaer {
         // ** ContactListener **
         m_PhysicsWorld->SetContactListener(&m_ContactListener);
         {
+            // TODO (flex) use lamda
             auto view = m_Registry.view<Component::RigidBody>();
             for (auto e: view) {
                 Entity entity = {e, this};
@@ -96,11 +101,11 @@ namespace Acaer {
 
         AC_CORE_INFO("Setting up SpriteHandler");
         {
+            // TODO (flex) use lamda
             auto view = m_Registry.view<Component::Sprite>();
             for (auto e: view) {
                 Entity entity = {e, this};
 
-                // Create Physics Body
                 if (entity.HasComponent<Component::Sprite>()) {
                     auto &s = entity.GetComponent<Component::Sprite>();
                     auto &t = entity.GetComponent<Component::Tag>();
@@ -108,6 +113,10 @@ namespace Acaer {
                 }
             }
         }
+
+
+        // TODO (flex): Add NativeScript::OnStart() here
+
 
         //!------- DEBUG --------
         /*     
@@ -167,15 +176,16 @@ namespace Acaer {
 
 
         // ** Update Scripts **
-        m_Registry.view<Component::NativeScript>().each([=](auto entity, auto& nsc) {
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = Entity{ entity, this };
-                nsc.Instance->OnCreate();
-            }
-            nsc.Instance->OnUpdate(dt);
-        });
-
+        {
+            m_Registry.view<Component::NativeScript>().each([=](auto entity, auto& nsc) {
+                if (!nsc.Instance) {
+                    nsc.Instance = nsc.InstantiateScript();
+                    nsc.Instance->m_Entity = Entity{ entity, this };
+                    nsc.Instance->OnCreate();
+                }
+                nsc.Instance->OnUpdate(dt);
+            });
+        }
 
 
         // ** Physics **
@@ -184,20 +194,13 @@ namespace Acaer {
             //m_SandWorld->OnUpdate();
 
             // retrive transform form box2d
-            auto view = m_Registry.view<Component::RigidBody>();
-            for (auto e : view) {
-                Entity entity = {e , this};
-                auto& tag = entity.GetComponent<Component::Tag>();
-                auto& t = entity.GetComponent<Component::Transform>();
-                auto& rb = entity.GetComponent<Component::RigidBody>();
-                auto& c = entity.GetComponent<Component::Collider>();
-
-                b2Body* body = (b2Body*)rb.RuntimeBody;
+            m_Registry.view<Component::Transform, Component::RigidBody, Component::Collider>().each([&]( auto e, auto &transform, auto &rigidBody, auto &collider) {
+                b2Body* body = (b2Body*)rigidBody.RuntimeBody;
 
                 // Calculate pos and rotation based on fixture
-                t.pos       = Convert::getPositionFrom_b2Body(body, c);
-                t.rotation  = Convert::getRotationFrom_b2Body(body);
-            }
+                transform.pos       = Convert::getPositionFrom_b2Body(body, collider);
+                transform.rotation  = Convert::getRotationFrom_b2Body(body);
+            });
         }
 
         // ** Update Camera **
@@ -217,24 +220,21 @@ namespace Acaer {
         }
 
         // ** Update Sprites **
-        {
-            auto view = m_Registry.view<Component::Sprite>();
-            for (auto e : view) {
-                Entity entity = {e, this};
-                auto &s = entity.GetComponent<Component::Sprite>();
-                auto &t = entity.GetComponent<Component::Transform>();
+        m_Registry.view<Component::Tag, Component::Transform, Component::Sprite>().each([&]( auto e, auto &tag, auto &transform, auto &sprite) {
+            Entity entity = {e, this};
 
-                // Update Dynamic Sprites
-                if (entity.HasComponent<Component::SpriteAnimatior>()) {
-                    auto &sa = entity.GetComponent<Component::SpriteAnimatior>();
-                    m_SpriteHandler.HandleDynamicSprite(dt, s, sa, t);
-                }
-                // Update Static Sprites
-                else {
-                    m_SpriteHandler.HandleStaticSprite(s, t);
-                }
+            //AC_CORE_TRACE("animate {0}", tag.tag);
+
+            // Update Dynamic Sprites
+            if (entity.HasComponent<Component::SpriteAnimatior>()) {
+                auto &sa = entity.GetComponent<Component::SpriteAnimatior>();
+                m_SpriteHandler.HandleDynamicSprite(dt, sprite, sa, transform);
             }
-        }
+            // Update Static Sprites
+            else {
+                m_SpriteHandler.HandleStaticSprite(sprite, transform);
+            }
+        });
     }
 
 
@@ -242,38 +242,34 @@ namespace Acaer {
         AC_PROFILE_FUNCTION();
 
         // ** Render **
-        {
-            auto group = m_Registry.group<Component::Tag>(entt::get<Component::Transform>);
-            for (auto e : group) {
+        m_Registry.view<Component::Tag, Component::Transform>().each([&]( auto e, auto &tag, auto &transform) {
+            Entity entity = {e, this};
 
-                Entity entity = {e, this};
+            //auto &tag = entity.GetComponent<Component::Tag>();
+            //auto &t = entity.GetComponent<Component::Transform>();
+            
+            #ifdef AC_DEBUG_RENDER
+                m_DebugRenderer->RenderMouseCoords(m_Window.mapPixelToCoords(sf::Mouse::getPosition(m_Window)));
+                m_DebugRenderer->RenderTransformOrigin(transform);
+                m_DebugRenderer->RenderTag(tag, transform);
+            #endif
 
-                auto &tag = entity.GetComponent<Component::Tag>();
-                auto &t = entity.GetComponent<Component::Transform>();
-               
+            if (entity.HasComponent<Component::Sprite>()) {
+                auto &s = entity.GetComponent<Component::Sprite>();
+                
+                m_Renderer->RenderSprite(s);
+
                 #ifdef AC_DEBUG_RENDER
-                    m_DebugRenderer->RenderTransformOrigin(t);
+                    m_DebugRenderer->RenderSpriteOutline(transform, s);
                 #endif
-
-                if (entity.HasComponent<Component::Sprite>()) {
-                    auto &s = entity.GetComponent<Component::Sprite>();
-                   
-                    m_Renderer->RenderSprite(s);
-
-                    #ifdef AC_DEBUG_RENDER
-                        m_DebugRenderer->RenderSpriteOutline(t, s);
-                        m_DebugRenderer->RenderMouseCoords(m_Window.mapPixelToCoords(sf::Mouse::getPosition(m_Window)));
-                    #endif
-
-                }
             }
+        });
 
-            //for (auto &chunk : m_SandWorld->GetChunkVector()) {
-            //    m_DebugRenderer->RenderChunkBorder(chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
-			//    m_DebugRenderer->RenderChunkDirtyRect(chunk->getMin(), chunk->getMax());
-            //    m_Renderer->RenderChunk(chunk);
-            //}
-        }
+        //for (auto &chunk : m_SandWorld->GetChunkVector()) {
+        //    m_DebugRenderer->RenderChunkBorder(chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
+        //    m_DebugRenderer->RenderChunkDirtyRect(chunk->getMin(), chunk->getMax());
+        //    m_Renderer->RenderChunk(chunk);
+        //}
 
         #ifdef AC_DEBUG_RENDER
             m_PhysicsWorld->DebugDraw();

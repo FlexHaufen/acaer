@@ -32,6 +32,9 @@ namespace Acaer {
     Core::Core() {
         Log::Init();
 
+        // random number seed
+        srand((u32)time(NULL));
+
         AC_CORE_INFO("Initializing Core");
 
         #ifdef AC_PROFILE
@@ -70,29 +73,6 @@ namespace Acaer {
         }
     #else
         //! ---- DEBUG ----
-        {   // Ent1
-            AC_CORE_TRACE("creating ent1");
-            auto ent = m_ActiveScene->CreateEntity("ent1");
-            auto &t = ent.AddComponent<Component::Transform>();
-            t.pos = {100, 150};
-            auto &rb = ent.AddComponent<Component::RigidBody>();
-            rb.type = Component::RigidBody::BodyType::Static;
-
-            auto &c = ent.AddComponent<Component::Collider>();
-            c.size = {400, 40};
-
-            auto &s = ent.AddComponent<Component::Sprite>();
-            s.texturepath = "assets/Textures/Debug/platform.png";
-        }
-        {   // tree
-            AC_CORE_TRACE("tree");
-            auto ent = m_ActiveScene->CreateEntity("tree");
-            auto &t = ent.AddComponent<Component::Transform>();
-            t.pos = {150, -444};
-
-            auto &s = ent.AddComponent<Component::Sprite>();
-            s.texturepath = "assets/Textures/World/fir_tree_1.png";
-        }
         {   // Player
             AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");
@@ -130,12 +110,52 @@ namespace Acaer {
                                             .isMirrored = true
                                         });
         }
+        {   // Ent1
+            AC_CORE_TRACE("creating gnd");
+            auto ent = m_ActiveScene->CreateEntity("gnd");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {100, 150};
+            auto &rb = ent.AddComponent<Component::RigidBody>();
+                rb.type = Component::RigidBody::BodyType::Static;
+
+            auto &c = ent.AddComponent<Component::Collider>();
+                c.size = {400, 40};
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/Debug/platform.png";
+        }
+        {   // tree
+            AC_CORE_TRACE("tree1");
+            auto ent = m_ActiveScene->CreateEntity("tree1");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {50, -444};
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/World/fir_tree_1.png";
+        }
+        {   // tree
+            AC_CORE_TRACE("tree2");
+            auto ent = m_ActiveScene->CreateEntity("tree2");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {150, -444};
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/World/fir_tree_1.png";
+        }
+        {   // tree
+            AC_CORE_TRACE("tree3");
+            auto ent = m_ActiveScene->CreateEntity("tree3");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {-300, -444};
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/World/fir_tree_1.png";
+        }
         //! ----------------
     #endif
         m_isRunning = true;
 
-        // random number seed
-        srand((u32)time(NULL));
+        
     }
 
     Core::~Core() {
