@@ -204,7 +204,7 @@ namespace Acaer {
 
                 // ---- RENDER LOOP ----
                 m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
-                m_ActiveScene->OnRender(dt_sec);
+                m_ActiveScene->OnRender();
                 
                 m_ImGuiLayer->OnRender();
                 m_Window.display();

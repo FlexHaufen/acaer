@@ -210,7 +210,7 @@ namespace Acaer {
     }
 
 
-    void Scene::OnRender(f32 dt) {
+    void Scene::OnRender() {
         AC_PROFILE_FUNCTION();
 
         // ** Render **

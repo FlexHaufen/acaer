@@ -82,9 +82,8 @@ namespace Acaer {
         /**
          * @brief Main render update function
          * 
-         * @param dt delta time
          */
-        void OnRender(f32 dt);
+        void OnRender();
 
     private:
 
