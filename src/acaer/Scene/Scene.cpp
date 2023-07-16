@@ -56,15 +56,20 @@ namespace Acaer {
 		return entity;
     }
 
-    void Scene::DestroyEntity(Entity entity) {
+    void Scene::DestroyEntity(Entity &entity) {
         // Destory Box2d Body
         if (entity.HasComponent<Component::RigidBody>()) {
             auto &rb = entity.GetComponent<Component::RigidBody>();
             m_PhysicsWorld->DestroyBody(rb.RuntimeBody);
         }
+        // Destroy Sprite
+        if (entity.HasComponent<Component::Sprite>()) {
+            auto &sprite = entity.GetComponent<Component::Sprite>();
+            m_SpriteHandler.DeleteSprite(sprite);
+        }
 
         // Destory Body from registry
-        m_Registry.destroy(entity); 
+        m_Registry.destroy(entity);
     }
 
     void Scene::OnStart() {
@@ -94,7 +99,7 @@ namespace Acaer {
         // ** SpriteHandler **
         AC_CORE_INFO("Setting up SpriteHandler");
         m_Registry.view<Component::Sprite, Component::Tag>().each([&]( auto e, auto &sprite, auto &tag) {
-            m_SpriteHandler.OnStart(sprite, tag);
+            m_SpriteHandler.CreateSprite(sprite, tag);
         });
 
         // TODO (flex): Add NativeScript::OnStart() here

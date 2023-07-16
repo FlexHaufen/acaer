@@ -16,19 +16,18 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-        void SpriteHandler::OnStart(Component::Sprite &sprite, const Component::Tag &tag) {
-            if (!sprite.texture.loadFromFile(sprite.texturepath)) {
-                AC_CORE_WARN("Renderer could not find valid texture of Entity:");
-                AC_CORE_WARN("    - {0}: [{1}]", tag.tag, tag.uuid);
+        SpriteHandler::SpriteHandler() {
+            m_AnimationHandler = CreateRef<AnimationHandler>();
+            m_TextureHandler = CreateRef<TextureHandler>();
+        }
 
-                if (!sprite.texture.loadFromFile(AC_ERROR_TEXTURE_PATH)) {
-                    AC_CORE_ERROR("Failed to load error_texture");
-                    return;
-                }
-
-            }
-            sprite.spriteTexture.setTexture(sprite.texture);
+        void SpriteHandler::CreateSprite(Component::Sprite &sprite, const Component::Tag &tag) {
+            m_TextureHandler->loadTexture(sprite, tag);
             sprite.spriteTexture.setScale({AC_GLOBAL_SCALE, AC_GLOBAL_SCALE});
+        }
+
+        void SpriteHandler::DeleteSprite(Component::Sprite &sprite) {
+            m_TextureHandler->releaseTexture(sprite);
         }
 
         void SpriteHandler::HandleStaticSprite(Component::Sprite &sprite, const Component::Transform &transform) {
@@ -38,7 +37,7 @@ namespace Acaer {
         }
 
         void SpriteHandler::HandleDynamicSprite(f32 dt, Component::Sprite &sprite, Component::SpriteAnimatior &spriteAnimator, const Component::Transform &transform) {
-            m_AnimationHandler.OnUpdate(dt, sprite, spriteAnimator);
+            m_AnimationHandler->OnUpdate(dt, sprite, spriteAnimator);
             sprite.spriteTexture.setRotation(transform.rotation);
             sprite.spriteTexture.setPosition(sf::Vector2f(transform.pos.x, transform.pos.y));
         }

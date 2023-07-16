@@ -14,9 +14,9 @@
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Entity/Components.h"
 #include "acaer/Scene/Handlers/AnimationHandler.h"
+#include "acaer/Scene/Handlers/TextureHandler.h"
 
 //*** DEFINES ***
-#define AC_ERROR_TEXTURE_PATH   "assets/Textures/Debug/error_texture.png"
 
 //*** NAMESPACE ***
 namespace Acaer {
@@ -24,13 +24,22 @@ namespace Acaer {
     class SpriteHandler {
     public:
 
+        SpriteHandler();
+
         /**
-         * @brief Sets up given sprite component
-         *        for game
-         * @param sprite        sprite
-         * @param tag           tag
+         * @brief Create new Sprite object
+         * 
+         * @param sprite    Sprite Component
+         * @param tag       Tag Component
          */
-        void OnStart(Component::Sprite &sprite, const Component::Tag &tag);
+        void CreateSprite(Component::Sprite &sprite, const Component::Tag &tag);
+
+        /**
+         * @brief Delete Given Sprite
+         * 
+         * @param sprite    Sprite Component
+         */
+        void DeleteSprite(Component::Sprite &sprite);
 
         /**
          * @brief Update Static Sprites (Non Animated)
@@ -52,6 +61,7 @@ namespace Acaer {
 
     private:
         // ** Memebers **
-        AnimationHandler m_AnimationHandler;
+        Ref<AnimationHandler>   m_AnimationHandler;
+        Ref<TextureHandler>     m_TextureHandler; 
     };
 }

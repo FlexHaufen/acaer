@@ -49,9 +49,8 @@ namespace Acaer {
             }
             ImGui::SameLine();
             if (ImGui::Button("Remove Entity")) {
-                // FIXME (1): If no entity is selected and "remove" is pressed an abort is raised
-                // FIXME (2): Destroying an entity destroys components of another
                 m_Context->DestroyEntity(m_SelectionContext);
+                m_SelectionContext = {};
             }
 		}
 		ImGui::End();

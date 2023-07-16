@@ -79,15 +79,12 @@ namespace Acaer {
         struct Sprite {
             // TODO (flex): runtime texture reload
             std::string texturepath;            // Texturepath
-            sf::Texture texture;                // sf::RenderTexture
             sf::Sprite spriteTexture;           // sf::Sprite
         };
 
         /**
          * @brief Transform Component
-         * @note  If the "alpha" of ".color" is set to "0",
-         *        the transform won't be rendered
-         * 
+         *  
          */
         struct Transform {
             //v2 center_pos;

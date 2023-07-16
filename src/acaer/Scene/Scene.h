@@ -70,7 +70,7 @@ namespace Acaer {
          * 
          * @param entity 
          */
-        void DestroyEntity(Entity entity);
+        void DestroyEntity(Entity &entity);
 
         /**
          * @brief Update function
