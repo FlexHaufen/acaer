@@ -24,10 +24,16 @@ Custom 2D **pixelart game** programmed in pure **C++**
 - [FallingSandSurvival](https://github.com/PieKing1215/FallingSandSurvival) by [PieKing1215](https://github.com/PieKing1215)
 
 
-## Building
-
-### Requirements
-- CMake 3.24.1 or higher
+## Requirements
+- CMake 3.24 or higher
 - MSVC 19 or higher
 
-### Debug Build
+## Building
+
+Init & update git submodules
+```shell
+git submodule update --init --recursive
+```
+```shell
+git submodule update --recursive --remote
+```

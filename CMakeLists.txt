@@ -74,7 +74,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/imgui-sfml/)
 include_directories(
 	${CMAKE_SOURCE_DIR}/src
   	#EnTT
-	${CMAKE_SOURCE_DIR}/lib/vendor/entt
+	${CMAKE_SOURCE_DIR}/lib/entt
 	#SFML
 	${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/include
 	# Box2D
