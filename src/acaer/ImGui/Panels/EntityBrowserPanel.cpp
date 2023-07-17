@@ -98,7 +98,7 @@ namespace Acaer {
             ImGui::SeparatorText("Transform");
             auto &transform = entity.GetComponent<Component::Transform>();
 
-            ImGui::SliderInt("render layer", (s32*)&transform.render_layer, 0, 9);
+            ImGui::SliderInt("render layer", (s32*)&transform.renderLayer, 0, 9);
 
             f32 f1[2] = {transform.pos.x, transform.pos.y};
             ImGui::InputFloat2("pos", f1);

@@ -78,6 +78,8 @@ namespace Acaer {
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Component::Transform>();
             t.pos = {150, 0};
+            t.renderLayer = 5;
+
             auto &cam = player.AddComponent<Component::CameraController>();
             cam.zoom = 1.2f;
             player.AddComponent<Component::NativeScript>().Bind<CharacterController>();
@@ -115,6 +117,7 @@ namespace Acaer {
             auto ent = m_ActiveScene->CreateEntity("gnd");
             auto &t = ent.AddComponent<Component::Transform>();
                 t.pos = {100, 150};
+                t.renderLayer = 5;
             auto &rb = ent.AddComponent<Component::RigidBody>();
                 rb.type = Component::RigidBody::BodyType::Static;
 
@@ -129,6 +132,7 @@ namespace Acaer {
             auto ent = m_ActiveScene->CreateEntity("tree1");
             auto &t = ent.AddComponent<Component::Transform>();
                 t.pos = {50, -444};
+                t.renderLayer = 4;
 
             auto &s = ent.AddComponent<Component::Sprite>();
                 s.texturepath = "assets/Textures/World/fir_tree_1.png";
@@ -138,6 +142,7 @@ namespace Acaer {
             auto ent = m_ActiveScene->CreateEntity("tree2");
             auto &t = ent.AddComponent<Component::Transform>();
                 t.pos = {150, -444};
+                t.renderLayer = 4;
 
             auto &s = ent.AddComponent<Component::Sprite>();
                 s.texturepath = "assets/Textures/World/fir_tree_1.png";
@@ -147,6 +152,7 @@ namespace Acaer {
             auto ent = m_ActiveScene->CreateEntity("tree3");
             auto &t = ent.AddComponent<Component::Transform>();
                 t.pos = {-300, -444};
+                t.renderLayer = 4;
 
             auto &s = ent.AddComponent<Component::Sprite>();
                 s.texturepath = "assets/Textures/World/fir_tree_1.png";

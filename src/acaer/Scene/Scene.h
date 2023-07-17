@@ -25,7 +25,7 @@
 #include "acaer/Scene/World/World.h"
 
 //*** DEFINES ***
-
+#define AC_MAX_RENDERLAYERS     10
 
 //*** NAMESPACE ***
 namespace Acaer {
@@ -88,9 +88,11 @@ namespace Acaer {
     private:
 
         // ** Members **
+        // cam
         Camera m_Camera;                            // Camera
         b8 m_useFreeCamera;                         // True: When camera shall be free            
 
+        // rendering
         sf::RenderWindow   &m_Window;               // Ref to sf::RenderWindow
         Ref<Renderer>       m_Renderer;             // Renderer
         Ref<DebugRenderer>  m_DebugRenderer;        // DebugRenderer

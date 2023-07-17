@@ -147,7 +147,7 @@ namespace Acaer {
             auto &c = entity.GetComponent<Component::Transform>();
             out << YAML::Key << "Transform";
             out << YAML::BeginMap;
-            out << YAML::Key << "render_layer"  << YAML::Value << c.render_layer;
+            out << YAML::Key << "renderLayer"  << YAML::Value << c.renderLayer;
             out << YAML::Key << "pos"           << YAML::Value << c.pos;
             out << YAML::Key << "scale"         << YAML::Value << c.scale;
             out << YAML::Key << "rotation"      << YAML::Value << c.rotation;
@@ -206,7 +206,7 @@ namespace Acaer {
         auto transform_c = entity["Transform"];
         if (transform_c) {
             auto& c = currentEntity.GetOrEmplaceComponent<Component::Transform>();
-            c.render_layer  = transform_c["render_layer"].as<s8>();
+            c.renderLayer  = transform_c["renderLayer"].as<s8>();
             c.pos           = transform_c["pos"].as<v2f>();
             c.scale         = transform_c["scale"].as<v2f>();
             c.rotation      = transform_c["rotation"].as<f32>();

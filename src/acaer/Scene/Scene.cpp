@@ -219,28 +219,31 @@ namespace Acaer {
         AC_PROFILE_FUNCTION();
 
         // ** Render **
-        m_Registry.view<Component::Tag, Component::Transform>().each([&]( auto e, auto &tag, auto &transform) {
-            Entity entity = {e, this};
 
-            //auto &tag = entity.GetComponent<Component::Tag>();
-            //auto &t = entity.GetComponent<Component::Transform>();
-            
-            #ifdef AC_DEBUG_RENDER
-                m_DebugRenderer->RenderMouseCoords(m_Window.mapPixelToCoords(sf::Mouse::getPosition(m_Window)));
-                m_DebugRenderer->RenderTransformOrigin(transform);
-                m_DebugRenderer->RenderTag(tag, transform);
-            #endif
+        // Render layers
+        for (u8 i = 0; i <= AC_MAX_RENDERLAYERS; i++) {
+            m_Registry.view<Component::Tag, Component::Transform>().each([&]( auto e, auto &tag, auto &transform) {
+                if (transform.renderLayer != i) {
+                    return;
+                }
 
-            if (entity.HasComponent<Component::Sprite>()) {
-                auto &s = entity.GetComponent<Component::Sprite>();
-                
-                m_Renderer->RenderSprite(s);
-
+                Entity entity = {e, this};
                 #ifdef AC_DEBUG_RENDER
-                    m_DebugRenderer->RenderSpriteOutline(transform, s);
+                    m_DebugRenderer->RenderMouseCoords(m_Window.mapPixelToCoords(sf::Mouse::getPosition(m_Window)));
+                    m_DebugRenderer->RenderTransformOrigin(transform);
+                    m_DebugRenderer->RenderTag(tag, transform);
                 #endif
-            }
-        });
+                if (entity.HasComponent<Component::Sprite>()) {
+                    auto &s = entity.GetComponent<Component::Sprite>();
+                    
+                    m_Renderer->RenderSprite(s);
+
+                    #ifdef AC_DEBUG_RENDER
+                        m_DebugRenderer->RenderSpriteOutline(transform, s);
+                    #endif
+                }
+            });
+        }
 
         //for (auto &chunk : m_SandWorld->GetChunkVector()) {
         //    m_DebugRenderer->RenderChunkBorder(chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());

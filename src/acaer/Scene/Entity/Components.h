@@ -88,7 +88,7 @@ namespace Acaer {
          */
         struct Transform {
             //v2 center_pos;
-            s8 render_layer = 0;                // Order in the renderer [0..9]
+            s8 renderLayer = 0;                // Order in the renderer [0..AC_MAX_RENDERLAYERS]
             
             v2f pos =  {10, 10};                // Position [px]
             v2f scale =  {1, 1};                // Scale [1].
