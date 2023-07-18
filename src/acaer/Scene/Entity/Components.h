@@ -57,9 +57,9 @@ namespace Acaer {
 
         struct SpriteAnimatior {
             struct Animation {
-                u8 framePos     = 0;            // Animation pos on spritesheet
-                u8 frameLenght  = 8;            // How many frames in animation
-                v2<u8> frameSize;               // Size (with / height) of 1 frame
+                u16 framePos     = 0;           // Animation pos on spritesheet
+                u16 frameLenght  = 8;           // How many frames in animation
+                v2<u16> frameSize;              // Size (with / height) of 1 frame
 
                 b8 isMirrored   = false;        // Mirror animation
 

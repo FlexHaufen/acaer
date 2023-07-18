@@ -143,11 +143,44 @@ namespace Acaer {
 			out << YAML::EndMap;
 		}
 
+        if (entity.HasComponent<Component::SpriteAnimatior>()) {
+            auto &sa = entity.GetComponent<Component::SpriteAnimatior>();
+            out << YAML::Key << "SpriteAnimatior";
+            out << YAML::BeginMap;
+            out << YAML::Key << "currentAnimation" << YAML::Value << sa.currentAnimation;
+            out << YAML::Key << "pool"       << YAML::BeginSeq;
+
+            for (auto [key, val] : sa.pool) {
+                out << YAML::BeginMap;
+                out << YAML::Key << "name"              << YAML::Value << key;
+                out << YAML::Key << "framePos"          << YAML::Value << val.framePos;
+                out << YAML::Key << "frameLenght"       << YAML::Value << val.frameLenght;
+                // TODO (flex): add definition for storing v2<T>
+                out << YAML::Key << "frameSizeX"        << YAML::Value << val.frameSize.x;
+                out << YAML::Key << "frameSizeY"        << YAML::Value << val.frameSize.y;
+                out << YAML::Key << "isMirrored"        << YAML::Value << val.isMirrored;
+                out << YAML::Key << "currentFrame"      << YAML::Value << val.currentFrame;
+                out << YAML::Key << "animationSpeed"    << YAML::Value << val.animationSpeed;
+                out << YAML::Key << "elapsedTime"       << YAML::Value << val.elapsedTime;
+                out << YAML::EndMap;
+            }
+            out << YAML::EndSeq;
+            out << YAML::EndMap;
+        }
+
+        if (entity.HasComponent<Component::Sprite>()) {
+            auto &s = entity.GetComponent<Component::Sprite>();
+            out << YAML::Key << "Sprite";
+            out << YAML::BeginMap;
+            out << YAML::Key << "texturepath" << YAML::Value << s.texturepath;
+            out << YAML::EndMap;
+        }
+
         if (entity.HasComponent<Component::Transform>()) {
             auto &c = entity.GetComponent<Component::Transform>();
             out << YAML::Key << "Transform";
             out << YAML::BeginMap;
-            out << YAML::Key << "renderLayer"  << YAML::Value << c.renderLayer;
+            out << YAML::Key << "renderLayer"   << YAML::Value << c.renderLayer;
             out << YAML::Key << "pos"           << YAML::Value << c.pos;
             out << YAML::Key << "scale"         << YAML::Value << c.scale;
             out << YAML::Key << "rotation"      << YAML::Value << c.rotation;
@@ -210,6 +243,31 @@ namespace Acaer {
             c.pos           = transform_c["pos"].as<v2f>();
             c.scale         = transform_c["scale"].as<v2f>();
             c.rotation      = transform_c["rotation"].as<f32>();
+        }
+
+        auto spriteAnimator_c = entity["SpriteAnimatior"];
+        if (spriteAnimator_c) {
+            auto &sa = currentEntity.GetOrEmplaceComponent<Component::SpriteAnimatior>();
+            sa.currentAnimation = spriteAnimator_c["currentAnimation"].as<std::string>();
+            for (auto animation : spriteAnimator_c["pool"]) {
+                Component::SpriteAnimatior::Animation a;
+                a.framePos          = animation["framePos"].as<u16>();
+                a.frameLenght       = animation["frameLenght"].as<u16>();
+                a.frameSize.x       = animation["frameSizeX"].as<u16>();
+                a.frameSize.y       = animation["frameSizeY"].as<u16>();
+                a.isMirrored        = animation["isMirrored"].as<b8>();
+                a.currentFrame      = animation["currentFrame"].as<u16>();
+                a.animationSpeed    = animation["animationSpeed"].as<f32>();
+                a.elapsedTime       = animation["elapsedTime"].as<f32>();
+                sa.pool.emplace(animation["name"].as<std::string>(), a);
+            }
+        }
+
+        auto sprite_c = entity["Sprite"];
+        if (sprite_c) {
+            auto& s = currentEntity.GetOrEmplaceComponent<Component::Sprite>();
+            s.texturepath  = sprite_c["texturepath"].as<std::string>();
+     
         }
 
         auto rigitbody_c = entity["RigidBody"];

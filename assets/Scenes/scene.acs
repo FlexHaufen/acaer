@@ -1,34 +1,42 @@
 Scene: Untitled
 Entities:
-  - Entity: 2874074978250406274
+  - Entity: 13697380706073313757
     Tag:
       tag: tree3
+    Sprite:
+      texturepath: assets/Textures/World/fir_tree_1.png
     Transform:
-      render_layer: "\x00"
+      renderLayer: "\x04"
       pos: [-300, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 17991535908062589689
+  - Entity: 11279407990610389553
     Tag:
       tag: tree2
+    Sprite:
+      texturepath: assets/Textures/World/fir_tree_1.png
     Transform:
-      render_layer: "\x00"
+      renderLayer: "\x04"
       pos: [150, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 9000218402241569782
+  - Entity: 14337586733078155635
     Tag:
       tag: tree1
+    Sprite:
+      texturepath: assets/Textures/World/fir_tree_1.png
     Transform:
-      render_layer: "\x00"
+      renderLayer: "\x04"
       pos: [50, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 2905310170935004427
+  - Entity: 9385507968123053493
     Tag:
       tag: gnd
+    Sprite:
+      texturepath: assets/Textures/Debug/platform.png
     Transform:
-      render_layer: "\x00"
+      renderLayer: "\x05"
       pos: [-100, 130]
       scale: [1, 1]
       rotation: -0
@@ -44,12 +52,35 @@ Entities:
       size: [400, 40]
       Sensors:
         []
-  - Entity: 12674483591181827574
+  - Entity: 4735461111605568214
     Tag:
       tag: player
+    SpriteAnimatior:
+      currentAnimation: run_left
+      pool:
+        - name: run_left
+          framePos: 0
+          frameLenght: 8
+          frameSizeX: 48
+          frameSizeY: 48
+          isMirrored: true
+          currentFrame: 2
+          animationSpeed: 10
+          elapsedTime: 0
+        - name: run_right
+          framePos: 0
+          frameLenght: 8
+          frameSizeX: 48
+          frameSizeY: 48
+          isMirrored: false
+          currentFrame: 3
+          animationSpeed: 10
+          elapsedTime: 0.0247510001
+    Sprite:
+      texturepath: assets/Textures/Player/run_anim_temp-Sheet.png
     Transform:
-      render_layer: "\x00"
-      pos: [-72.4434967, -62.4499855]
+      renderLayer: "\x05"
+      pos: [-99.7048111, -62.4499855]
       scale: [1, 1]
       rotation: -0
     RigitBody_C:
