@@ -53,6 +53,9 @@ namespace Acaer {
 		m_pSceneEditor = new SceneEditorPanel();
 		m_PanelStack.PushPanel(m_pSceneEditor);
 
+		m_pSandWorldEditor = new SandWorldEditorPanel();
+		m_PanelStack.PushPanel(m_pSandWorldEditor);
+
 		for (auto* panels : m_PanelStack) {
 			panels->SetContext(context);
 		}

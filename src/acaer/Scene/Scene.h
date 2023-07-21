@@ -22,7 +22,7 @@
 
 #include "acaer/Scene/Handlers/SpriteHandler.h"
 
-#include "acaer/Scene/World/World.h"
+#include "acaer/Scene/World/SandWorld.h"
 
 //*** DEFINES ***
 #define AC_MAX_RENDERLAYERS     10
@@ -112,5 +112,6 @@ namespace Acaer {
         // * ImGui *
         friend class EntityBrowserPanel;            // ImGui Panel
         friend class SceneEditorPanel;              // ImGui Panel
+        friend class SandWorldEditorPanel;          // ImGui Panel
     };
 }

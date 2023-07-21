@@ -94,7 +94,7 @@ namespace Acaer {
 
         // ** Sand World **
         AC_CORE_INFO("Setting up World");
-        //m_SandWorld = CreateRef<SandWorld>(AC_WORLD_CHUNCK_SIZE, AC_WORLD_CHUNCK_SIZE, 1);
+        m_SandWorld = CreateRef<SandWorld>();
 
         // ** SpriteHandler **
         AC_CORE_INFO("Setting up SpriteHandler");
@@ -104,37 +104,6 @@ namespace Acaer {
 
         // TODO (flex): Add NativeScript::OnStart() here
 
-
-        //!------- DEBUG --------
-        /*     
-        {
-            Cell c;
-            c.type  = CellType::SAND;
-            c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
-            //c.props = CellProperties::NONE;
-
-            c.color = {255, 0, 255, 255};       // pink
-
-            for (int x = 30; x <= 49; x++) {
-                for (int y = -30; y <= 0; y++) {
-                    m_SandWorld->SetCell(x, y, c);
-                }
-            }
-        }
-        {
-            Cell c;
-            c.type  = CellType::SAND;
-            //c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
-            c.props = CellProperties::NONE;
-             c.color = {0, 255, 255, 255};       // blue
-
-            // FIXME: still problems on down movement
-            for (int x = 0; x <= 49; x++) {
-                m_SandWorld->SetCell(x, 69, c);
-            }
-        }
-        */
-        //!---------------------
     }
 
     void Scene::OnEnd() {
@@ -144,23 +113,6 @@ namespace Acaer {
 
     void Scene::OnUpdate(f32 dt) {
         AC_PROFILE_FUNCTION();
-
-
-        {
-            //Cell c;
-            //c.type  = CellType::SAND;
-            //c.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
-            //c.props = CellProperties::NONE;
-            //c.color = {0, 255, 255, 255};       // blue
-
-            // FIXME: still problems on down movement
-            //if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            //    sf::Vector2i mPos = sf::Mouse::getPosition() / sf::Vector2i(AC_GLOBAL_SCALE, AC_GLOBAL_SCALE) - window.getSize() / 2;
-            //    m_SandWorld->SetCell(mPos.x, mPos.y / AC_GLOBAL_SCALE, c);
-            //}
-        }
-
-
 
         // ** Update Scripts **
         m_Registry.view<Component::NativeScript>().each([&](auto entity, auto& nsc) {
@@ -245,11 +197,16 @@ namespace Acaer {
             });
         }
 
-        //for (auto &chunk : m_SandWorld->GetChunkVector()) {
-        //    m_DebugRenderer->RenderChunkBorder(chunk->getWidth(), chunk->getHeight(), chunk->getPosX(), chunk->getPosY());
-        //    m_DebugRenderer->RenderChunkDirtyRect(chunk->getMin(), chunk->getMax());
-        //    m_Renderer->RenderChunk(chunk);
-        //}
+        /*
+        for (size_t x = 0; x < SAND_WORLD_SIZE_X;  x++) {
+            for (size_t y = 0; y < SAND_WORLD_SIZE_Y; y++) {
+                if (m_SandWorld->GetCell(x, y).type == CellType::EMPTY) {
+                    break;
+                }
+                m_Renderer->RenderCell(x, y, m_SandWorld->GetCell(x, y).color);
+            }
+        }
+        */
 
         #ifdef AC_DEBUG_RENDER
             m_PhysicsWorld->DebugDraw();
