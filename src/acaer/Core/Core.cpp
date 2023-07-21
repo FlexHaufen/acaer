@@ -29,7 +29,8 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-    Core::Core() {
+    Core::Core() :
+        m_EventManager(m_Window) {
         Log::Init();
 
         // random number seed
@@ -57,9 +58,8 @@ namespace Acaer {
         else {
             m_Window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
         }
-        
-        m_ActiveScene = CreateRef<Scene>(m_Window);
-        m_EventManager = CreateRef<EventManager>(m_Window);
+
+        m_ActiveScene = CreateRef<Scene>(m_Window, m_EventManager);
         m_ImGuiLayer = CreateRef<ImGuiLayer>(m_Window);
         
         m_ImGuiLayer->OnAttach(m_ActiveScene);
@@ -186,17 +186,16 @@ namespace Acaer {
         sf::Time dt;
         
         AC_CORE_INFO("Setting up EventManager");
-        m_EventManager->addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) { m_Window.close(); });
-        m_EventManager->addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) { m_Window.close(); });
-        m_EventManager->addKeyPressedCallback(sf::Keyboard::Tab, [&](const sf::Event&) { m_isPaused = !m_isPaused; });
+        m_EventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) { m_Window.close(); });
+        m_EventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) { m_Window.close(); });
+        m_EventManager.addKeyPressedCallback(sf::Keyboard::Tab, [&](const sf::Event&) { m_isPaused = !m_isPaused; });
         
         AC_CORE_INFO("Starting scene...");
         m_ActiveScene->OnStart();
         while (m_Window.isOpen() && m_isRunning) {
             
             // ---- EVENT HANDLING ----
-            m_EventManager->processEvents(nullptr);
-            //ImGui::SFML::ProcessEvent();          // TODO: Add ImGui Events
+            m_EventManager.processEvents(nullptr);
 
             if (!m_isPaused) {
                 dt = dt_clock.restart();

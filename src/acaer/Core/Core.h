@@ -58,12 +58,6 @@ namespace Acaer {
          */
         void Close();
 
-        /**
-         * @brief Get the EventManager
-         * 
-         * @return Ref<EventManager> EventManager
-         */
-        Ref<EventManager> GetEventManager() { return m_EventManager; }
     private:
       
         // ** Members **
@@ -74,9 +68,9 @@ namespace Acaer {
         sf::RenderWindow m_Window;      // Sfml window
         std::string m_WindowTitle;      // Sfml window title
 
-        Ref<EventManager> m_EventManager;   // Event manager
-        Ref<Scene> m_ActiveScene;           // Current active scene
+        EventManager m_EventManager;    // Event manager
+        Ref<Scene> m_ActiveScene;       // Current active scene
 
-        Ref<ImGuiLayer> m_ImGuiLayer;       // Imgui    (for debug)
+        Ref<ImGuiLayer> m_ImGuiLayer;   // Imgui    (for debug)
     };
 }

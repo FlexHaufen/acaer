@@ -35,12 +35,13 @@ namespace Acaer {
          */
 		void OnImGuiRender();
     
-    
-    
     private:
-        // ** Members **
 
-        b8 m_PlaceMode = false;
-    
+        void DrawCell(const sf::Vector2i &pos, s32 cellType);
+        void RemoveCell(const sf::Vector2i &pos);
+
+
+    private:
+
     };
 }

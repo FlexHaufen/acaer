@@ -23,8 +23,10 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-    Scene::Scene(sf::RenderWindow &window) : 
-    m_Window(window) {
+    Scene::Scene(sf::RenderWindow &window, EventManager &eventManager) : 
+    m_Window(window),
+    m_EventManager(eventManager) {
+
         AC_CORE_INFO("Initializing Scene");
 
 
@@ -110,7 +112,6 @@ namespace Acaer {
         AC_PROFILE_FUNCTION();
     }
 
-
     void Scene::OnUpdate(f32 dt) {
         AC_PROFILE_FUNCTION();
 
@@ -166,7 +167,6 @@ namespace Acaer {
         });
     }
 
-
     void Scene::OnRender() {
         AC_PROFILE_FUNCTION();
 
@@ -197,16 +197,15 @@ namespace Acaer {
             });
         }
 
-        /*
+        
         for (size_t x = 0; x < SAND_WORLD_SIZE_X;  x++) {
             for (size_t y = 0; y < SAND_WORLD_SIZE_Y; y++) {
-                if (m_SandWorld->GetCell(x, y).type == CellType::EMPTY) {
-                    break;
+                if (m_SandWorld->GetCell(x, y).type != CellType::EMPTY) {
+                    m_Renderer->RenderCell(x, y, m_SandWorld->GetCell(x, y).color);
                 }
-                m_Renderer->RenderCell(x, y, m_SandWorld->GetCell(x, y).color);
             }
         }
-        */
+        
 
         #ifdef AC_DEBUG_RENDER
             m_PhysicsWorld->DebugDraw();

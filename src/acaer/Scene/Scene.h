@@ -14,15 +14,13 @@
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Entity/Components.h"
 #include "acaer/Scene/ContactListener/ContactListener.h"
-
 #include "acaer/Scene/Renderer/Renderer.h"
 #include "acaer/Scene/Renderer/DebugRenderer.h"
-
 #include "acaer/Scene/Camera/Camera.h"
-
 #include "acaer/Scene/Handlers/SpriteHandler.h"
-
 #include "acaer/Scene/World/SandWorld.h"
+#include "acaer/Core/Events/EventManager.h"
+
 
 //*** DEFINES ***
 #define AC_MAX_RENDERLAYERS     10
@@ -38,7 +36,7 @@ namespace Acaer {
     class Scene {
 
     public:
-        Scene(sf::RenderWindow &window);
+        Scene(sf::RenderWindow &window, EventManager &eventManager);
         ~Scene();
 
         static Ref<Scene> Copy(Ref<Scene> other);
@@ -91,6 +89,9 @@ namespace Acaer {
         // cam
         Camera m_Camera;                            // Camera
         b8 m_useFreeCamera;                         // True: When camera shall be free            
+
+        // events
+        EventManager       &m_EventManager;         // Ref to EventManager
 
         // rendering
         sf::RenderWindow   &m_Window;               // Ref to sf::RenderWindow
