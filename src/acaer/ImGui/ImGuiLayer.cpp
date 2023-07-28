@@ -69,6 +69,15 @@ namespace Acaer {
 	
 	void ImGuiLayer::OnUpdate(sf::Time dt) {
 		ImGui::SFML::Update(m_Window, dt);
+
+		// Update Window Focus (shity implementation, but it works)
+		b8 isImGuiFocused = false;
+		for (auto* panels : m_PanelStack) {
+			isImGuiFocused |= panels->IsPanelFocused();
+		}
+		for (auto* panels : m_PanelStack) {
+			panels->SetImGuiFocused(isImGuiFocused);
+		}
 	}
 
 	void ImGuiLayer::OnRender() {

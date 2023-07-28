@@ -128,7 +128,7 @@ namespace Acaer {
 
         // ** Physics **
         m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
-        //m_SandWorld->OnUpdate();
+        m_SandWorld->OnUpdate();
 
         // retrive transform form box2d
         m_Registry.view<Component::Transform, Component::RigidBody, Component::Collider>().each([&]( auto e, auto &transform, auto &rigidBody, auto &collider) {
@@ -197,11 +197,22 @@ namespace Acaer {
             });
         }
 
-        
-        for (size_t x = 0; x < SAND_WORLD_SIZE_X;  x++) {
-            for (size_t y = 0; y < SAND_WORLD_SIZE_Y; y++) {
-                if (m_SandWorld->GetCell(x, y).type != CellType::EMPTY) {
-                    m_Renderer->RenderCell(x, y, m_SandWorld->GetCell(x, y).color);
+        for (auto &i : m_SandWorld->GetChunkVector()) {
+
+            m_DebugRenderer->RenderChunkBorder(SAND_WORLD_CHUNK_SIZE_X, SAND_WORLD_CHUNK_SIZE_X, i->GetPos().x, i->GetPos().y);
+
+            //m_DebugRenderer->RenderChunkDirtyRect()
+
+            for (size_t x = 0; x < SAND_WORLD_CHUNK_SIZE_X;  x++) {
+                for (size_t y = 0; y < SAND_WORLD_CHUNK_SIZE_Y; y++) {
+                    Cell& cell = i->GetCell(x + y * SAND_WORLD_CHUNK_SIZE_X);
+    
+                    s32 px = (s32)x + i->GetPos().x;
+                    s32 py = (s32)y + i->GetPos().y;
+
+                    if (cell.type != CellType::EMPTY) {
+                        m_Renderer->RenderCell(px, py, cell.color);
+                    }
                 }
             }
         }

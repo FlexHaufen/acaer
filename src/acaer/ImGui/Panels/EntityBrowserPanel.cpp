@@ -20,6 +20,8 @@ namespace Acaer {
 
     void EntityBrowserPanel::OnImGuiRender() {
 		ImGui::Begin("Entity Browser Panel");
+        m_isPanelFocused = ImGui::IsWindowFocused() || ImGui::IsWindowHovered();    //! Importànte
+
 
 		if (m_Context) {
             ImGui::Text("Entities:");

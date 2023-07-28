@@ -20,6 +20,8 @@ namespace Acaer {
 
     void SceneEditorPanel::OnImGuiRender() {
 		ImGui::Begin("Scene Editor Panel");
+        m_isPanelFocused = ImGui::IsWindowFocused() || ImGui::IsWindowHovered();    //! Importànte
+
 
         if (m_Context) {
 

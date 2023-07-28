@@ -38,9 +38,16 @@ namespace Acaer {
 		virtual void OnImGuiRender() = 0;
 
 		const std::string& GetName() const { return m_DebugName; }
+		b8 IsPanelFocused() const { return m_isPanelFocused; }
+
+		void SetImGuiFocused(b8 b) { m_isImGuiFocused = b; }
+
 	protected:
 		// ** Members **  
 		std::string m_DebugName;
-		Ref<Scene> m_Context;           // Current scene
+		Ref<Scene> m_Context;           	// Current scene
+		b8 m_isPanelFocused;				// True if current panel is focused
+
+		b8 m_isImGuiFocused;				// True if any panel is focused
 	};
 }

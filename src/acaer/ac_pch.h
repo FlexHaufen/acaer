@@ -22,6 +22,8 @@
 #include <map>
 #include <filesystem>
 #include <functional>
+#include <math.h>
+#include <cmath>
 
 // ** External **
 // * SFML *
@@ -77,7 +79,7 @@
 // Converion
 #define AC_PPM                             30           // pixels per meter     [SFML -> BOX2D]
 #define AC_DEG_PER_RAD                     57.295795F   // degrees per radian   [SFML -> BOX2D]
-
+#define AC_PI                              3.1415926535 // PI
 // Physics
 #define AC_GRAVITY_X                        0           // Gravity in x-direction
 #define AC_GRAVITY_Y                       40           // Gravity in y-direction

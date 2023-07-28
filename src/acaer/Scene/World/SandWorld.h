@@ -13,13 +13,12 @@
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/World/Cell.h"
+#include "acaer/Scene/World/SandWorldChunk.h"
 
 #include "acaer/Helper/Util/Math.h"
 
 
 //*** DEFINES ***
-#define SAND_WORLD_SIZE_X   64
-#define SAND_WORLD_SIZE_Y   64
 
 //*** NAMESPACE ***
 namespace Acaer {
@@ -28,86 +27,49 @@ namespace Acaer {
     class SandWorld {
     public:
 
-        SandWorld() {}
-        ~SandWorld() {}
+        // Get & Set
+        const Cell& GetCell(s32 x, s32 y) { return GetChunk(x, y)->GetCell(x, y); }
 
-        size_t GetIndex(size_t x, size_t y) { return (x + y * SAND_WORLD_SIZE_X); }
-
-        // Get & Set Cell
-        const Cell& GetCell(size_t idx) { return m_Cells[idx]; }
-        const Cell& GetCell(size_t x, size_t y) { return GetCell(GetIndex(x, y)); }
-        const std::array<Cell, SAND_WORLD_SIZE_X * SAND_WORLD_SIZE_X>& GetCellArray() { return m_Cells; };
-
-        void SetCell(size_t x, size_t y, const Cell &cell) { m_Cells[GetIndex(x, y)] = cell; }
+        const auto& GetChunkVector() { return m_chunks; }
+        
+        void SetCell(s32 x, s32 y, const Cell& cell) {
+            if (SandWorldChunk* chunk = GetChunk(x, y)) {
+                chunk->SetCell(x, y, cell);
+            }
+	    } 
 
         // Move
-        void MoveCell(size_t x, size_t y, size_t to_x, size_t to_y) { m_ChangedCells.emplace_back(GetIndex(to_x, to_y), GetIndex(x, y)); }
-        void CommitCells() {
-            // remove moves with filled destination
-            for (size_t i = 0; i < m_ChangedCells.size();) {
-                if (m_Cells[m_ChangedCells[i].first].type != CellType::EMPTY) {
-                    std::swap(m_ChangedCells[i], m_ChangedCells.back());
-                    m_ChangedCells.pop_back();
-                } else {
-                    i++;
-                }
-            }
-
-            // sort by destination
-            std::sort(m_ChangedCells.begin(), m_ChangedCells.end(), [&](auto a, auto b) {
-                return (a.first < b.first);
-            });
-
-            // pick random source for each destination
-            size_t iprev = 0;
-            m_ChangedCells.emplace_back(-1, -1); // to catch final move
-            for (size_t i = 0; i < m_ChangedCells.size() - 1; i++) {
-                if (m_ChangedCells[i + 1].first != m_ChangedCells[i].first) {
-                    size_t rand = iprev + Math::rand_u(i - iprev);
-
-                    size_t dst = m_ChangedCells[rand].first;
-                    size_t src = m_ChangedCells[rand].second;
-
-                    m_Cells[dst] = m_Cells[src];
-                    m_Cells[src] = Cell();
-
-                    iprev = i + 1;
-                }
-            }
-            m_ChangedCells.clear();
-        }
- 
-        bool MoveDown(size_t x, size_t y, const Cell& cell) {
-            for (int i = 1; i > 0; i--) {
-                bool down = IsEmpty(x, y - i);
-                if (down) {
-                    MoveCell(x, y, x, y - i);
-                    return true;
-                }
+        bool MoveDown(s32 x, s32 y, const Cell& cell) {
+            if (IsEmpty(x, y + 1)) {
+                MoveCell(x, y, x, y + 1);
+                return true;
             }
             return false;
         }
             
-        bool MoveDownSide(size_t x, size_t y, const Cell& cell) {
-            bool downLeft  = IsEmpty(x - 1, y - 1);
-            bool downRight = IsEmpty(x + 1, y - 1);
+        bool MoveDownSide(s32 x, s32 y, const Cell& cell) {
+            bool downLeft  = IsEmpty(x - 1, y + 1);
+            bool downRight = IsEmpty(x + 1, y + 1);
 
-            //ShuffleIfTrue(downLeft, downRight);
+            if (downLeft && downRight) {
+                downLeft  = Math::rand_u(1);
+                downRight = !downLeft;
+            }
 
-            if		(downLeft)	MoveCell(x, y, x - 1, y - 1);
-            else if (downRight) MoveCell(x, y, x + 1, y - 1);
+            if		(downLeft)	MoveCell(x, y, x - 1, y + 1);
+            else if (downRight) MoveCell(x, y, x + 1, y + 1);
 
             return downLeft || downRight;
         }
 
-        bool MoveSide(size_t x, size_t y, const Cell& cell) {
+        bool MoveSide(s32 x, s32 y, const Cell& cell) {
             for (int i = 1; i > 0; i--) {
                 bool left  = IsEmpty(x - i, y);
                 bool right = IsEmpty(x + i, y);
 
                 //ShuffleIfTrue(left, right);
 
-                    if (left)  MoveCell(x, y, x - i, y);
+                     if (left)  MoveCell(x, y, x - i, y);
                 else if (right)	MoveCell(x, y, x + i, y);
 
                 if (left || right) return true;
@@ -115,26 +77,119 @@ namespace Acaer {
             return false;
         }
 
-        //void OnUpdate() {
-        //    for (size_t x = 0; x < SAND_WORLD_SIZE_X;  x++) {
-		//        for (size_t y = 0; y < SAND_WORLD_SIZE_Y; y++) {
-        //            const Cell &cell = GetCell(x, y);
-        //            if      (cell.props & CellProperties::MOVE_DOWN      && MoveDown    (x, y, cell)) {}
-        //            else if (cell.props & CellProperties::MOVE_DOWN_SIDE && MoveDownSide(x, y, cell)) {}
-        //            else if (cell.props & CellProperties::MOVE_SIDE      && MoveSide    (x, y, cell)) {}
-        //        }
-        //    }
-        //}
+        void MoveCell(s32 x, s32 y, s32 to_x, s32 to_y) { 
+            if (SandWorldChunk* src = GetChunk(x, y)) {
+                if (SandWorldChunk* dst = GetChunk(to_x, to_y)) {
+                    dst->MoveCell(src, x, y, to_x, to_y);
+                }
+            }
+        }
+        
+        void OnUpdate() {
+            for (auto* chunk : m_chunks) {
+                for (size_t x = 0; x < SAND_WORLD_CHUNK_SIZE_X;  x++) {
+                    for (size_t y = 0; y < SAND_WORLD_CHUNK_SIZE_Y; y++) {
+                        Cell& cell = chunk->GetCell(x + y * SAND_WORLD_CHUNK_SIZE_X);
+        
+                        s32 px = x + chunk->GetPos().x;
+                        s32 py = y + chunk->GetPos().y;
+        
+                             if (cell.props & CellProperties::MOVE_DOWN      && MoveDown    (px, py, cell)) {}
+                        else if (cell.props & CellProperties::MOVE_DOWN_SIDE && MoveDownSide(px, py, cell)) {}
+                        //else if (cell.props & CellProperties::MOVE_SIDE      && MoveSide    (px, py, cell)) {}
+                    }
+                }
+            }
+        
+            for (auto* chunk : m_chunks) {
+                chunk->CommitCells();
+            }
+        }
 
-        // Helper functions
-        b8 IsInBounds(size_t x, size_t y) { return (x < SAND_WORLD_SIZE_X && y < SAND_WORLD_SIZE_Y); }
-        b8 IsEmpty(size_t x, size_t y) { return (IsInBounds(x, y) && GetCell(x, y).type == CellType::EMPTY); }
+        // ** Helper Functions **
+
+        /**
+         * @brief Check if Cell is in bounds
+         * 
+         * @param x     pos x
+         * @param y     pos y
+         * @return b8   true if in Bounds of current chunk
+         */
+        b8 InBounds(s32 x, s32 y) {
+            if (SandWorldChunk* chunk = GetChunk(x, y)) {
+                return chunk->InBounds(x, y);
+            }
+            return false;
+        }
+ 
+        /**
+         * @brief Check if Cell is empty
+         * 
+         * @param x     pos x
+         * @param y     pos y
+         * @return b8   true if cell is empty
+         */
+        b8 IsEmpty(s32 x, s32 y) { return InBounds(x, y) && GetChunk(x, y)->IsEmpty(x, y); }
+
+        /**
+         * @brief Gets Chunk at current Cell pos
+         * @note If there is no chunk at the given position, one 
+         *       will be created
+         * 
+         * @param x     pos x
+         * @param y     pos y
+         * @return SandWorldChunk*  pointer to chunk
+         */
+        SandWorldChunk* GetChunk(s32 x, s32 y) {
+            auto location = GetChunkLocation(x, y);
+            AC_CORE_TRACE("Get Chunk [ {0} | {1} ]", location.first, location.second);
+            SandWorldChunk* chunk = GetChunkDirect(location);
+            if (!chunk) {
+                chunk = CreateChunk(location);
+            }
+            return chunk;
+        }
+    
+        SandWorldChunk* GetChunkDirect(std::pair<s32, s32> location) {
+            auto itr = m_chunkLookup.find(location);
+            if (itr == m_chunkLookup.end()) {
+                return nullptr;
+            }
+            return itr->second;
+        }
+    
+        std::pair<s32, s32> GetChunkLocation(s32 x, s32 y) {
+            return { 
+                (s32)floor(float(x) / SAND_WORLD_CHUNK_SIZE_X),
+                (s32)floor(float(y) / SAND_WORLD_CHUNK_SIZE_Y)
+            };
+        }
+
+    private:
+
+        SandWorldChunk* CreateChunk(std::pair<s32, s32> location) {
+            auto [lx, ly] = location;
+
+            
+            // Worldlimit
+            //if (lx < -10 || ly < -10 || lx > 10 || ly > 10) {
+            //    return nullptr;
+            //}
+
+            SandWorldChunk* chunk = new SandWorldChunk(lx, ly);
+            m_chunkLookup.insert({ location, chunk });
+            m_chunks.push_back(chunk);
+
+            AC_CORE_TRACE("Creating Chunk [{0}, {1}]", lx, ly);
+            AC_CORE_TRACE("    m_chunks size [{0}]", m_chunks.size());
+
+            return chunk;
+        }
 
     private:
         // ** Members **
-
-        std::array<Cell, SAND_WORLD_SIZE_X * SAND_WORLD_SIZE_X> m_Cells;
-        std::vector<std::pair<size_t, size_t>> m_ChangedCells;
+        std::vector<SandWorldChunk*> m_chunks;
+        std::unordered_map<std::pair<s32, s32>, SandWorldChunk*, Math::pair_hash> m_chunkLookup;
 
     };
 }
