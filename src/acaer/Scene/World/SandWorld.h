@@ -91,6 +91,9 @@ namespace Acaer {
         }
         
         void OnUpdate() {
+
+            RemoveEmptyChunks();
+
             for (auto* chunk : m_chunks) {
                 for (size_t x = 0; x < SAND_WORLD_CHUNK_SIZE_X;  x++) {
                     for (size_t y = 0; y < SAND_WORLD_CHUNK_SIZE_Y; y++) {
@@ -189,6 +192,19 @@ namespace Acaer {
             AC_CORE_TRACE("    m_chunks size [{0}]", m_chunks.size());
 
             return chunk;
+        }
+
+        void RemoveEmptyChunks() {
+            for (size_t i = 0; i < m_chunks.size(); i++) {
+                SandWorldChunk* chunk = m_chunks.at(i);
+                if (chunk->GetFilledCellCount() == 0) {
+                    m_chunkLookup.erase(GetChunkLocation(chunk->GetPos().x, chunk->GetPos().y));
+                    m_chunks[i] = m_chunks.back();
+                    m_chunks.pop_back();
+                    i--;
+                    delete chunk;
+                }
+            }
         }
 
     private:

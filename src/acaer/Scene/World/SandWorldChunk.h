@@ -35,7 +35,7 @@ namespace Acaer {
          * @param x         pos x   [chunk Position]
          * @param y         pos y   [chunk Position]
          */
-        SandWorldChunk(s32 x, s32 y) : m_PosWorld({x * SAND_WORLD_CHUNK_SIZE_X, y * SAND_WORLD_CHUNK_SIZE_Y}) {}
+        SandWorldChunk(s32 x, s32 y) : m_PosWorld({x * SAND_WORLD_CHUNK_SIZE_X, y * SAND_WORLD_CHUNK_SIZE_Y}), m_FilledCellCount(0) {}
 
         // ** Getter & Setter **
 
@@ -87,7 +87,16 @@ namespace Acaer {
          */
         void SetCell(size_t idx, const Cell &cell) { 
             if (idx >= 0 && idx < m_Cells.size()) {
-                m_Cells[idx] = cell; 
+                Cell& dest = m_Cells[idx];
+                // Fill a Cell
+                if (dest.type == CellType::EMPTY && cell.type != CellType::EMPTY) {
+                    m_FilledCellCount++;
+                }
+                // Remove a Cell
+		        else if (dest.type != CellType::EMPTY && cell.type == CellType::EMPTY) {
+			        m_FilledCellCount--;
+		        }
+                dest = cell;
                 return;
             }
             AC_CORE_WARN("SetCell Access Violation at Chunk [{0} / {1}]", m_PosWorld.x, m_PosWorld.y);
@@ -131,6 +140,12 @@ namespace Acaer {
         // FIXME (flex): Sometimes raises errro
         v2<s32> GetPos() { return m_PosWorld; }
 
+        /**
+         * @brief Get the FilledCellCount
+         * 
+         * @return size_t count
+         */
+        size_t GetFilledCellCount() { return m_FilledCellCount; }
 
         // ** Updating Cells **
 
@@ -185,6 +200,8 @@ namespace Acaer {
     private:
         // ** Members **
         const v2<s32> m_PosWorld;  // Chunk pos in world [Cell]
+
+        size_t m_FilledCellCount;  // Number of cells in chunk that are not EMPTY
 
         std::array<Cell, SAND_WORLD_CHUNK_SIZE_X * SAND_WORLD_CHUNK_SIZE_Y> m_Cells;
         std::vector<std::tuple<SandWorldChunk*, size_t, size_t>> m_ChangedCells;
