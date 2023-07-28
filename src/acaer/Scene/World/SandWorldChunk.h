@@ -29,8 +29,13 @@ namespace Acaer {
     class SandWorldChunk {
     public:
 
+        /**
+         * @brief Construct a new SandWorldChunk
+         * 
+         * @param x         pos x   [chunk Position]
+         * @param y         pos y   [chunk Position]
+         */
         SandWorldChunk(s32 x, s32 y) : m_PosWorld({x * SAND_WORLD_CHUNK_SIZE_X, y * SAND_WORLD_CHUNK_SIZE_Y}) {}
-        //SandWorldChunk(v2<s32> pos) : m_PosWorld({pos.x * SAND_WORLD_CHUNK_SIZE_X, pos.y * SAND_WORLD_CHUNK_SIZE_Y}) {}
 
         // ** Getter & Setter **
 

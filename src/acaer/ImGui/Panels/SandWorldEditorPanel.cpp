@@ -27,13 +27,13 @@ namespace Acaer {
         static b8 inPlaceMode = false;
         ImGui::Checkbox("Place Mode", &inPlaceMode);
 
-        // Mode determains erase = 0 or draw = 1
-        static s32 mode = 0;
-        ImGui::RadioButton("Erase", &mode, 0); ImGui::SameLine();
-        ImGui::RadioButton("Draw", &mode, 1); 
+        // Selectable Cell Types
+        const char* items[] = { "Empty", "Sand", "Water", "Stone"};
+        static s32 cellType = 1;
+        ImGui::ListBox("Type", &cellType, items, IM_ARRAYSIZE(items), 4);
 
-        static s32 burshSize = 0;
-        ImGui::SliderInt("Brush Size", &burshSize, 0, 10);
+        static s32 burshSize = 1;
+        ImGui::SliderInt("Brush Size", &burshSize, 1, 10);
 
 
         // isMouseHeld is set to true when Mouse::Left is pressed and to false
@@ -43,63 +43,73 @@ namespace Acaer {
         m_Context->m_EventManager.addMousePressedCallback(sf::Mouse::Left, [&](const sf::Event&) { isMouseHeld = true; });
         m_Context->m_EventManager.addMouseReleasedCallback(sf::Mouse::Left, [&](const sf::Event&) { isMouseHeld = false; });
 
-
-
         // ** Logic **
-        if (inPlaceMode) {
-            static s32 cellType = 0;
-            ImGui::RadioButton("Sand",  &cellType, 0); ImGui::SameLine();
-            ImGui::RadioButton("Water", &cellType, 1); ImGui::SameLine();
-            ImGui::RadioButton("Rock",  &cellType, 2); 
-            if (isMouseHeld) {
-
-                sf::Vector2i pos(m_Context->m_Window.mapPixelToCoords(sf::Mouse::getPosition(m_Context->m_Window)) / AC_GLOBAL_SCALE);
-                
-                if (!m_isImGuiFocused) {
-                    if (mode) {
-                        DrawCell(pos, cellType);
-                    }
-                    else {
-                        RemoveCell(pos);
-                    }
-                }
-            }
+        if (inPlaceMode && isMouseHeld && !m_isImGuiFocused) {
+            sf::Vector2i pos(m_Context->m_Window.mapPixelToCoords(sf::Mouse::getPosition(m_Context->m_Window)) / AC_GLOBAL_SCALE);
+            DrawFilledCircle(pos, burshSize, GetCell(cellType));
         }
 		ImGui::End();
     }
 
-    void SandWorldEditorPanel::DrawCell(const sf::Vector2i &pos, s32 cellType) {
+    Cell SandWorldEditorPanel::GetCell(s32 cellType) {
         Cell cell;
         switch (cellType) {
-            case 0: // Sand
+            // NOTE (flex): case 0 is default -> empty
+            case 1: // Sand
                 cell.color = {181, 157, 80, 255};
                 cell.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_DOWN_SIDE;
                 cell.type = CellType::SAND;
-                m_Context->m_SandWorld->SetCell(pos.x, pos.y, cell);
                 break;
-            case 1: // Water
+            case 2: // Water
                 cell.color = {58, 164, 222, 255};
                 cell.props = CellProperties::MOVE_DOWN | CellProperties::MOVE_SIDE;
                 cell.type = CellType::WATER;
-                m_Context->m_SandWorld->SetCell(pos.x, pos.y, cell);
                 break;
-            case 2: // Rock
+            case 3: // Rock
                 cell.color = {107, 110, 109, 255};
                 cell.props = CellProperties::NONE;
                 cell.type = CellType::ROCK;
-                m_Context->m_SandWorld->SetCell(pos.x, pos.y, cell);
                 break;
-            default:
+            default: // Empty
+                cell.color = {0, 0, 0, 0};
+                cell.props = CellProperties::NONE;
+                cell.type = CellType::EMPTY;
                 break;
+        }
+        return cell;
+    }
+
+    void SandWorldEditorPanel::DrawFilledCircle(const sf::Vector2i &pos, u8 size, const Cell &cell) {
+        s16 r = size / 2;    // radius [px]
+
+        s16 cx = pos.x + r;
+        s16 cy = pos.y + r;
+
+        s16 x0 = 0;
+        s16 y0 = r;
+        s16 decision = 1 - r;
+
+        while (x0 <= y0) {
+            for (s16 i = cx - x0; i <= cx + x0; i++) {
+                DrawCell({i, cy + y0}, cell);
+                DrawCell({i, cy - y0}, cell);
+            }
+            for (s16 i = cx - y0; i <= cx + y0; i++) {
+                DrawCell({i, cy + x0}, cell);
+                DrawCell({i, cy - x0}, cell);
+            }
+            x0++;
+            if (decision < 0) {
+                decision += 2 * x0 + 1;
+            }
+            else {
+                y0--;
+                decision += 2 * (x0 - y0) + 1;
+            }
         }
     }
 
-    void SandWorldEditorPanel::RemoveCell(const sf::Vector2i &pos) {
-        Cell cell;
-        cell.color = {0, 0, 0, 0};
-        cell.props = CellProperties::NONE;
-        cell.type = CellType::EMPTY;
-
+    void SandWorldEditorPanel::DrawCell(const sf::Vector2i &pos, const Cell &cell) {
         m_Context->m_SandWorld->SetCell(pos.x, pos.y, cell);
     }
 }

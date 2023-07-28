@@ -37,9 +37,31 @@ namespace Acaer {
     
     private:
 
-        void DrawCell(const sf::Vector2i &pos, s32 cellType);
-        void RemoveCell(const sf::Vector2i &pos);
+        /**
+         * @brief Draws given cell at given pos
+         * 
+         * @param pos   Position
+         * @param cell  Cell
+         */
+        void DrawCell(const sf::Vector2i &pos, const Cell &cell);
 
+        /**
+         * @brief Draws filled circle out of given cell
+         *        with given size
+         * 
+         * @param pos   Position
+         * @param size  Size of circle [d]
+         * @param cell  Cell
+         */
+        void DrawFilledCircle(const sf::Vector2i &pos, u8 size, const Cell &cell);
+
+        /**
+         * @brief Gets a Cell out of type
+         * 
+         * @param cellType 
+         * @return Cell 
+         */
+        Cell GetCell(s32 cellType);
 
     private:
 

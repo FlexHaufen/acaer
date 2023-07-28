@@ -58,6 +58,10 @@ namespace Acaer {
 		ImGui::End();
 
 		ImGui::Begin("Properties");
+        // FIXME (flex): Multiple panels in one class don't support
+        //               panel focus check
+        //m_isPanelFocused = ImGui::IsWindowFocused() || ImGui::IsWindowHovered();    //! Importànte
+
 		if (m_SelectionContext) {
 			DrawComponents(m_SelectionContext);
 

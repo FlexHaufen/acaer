@@ -51,6 +51,7 @@ namespace Acaer {
             bool downLeft  = IsEmpty(x - 1, y + 1);
             bool downRight = IsEmpty(x + 1, y + 1);
 
+            // If both are true randomly decide the move
             if (downLeft && downRight) {
                 downLeft  = Math::rand_u(1);
                 downRight = !downLeft;
@@ -67,7 +68,11 @@ namespace Acaer {
                 bool left  = IsEmpty(x - i, y);
                 bool right = IsEmpty(x + i, y);
 
-                //ShuffleIfTrue(left, right);
+                // If both are true randomly decide the move
+                if (left && right) {
+                    left  = Math::rand_u(1);
+                    right = !left;
+                }
 
                      if (left)  MoveCell(x, y, x - i, y);
                 else if (right)	MoveCell(x, y, x + i, y);
@@ -96,7 +101,7 @@ namespace Acaer {
         
                              if (cell.props & CellProperties::MOVE_DOWN      && MoveDown    (px, py, cell)) {}
                         else if (cell.props & CellProperties::MOVE_DOWN_SIDE && MoveDownSide(px, py, cell)) {}
-                        //else if (cell.props & CellProperties::MOVE_SIDE      && MoveSide    (px, py, cell)) {}
+                        else if (cell.props & CellProperties::MOVE_SIDE      && MoveSide    (px, py, cell)) {}
                     }
                 }
             }
