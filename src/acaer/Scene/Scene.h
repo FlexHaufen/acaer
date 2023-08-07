@@ -20,6 +20,7 @@
 #include "acaer/Scene/Handlers/SpriteHandler.h"
 #include "acaer/Scene/World/SandWorld.h"
 #include "acaer/Core/Events/EventManager.h"
+#include "acaer/Core/ScriptEngine/ScriptEngine.h"
 
 
 //*** DEFINES ***
@@ -92,6 +93,9 @@ namespace Acaer {
 
         // events
         EventManager       &m_EventManager;         // Ref to EventManager
+
+        // engines
+        ScriptEngine        m_ScriptEngine;         // Lua ScriptEngine
 
         // rendering
         sf::RenderWindow   &m_Window;               // Ref to sf::RenderWindow

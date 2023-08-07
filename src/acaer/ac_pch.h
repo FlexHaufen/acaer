@@ -34,6 +34,12 @@
 // * Box2D *
 #include <box2d/box2d.h>
 
+// * Lua *
+extern "C" {
+    #include "lua.h"
+    #include "lualib.h"
+    #include "lauxlib.h"
+}
 // * EnTT *
 #include "entt.hpp"
 

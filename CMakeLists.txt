@@ -55,6 +55,9 @@ find_package(SFML 2.5.1 REQUIRED COMPONENTS window system graphics audio network
 # FIXME (flex): only debug build possible
 set(BOX2D_LIB ${CMAKE_SOURCE_DIR}/lib/box2d/lib/bin/Debug/box2d.lib)
 
+#---------LUA---------
+set(LUA_LIB ${CMAKE_SOURCE_DIR}/lib/lua/lua54.lib)
+
 #--------YAML--------
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
@@ -79,6 +82,8 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/include
 	# Box2D
 	${CMAKE_SOURCE_DIR}/lib/box2d/include
+	# Lua
+	${CMAKE_SOURCE_DIR}/lib/lua/include
 )
 
 
@@ -96,7 +101,8 @@ set(LIBS 	sfml-window
 			yaml-cpp
 			spdlog
 			ImGui-SFML
-			${BOX2D_LIB})
+			${BOX2D_LIB}
+			${LUA_LIB})
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
