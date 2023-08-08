@@ -13,32 +13,23 @@
 // *** INCLUDES ***
 #include "acaer/ac_pch.h"
 
-#include "acaer/Core/ScriptEngine/LuaBind.h"
-
 //*** DEFINES ***
 
 //*** NAMESPACE ***
 namespace Acaer {
 
-    class ScriptBindFunctions {
-        /**
-         * @brief Lua_Print Function
-         * 
-         * @note param1 String
-         * 
-         * @param ptrState  lua state
-         * @return s32      
-         */
-        static s32 Lua_ConsolePrint(lua_State* state) {
-            if (lua_isstring(state, 1)) {
-                AC_CORE_INFO("[LUA] {0}", lua_tostring(state, 1));
+    namespace Native {
+
+        static auto Lua_ConsolePrint = [](lua_State* L) -> int {
+            if (lua_isstring(L, 1)) {
+                AC_CORE_INFO("[LUA] {0}", lua_tostring(L, 1));
             }
             else {
                 AC_CORE_WARN("Wrong parameters for Lua_Print - parameter mus be string");
                 return 1;
             }
             return 0;
-        }
+        };
     }
 
 
@@ -48,34 +39,36 @@ namespace Acaer {
             AC_CORE_INFO("Setting up ScriptEngine");
             
             // Load Lua VM
-            m_LuaState = luaL_newstate();
-            if (m_LuaState) {
-                luaL_openlibs(m_LuaState);  // Load Lua std lib
+            m_L = luaL_newstate();
 
-                lua_register(m_LuaState, "ConsolePrint", &ScriptBindFunctions::Lua_ConsolePrint);
-
-                if (luaL_loadfile(m_LuaState, "./src/acaer/Scripts/Lua/testScript.lua") == LUA_OK) {
-                    if (lua_pcall(m_LuaState, 0, LUA_MULTRET, 0) == LUA_OK) {   // Run plain script (non function code)
-                        m_isLuaOk = true;   // Lua init successfull
-                    }
-                }
-                else {
-                    AC_CORE_WARN("Could Not Load Script");
-                }
-            }
-            else {
+            if (!m_L) {
                 AC_CORE_ERROR("LuaSate was NULL");
+                return;
+            }
+
+            luaL_openlibs(m_L);  // Load Lua std lib
+
+            // ** Bind functions **
+            lua_register(m_L, "ConsolePrint", Native::Lua_ConsolePrint);
+
+            if (luaL_loadfile(m_L, "./src/acaer/Scripts/Lua/testScript.lua") != LUA_OK) {
+                AC_CORE_WARN("Could Not Load Script");
+                return;
+            }
+
+            if (lua_pcall(m_L, 0, LUA_MULTRET, 0) == LUA_OK) {   // Run plain script (non function code)
+                m_L_Ok = true;   // Lua init successfull
             }
         }
 
         ~ScriptEngine() {
             // Destroy Lua VM
-            if (m_LuaState) {
-                lua_close(m_LuaState);
-            }
-            else {
+            if (!m_L) {
                 AC_CORE_WARN("ScriptEngine was closed but lua wasn't");
+                return;
             }
+            AC_CORE_INFO("Shutting down ScriptEngine");
+            lua_close(m_L);
         }
 
         /**
@@ -83,12 +76,13 @@ namespace Acaer {
          * 
          */
         void OnStart() {
-            if (m_isLuaOk) {
-                // Call lua [0 arguments, 0 returns]
-                if (lua_getglobal(m_LuaState, "OnStart") == LUA_TFUNCTION) {
-                    if (!lua_pcall(m_LuaState, 0, 0, 0) == LUA_OK) {
-                        AC_CORE_WARN("Faild to call OnStart");
-                    }
+            if (!m_L_Ok) {
+                return;
+            }
+            // Call lua [0 arguments, 0 returns]
+            if (lua_getglobal(m_L, "OnStart") == LUA_TFUNCTION) {
+                if (!lua_pcall(m_L, 0, 0, 0) == LUA_OK) {
+                    AC_CORE_WARN("Faild to call OnStart");
                 }
             }
         }
@@ -98,12 +92,13 @@ namespace Acaer {
          * 
          */
         void OnUpdate() {
-            if (m_isLuaOk) {
-                // Call lua [0 arguments, 0 returns]
-                if (lua_getglobal(m_LuaState, "OnUpdate") == LUA_TFUNCTION) {
-                    if (!lua_pcall(m_LuaState, 0, 0, 0) == LUA_OK) {
-                        AC_CORE_WARN("Faild to call OnUpdate");
-                    }
+            if (!m_L_Ok) {
+                return;
+            }
+            // Call lua [0 arguments, 0 returns]
+            if (lua_getglobal(m_L, "OnUpdate") == LUA_TFUNCTION) {
+                if (!lua_pcall(m_L, 0, 0, 0) == LUA_OK) {
+                    AC_CORE_WARN("Faild to call OnUpdate");
                 }
             }
         }
@@ -111,7 +106,7 @@ namespace Acaer {
     private:
         // ** Members **
         
-        lua_State* m_LuaState = nullptr;    // ptr to current lua state
-        b8 m_isLuaOk = false;               // bool to check if lua initialization is ok
+        lua_State* m_L = nullptr;   // ptr to current lua state
+        b8 m_L_Ok = false;          // bool to check if lua initialization is ok
     };
 }
