@@ -83,6 +83,10 @@ namespace Acaer {
             auto &cam = player.AddComponent<Component::CameraController>();
             cam.zoom = 1.2f;
             player.AddComponent<Component::NativeScript>().Bind<CharacterController>();
+
+            auto &sc = player.AddComponent<Component::Script>();
+            sc.pool.push_back("./src/acaer/Scripts/Lua/testScript.lua");
+
             auto &rb = player.AddComponent<Component::RigidBody>();
             rb.type = Component::RigidBody::BodyType::Dynamic;
             rb.density = 5.f;

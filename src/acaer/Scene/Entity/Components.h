@@ -153,6 +153,7 @@ namespace Acaer {
         /**
          * @brief Nativ Script component
          * 
+         * @note  Cpp Compiled Script
          */    
         struct NativeScript {
             ScriptableEntity* Instance = nullptr;
@@ -165,6 +166,15 @@ namespace Acaer {
                 InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
                 DestroyScript = [](NativeScript* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
             }
+        };
+
+        /**
+         * @brief Script componnent
+         * 
+         * @note Lua Runtime Script
+         */
+        struct Script {
+            std::vector<std::string> pool;      // Filepath script pool
         };
     };
 }

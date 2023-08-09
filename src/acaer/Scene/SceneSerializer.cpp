@@ -225,6 +225,21 @@ namespace Acaer {
             out << YAML::Key << "zoom"         << YAML::Value << c.zoom;
             out << YAML::EndMap;
         }
+
+        if (entity.HasComponent<Component::Script>()) {
+            auto &s = entity.GetComponent<Component::Script>();
+            out << YAML::Key << "Script";
+            out << YAML::BeginMap;
+            out << YAML::Key << "pool"       << YAML::BeginSeq;
+            for (auto i : s.pool) {
+                out << YAML::BeginMap;
+                out << YAML::Value << i;
+                out << YAML::EndMap;
+            }
+            out << YAML::EndSeq;
+            out << YAML::EndMap;
+        }
+
         out << YAML::EndMap;
     }
 
@@ -272,13 +287,13 @@ namespace Acaer {
 
         auto rigitbody_c = entity["RigidBody"];
         if (rigitbody_c) {
-            auto &c = currentEntity.GetOrEmplaceComponent<Component::RigidBody>();
-            c.type                  = (Component::RigidBody::BodyType)rigitbody_c["type"].as<s8>();
-            c.fixedRoation          = rigitbody_c["fixedRoation"].as<b8>();
-            c.density               = rigitbody_c["density"].as<f32>();
-            c.friction              = rigitbody_c["friction"].as<f32>();
-            c.restitution           = rigitbody_c["restitution"].as<f32>();
-            c.restitutionThreshold  = rigitbody_c["restitutionThreshold"].as<f32>();
+            auto &rb = currentEntity.GetOrEmplaceComponent<Component::RigidBody>();
+            rb.type                  = (Component::RigidBody::BodyType)rigitbody_c["type"].as<s8>();
+            rb.fixedRoation          = rigitbody_c["fixedRoation"].as<b8>();
+            rb.density               = rigitbody_c["density"].as<f32>();
+            rb.friction              = rigitbody_c["friction"].as<f32>();
+            rb.restitution           = rigitbody_c["restitution"].as<f32>();
+            rb.restitutionThreshold  = rigitbody_c["restitutionThreshold"].as<f32>();
         }
 
         auto collider_c = entity["Collider"];
@@ -297,9 +312,18 @@ namespace Acaer {
 
         auto camera_c = entity["Camera"];
         if (camera_c) {
-            auto& c = currentEntity.GetOrEmplaceComponent<Component::CameraController>();
+            auto &c = currentEntity.GetOrEmplaceComponent<Component::CameraController>();
             c.zoom = camera_c["zoom"].as<f32>();
         }
+        
+        auto script_c = entity["Script"];
+        if (script_c) {
+            auto &s = currentEntity.GetOrEmplaceComponent<Component::Script>();
+            for (auto path : script_c["pool"]) {
+                s.pool.push_back(path.as<std::string>());
+            }
+        }
+        
     }
 
     void SceneSerializer::Serialize(const std::string& filepath) {

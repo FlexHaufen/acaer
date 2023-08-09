@@ -104,7 +104,13 @@ namespace Acaer {
         // ** ScriptEngine **
         AC_CORE_INFO("Setting up ScriptEngine");
         // Lua
+        m_Registry.view<Component::Script>().each([&](auto entity, auto& sc) {
+            for (auto i : sc.pool) {
+                m_ScriptEngine.AddScript(i);
+            }
+        });
         m_ScriptEngine.OnStart();
+        
         // Native
         m_Registry.view<Component::NativeScript>().each([&](auto entity, auto& nsc) {
             if (!nsc.Instance) {

@@ -49,16 +49,7 @@ namespace Acaer {
             luaL_openlibs(m_L);  // Load Lua std lib
 
             // ** Bind functions **
-            lua_register(m_L, "ConsolePrint", Native::Lua_ConsolePrint);
-
-            if (luaL_loadfile(m_L, "./src/acaer/Scripts/Lua/testScript.lua") != LUA_OK) {
-                AC_CORE_WARN("Could Not Load Script");
-                return;
-            }
-
-            if (lua_pcall(m_L, 0, LUA_MULTRET, 0) == LUA_OK) {   // Run plain script (non function code)
-                m_L_Ok = true;   // Lua init successfull
-            }
+            lua_register(m_L, "ConsolePrint", Native::Lua_ConsolePrint);            
         }
 
         ~ScriptEngine() {
@@ -76,9 +67,11 @@ namespace Acaer {
          * 
          */
         void OnStart() {
-            if (!m_L_Ok) {
+            if (lua_pcall(m_L, 0, LUA_MULTRET, 0) != LUA_OK) {   // Run plain script (non function code)
                 return;
             }
+            m_L_Ok = true;
+
             // Call lua [0 arguments, 0 returns]
             if (lua_getglobal(m_L, "OnStart") == LUA_TFUNCTION) {
                 if (!lua_pcall(m_L, 0, 0, 0) == LUA_OK) {
@@ -100,6 +93,18 @@ namespace Acaer {
                 if (!lua_pcall(m_L, 0, 0, 0) == LUA_OK) {
                     AC_CORE_WARN("Faild to call OnUpdate");
                 }
+            }
+        }
+
+        /**
+         * @brief Loads a lua script from given path
+         * 
+         * @param path      path to script
+         */
+        void AddScript(std::string path) {
+            if (luaL_loadfile(m_L, path.c_str()) != LUA_OK) {
+                AC_CORE_WARN("Could Not Load Script");
+                return;
             }
         }
 
