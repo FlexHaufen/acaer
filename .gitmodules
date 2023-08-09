@@ -4,3 +4,13 @@
 [submodule "lib/vendor/spdlog"]
 	path = lib/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "lib/vendor/AES"]
+	path = lib/vendor/AES
+	url = git@github.com:SergeyBel/AES.git
+[submodule "lib/vendor/imgui-sfml"]
+	path = lib/vendor/imgui-sfml
+	url = git@github.com:SFML/imgui-sfml.git
+[submodule "lib/vendor/imgui"]
+	path = lib/vendor/imgui
+	url = git@github.com:ocornut/imgui.git
+	branch = docking

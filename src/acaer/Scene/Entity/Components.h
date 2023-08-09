@@ -57,9 +57,9 @@ namespace Acaer {
 
         struct SpriteAnimatior {
             struct Animation {
-                u8 framePos     = 0;            // Animation pos on spritesheet
-                u8 frameLenght  = 8;            // How many frames in animation
-                v2<u8> frameSize;               // Size (with / height) of 1 frame
+                u16 framePos     = 0;           // Animation pos on spritesheet
+                u16 frameLenght  = 8;           // How many frames in animation
+                v2<u16> frameSize;              // Size (with / height) of 1 frame
 
                 b8 isMirrored   = false;        // Mirror animation
 
@@ -79,19 +79,16 @@ namespace Acaer {
         struct Sprite {
             // TODO (flex): runtime texture reload
             std::string texturepath;            // Texturepath
-            sf::Texture texture;                // sf::RenderTexture
             sf::Sprite spriteTexture;           // sf::Sprite
         };
 
         /**
          * @brief Transform Component
-         * @note  If the "alpha" of ".color" is set to "0",
-         *        the transform won't be rendered
-         * 
+         *  
          */
         struct Transform {
             //v2 center_pos;
-            s8 render_layer = 0;                // Order in the renderer [0..9]
+            s8 renderLayer = 0;                // Order in the renderer [0..AC_MAX_RENDERLAYERS]
             
             v2f pos =  {10, 10};                // Position [px]
             v2f scale =  {1, 1};                // Scale [1].

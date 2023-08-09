@@ -33,15 +33,19 @@ namespace Acaer {
 		// ** Console Log **
 		//							"[DD.MM.YY HH:MM:SS.ms][pid][tid] [CORE]: msg]"
 		logSinks[0]->set_pattern("%^[%d.%m.%C %T.%e][%P][%t] %n: %v%$");
+		// ** File Log **
+		//							"[DD.MM.YY HH:MM:SS.ms][pid][tid][level]  [APP]: msg]"
+		logSinks[1]->set_pattern("%^[%d.%m.%C %T.%e][%P][%t][%l]\t %n: %v");
+
+		// ** LOGGER **
+		// CORE
 		s_CoreLogger = std::make_shared<spdlog::logger>("[CORE]", begin(logSinks), end(logSinks));
 		spdlog::register_logger(s_CoreLogger);
 		s_CoreLogger->set_level(spdlog::level::trace);
 		s_CoreLogger->flush_on(spdlog::level::trace);
 
-		// ** File Log **
-		//							"[DD.MM.YY HH:MM:SS.ms][pid][tid][level]  [APP]: msg]"
-		logSinks[1]->set_pattern("%^[%d.%m.%C %T.%e][%P][%t][%l]\t %n: %v");
-		s_ClientLogger = std::make_shared<spdlog::logger>("[APP]", begin(logSinks), end(logSinks));
+		// CLIENT		
+		s_ClientLogger = std::make_shared<spdlog::logger>("[CLIENT]", begin(logSinks), end(logSinks));
 		spdlog::register_logger(s_ClientLogger);
 		s_ClientLogger->set_level(spdlog::level::info);
 		s_ClientLogger->flush_on(spdlog::level::info);

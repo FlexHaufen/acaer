@@ -20,72 +20,64 @@ namespace Acaer {
 
     void EntityBrowserPanel::OnImGuiRender() {
 		ImGui::Begin("Entity Browser Panel");
+        m_isPanelFocused = ImGui::IsWindowFocused() || ImGui::IsWindowHovered();    //! Importànte
+
 
 		if (m_Context) {
-			m_Context->m_Registry.each([&](auto entityID) {
-                Entity entity{ entityID , m_Context.get() };
-                DrawEntityNode(entity);
-            });
+            ImGui::Text("Entities:");
+            static UUID currentEntity;
+            if (ImGui::BeginListBox("##entity_listBox", ImVec2(-FLT_MIN, 0))) {
 
-			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered()) {
-				m_SelectionContext = {};
+                m_Context->m_Registry.view<Component::Tag>().each([&](auto entityID, auto& tag) {
+                    Entity entity(entityID, m_Context.get());
+
+                    const b8 is_selected = (currentEntity == entity.GetUUID());
+                    if (ImGui::Selectable(entity.GetTag().c_str(), is_selected)) {
+                        currentEntity = entity.GetUUID();
+                    }
+
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected) {
+                        ImGui::SetItemDefaultFocus();
+                        m_SelectionContext = entity;
+                        //AC_CORE_TRACE("Selected: {0}", entity.GetTag());
+                    }   
+                });
+                ImGui::EndListBox();
             }
-			// Right-click on blank space
-			if (ImGui::BeginPopupContextWindow(0, 1)) {
-				if (ImGui::MenuItem("Create Empty Entity"))
-					m_Context->CreateEntity("Empty Entity");
-				ImGui::EndPopup();
-			}
+			
+            if (ImGui::Button("Add Entity")) {
+                m_Context->CreateEntity();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Remove Entity")) {
+                m_Context->DestroyEntity(m_SelectionContext);
+                m_SelectionContext = {};
+            }
 		}
 		ImGui::End();
 
 		ImGui::Begin("Properties");
+        // FIXME (flex): Multiple panels in one class don't support
+        //               panel focus check
+        //m_isPanelFocused = ImGui::IsWindowFocused() || ImGui::IsWindowHovered();    //! Importànte
+
 		if (m_SelectionContext) {
 			DrawComponents(m_SelectionContext);
+
+            // TODO (flex): Add "add component" button here
 		}
 		ImGui::End();
 	}
 
 
-    void EntityBrowserPanel::DrawEntityNode(Entity entity) {
+    void EntityBrowserPanel::DrawEntityNode(Entity &entity) {
         auto &tag = entity.GetComponent<Component::Tag>().tag;
 
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-        if (m_SelectionContext == entity) {
-            flags |= ImGuiTreeNodeFlags_Selected;
-        }
 
-        b8 opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
-
-        if (ImGui::IsItemClicked()) {
-			m_SelectionContext = entity;
-		}
-
-        bool entityDeleted = false;
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Delete Entity"))
-				entityDeleted = true;
-
-			ImGui::EndPopup();
-		}
-
-		if (opened) {
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
-			if (opened)
-				ImGui::TreePop();
-			ImGui::TreePop();
-		}
-
-		if (entityDeleted) {
-			m_Context->DestroyEntity(entity);
-			if (m_SelectionContext == entity)
-				m_SelectionContext = {};
-		}
     }
 
-    void EntityBrowserPanel::DrawComponents(Entity entity) {
+    void EntityBrowserPanel::DrawComponents(Entity &entity) {
 
         if (entity.HasComponent<Component::Tag>()) {
             ImGui::SeparatorText("Tag");
@@ -102,15 +94,17 @@ namespace Acaer {
             ImGui::Text("UUID: ");
             ImGui::SameLine();
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), std::to_string(uuid).c_str());
+
+            ImGui::Text("entt::entity: ");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), std::to_string((u32)entity).c_str());
         }
 
         if (entity.HasComponent<Component::Transform>()) {
             ImGui::SeparatorText("Transform");
             auto &transform = entity.GetComponent<Component::Transform>();
 
-            s32 i1 = transform.render_layer;
-            ImGui::SliderInt("render layer", &i1, 0, 9);
-            transform.render_layer = i1;
+            ImGui::SliderInt("render layer", (s32*)&transform.renderLayer, 0, 9);
 
             f32 f1[2] = {transform.pos.x, transform.pos.y};
             ImGui::InputFloat2("pos", f1);
@@ -120,18 +114,51 @@ namespace Acaer {
             ImGui::InputFloat2("scale", f2);
             transform.scale = {f2[0], f2[1]};
 
-            f32 f3 = transform.rotation;
-            ImGui::InputFloat("Rotation", &f3);
-            f3 = transform.rotation;
+            ImGui::InputFloat("Rotation", &transform.rotation);
+        }
+
+        if (entity.HasComponent<Component::RigidBody>()) {
+            ImGui::SeparatorText("Rigid Body");
+            auto &rigidBody = entity.GetComponent<Component::RigidBody>();
+
+            ImGui::Checkbox("Fixed Rotation", &rigidBody.fixedRoation);
+            ImGui::InputFloat("Denisty", &rigidBody.density);
+            ImGui::InputFloat("Friction", &rigidBody.friction);
+            ImGui::InputFloat("Restitution", &rigidBody.restitution);
+            ImGui::InputFloat("Restitution TH", &rigidBody.restitutionThreshold);
+        }
+
+        if (entity.HasComponent<Component::Sprite>()) {
+            ImGui::SeparatorText("Sprite");
+            auto &sprite = entity.GetComponent<Component::Sprite>();
+
+            ImGui::Text("Texture Path: ");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), sprite.texturepath.c_str());
+
+            ImGui::Text("Texture Loaded: ");
+            ImGui::SameLine();
+            b8 b = (sprite.spriteTexture.getTexture() != nullptr);
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), Convert::b8_to_abc(b).c_str());
+        }
+
+        if (entity.HasComponent<Component::SpriteAnimatior>()) {
+            ImGui::SeparatorText("Sprite");
+            auto &spriteAnim = entity.GetComponent<Component::SpriteAnimatior>();
+
+            ImGui::Text("Current Animation: ");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), spriteAnim.currentAnimation.c_str());
+        
+            ImGui::Text("Animation Pool Size: ");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), std::to_string(spriteAnim.pool.size()).c_str());
         }
 
         if (entity.HasComponent<Component::CameraController>()) {
-            ImGui::SeparatorText("Transform");
+            ImGui::SeparatorText("Camera Controller");
             auto &camera = entity.GetComponent<Component::CameraController>();
-
-            f32 i1 = camera.zoom;
-            ImGui::SliderFloat("zoom", &i1, 0.5, 2);
-            camera.zoom = i1;
+            ImGui::SliderFloat("zoom", &camera.zoom, 0.5, 2);
         }
     }
 }

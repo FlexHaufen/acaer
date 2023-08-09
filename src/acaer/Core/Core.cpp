@@ -29,8 +29,12 @@
 // *** NAMESPACE ***
 namespace Acaer {
 
-    Core::Core() {
+    Core::Core() :
+        m_EventManager(m_Window) {
         Log::Init();
+
+        // random number seed
+        srand((u32)time(NULL));
 
         AC_CORE_INFO("Initializing Core");
 
@@ -39,8 +43,10 @@ namespace Acaer {
             AC_PROFILE_BEGIN_SESSION("Profile", "AcaerProfile.json");
         #endif
 
+        std::filesystem::current_path("./");
+        AC_CORE_INFO("Running in: {0}",std::filesystem::current_path());
         
-        AC_CORE_INFO("Creating main window");
+        AC_CORE_INFO("Creating Window");
         m_WindowTitle = "acaer v";
         m_WindowTitle.append(AC_VERSION);
         m_Window.create(sf::VideoMode(AC_WINDOW_X, AC_WINDOW_Y), m_WindowTitle);
@@ -52,9 +58,8 @@ namespace Acaer {
         else {
             m_Window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
         }
-        
-        m_ActiveScene = CreateRef<Scene>(m_Window);
-        m_EventManager = CreateRef<EventManager>(m_Window);
+
+        m_ActiveScene = CreateRef<Scene>(m_Window, m_EventManager);
         m_ImGuiLayer = CreateRef<ImGuiLayer>(m_Window);
         
         m_ImGuiLayer->OnAttach(m_ActiveScene);
@@ -68,34 +73,13 @@ namespace Acaer {
         }
     #else
         //! ---- DEBUG ----
-        {   // Ent1
-            AC_CORE_TRACE("creating ent1");
-            auto ent = m_ActiveScene->CreateEntity("ent1");
-            auto &t = ent.AddComponent<Component::Transform>();
-            t.pos = {100, 150};
-            auto &rb = ent.AddComponent<Component::RigidBody>();
-            rb.type = Component::RigidBody::BodyType::Static;
-
-            auto &c = ent.AddComponent<Component::Collider>();
-            c.size = {400, 40};
-
-            auto &s = ent.AddComponent<Component::Sprite>();
-            s.texturepath = "assets/Textures/Debug/platform.png";
-        }
-        {   // tree
-            AC_CORE_TRACE("tree");
-            auto ent = m_ActiveScene->CreateEntity("tree");
-            auto &t = ent.AddComponent<Component::Transform>();
-            t.pos = {150, -444};
-
-            auto &s = ent.AddComponent<Component::Sprite>();
-            s.texturepath = "assets/Textures/World/fir_tree_1.png";
-        }
         {   // Player
-            AC_CORE_TRACE("creating player");
+            //AC_CORE_TRACE("creating player");
             auto player = m_ActiveScene->CreateEntity("player");
             auto &t = player.AddComponent<Component::Transform>();
             t.pos = {150, 0};
+            t.renderLayer = 5;
+
             auto &cam = player.AddComponent<Component::CameraController>();
             cam.zoom = 1.2f;
             player.AddComponent<Component::NativeScript>().Bind<CharacterController>();
@@ -128,12 +112,56 @@ namespace Acaer {
                                             .isMirrored = true
                                         });
         }
+        {   // Ent1
+            //AC_CORE_TRACE("creating gnd");
+            auto ent = m_ActiveScene->CreateEntity("gnd");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {100, 150};
+                t.renderLayer = 5;
+            auto &rb = ent.AddComponent<Component::RigidBody>();
+                rb.type = Component::RigidBody::BodyType::Static;
+
+            auto &c = ent.AddComponent<Component::Collider>();
+                c.size = {400, 40};
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/Debug/platform.png";
+        }
+        {   // tree
+            //AC_CORE_TRACE("tree1");
+            auto ent = m_ActiveScene->CreateEntity("tree1");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {50, -444};
+                t.renderLayer = 4;
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/World/fir_tree_1.png";
+        }
+        {   // tree
+            //AC_CORE_TRACE("tree2");
+            auto ent = m_ActiveScene->CreateEntity("tree2");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {150, -444};
+                t.renderLayer = 4;
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/World/fir_tree_1.png";
+        }
+        {   // tree
+            //AC_CORE_TRACE("tree3");
+            auto ent = m_ActiveScene->CreateEntity("tree3");
+            auto &t = ent.AddComponent<Component::Transform>();
+                t.pos = {-300, -444};
+                t.renderLayer = 4;
+
+            auto &s = ent.AddComponent<Component::Sprite>();
+                s.texturepath = "assets/Textures/World/fir_tree_1.png";
+        }
         //! ----------------
     #endif
         m_isRunning = true;
 
-        // random number seed
-        srand((u32)time(NULL));
+        
     }
 
     Core::~Core() {
@@ -145,53 +173,72 @@ namespace Acaer {
             serializer.Serialize("assets/Scenes/scene.acs");
         #endif
 
+        AC_CORE_INFO("Closing Window");
         m_Window.close();
         m_ImGuiLayer->OnDetach();      
 
+        AC_CORE_INFO("Quiting...");
         AC_PROFILE_END_SESSION();  
     }
 
     void Core::Run() {
         AC_PROFILE_FUNCTION();
 
-        sf::Clock dt_clock;
-        sf::Time dt;
-        
         AC_CORE_INFO("Setting up EventManager");
-        m_EventManager->addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) { m_Window.close(); });
-        m_EventManager->addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) { m_Window.close(); });
-        m_EventManager->addKeyPressedCallback(sf::Keyboard::Tab, [&](const sf::Event&) { m_isPaused = !m_isPaused; });
-        
+        m_EventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) { Close(); });
+        m_EventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {Close(); });
+        m_EventManager.addKeyPressedCallback(sf::Keyboard::P, [&](const sf::Event&) { m_isPaused = !m_isPaused; });
+        m_EventManager.addKeyPressedCallback(sf::Keyboard::H, [&](const sf::Event&) { PerformHotReload(); });
+
         AC_CORE_INFO("Starting scene...");
         m_ActiveScene->OnStart();
-        while (m_Window.isOpen() && m_isRunning) {
-            
-            dt = dt_clock.restart();
-            f32 dt_sec = dt.asSeconds();
-        
-            #ifdef AC_CALC_FPS
-                u16 fps = u16(1/dt_sec);
-                m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
-            #endif
 
-            // ---- EVENT HANDLING ----
-            m_EventManager->processEvents(nullptr);
-            //ImGui::SFML::ProcessEvent();          // TODO: Add ImGui Events
-            
-            if (!m_isPaused) {
-                // ---- UPDATE HANDLING ----
-                m_ActiveScene->OnUpdate(dt_sec);
-                m_ImGuiLayer->OnUpdate(dt);
-
-                // ---- RENDER LOOP ----
-                m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
-                m_ActiveScene->OnRender(dt_sec);
-                
-                m_ImGuiLayer->OnRender();
-                m_Window.display();
+        // *** LOOP ***
+        while (m_isRunning) {
+            m_ActiveScene->OnRuntimeStart();
+            while (m_UpdateGame) {
+                OnGameUpdate();
             }
+            m_UpdateGame = true;
         }
         m_ActiveScene->OnEnd();
-        AC_CORE_WARN("Core stopped running");
+    }
+
+    void Core::Close() {
+        AC_CORE_INFO("Quitting Core");
+        m_isRunning = false;
+        m_UpdateGame = false;
+        m_Window.close();
+    }
+
+    void Core::OnGameUpdate() {
+        // ---- EVENT HANDLING ----
+        m_EventManager.processEvents(nullptr);
+
+        if (!m_isPaused) {
+            m_dt = m_dt_clock.restart();
+            f32 dt_sec = m_dt.asSeconds();  // Getting dt [s]
+            u16 fps = u16(1/dt_sec);        // Getting fps
+            m_Window.setTitle(m_WindowTitle + " - FPS: " + std::to_string(fps));
+
+            // ---- UPDATE HANDLING ----
+            m_ActiveScene->OnUpdate(dt_sec);
+            m_ImGuiLayer->OnUpdate(m_dt);
+
+            // ---- RENDER LOOP ----
+            m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
+            m_ActiveScene->OnRender();
+            
+            m_ImGuiLayer->OnRender();
+            m_Window.display();
+        } 
+        else {
+            m_Window.setTitle(m_WindowTitle + " - PAUSED");
+        }
+    }
+
+    void Core::PerformHotReload() {
+        AC_CORE_INFO("---- HOT RELOAD ----");
+        m_UpdateGame = false;
     }
 }

@@ -18,6 +18,13 @@
 namespace Acaer {
     namespace Convert {
 
+        /**
+         * @brief Convert given bool to text
+         * 
+         * @param b 
+         * @return std::string  "true" if b = true
+         */
+        inline std::string b8_to_abc(const b8 &b) { return (b ? "true" : "false"); }
 
         /**
          * @brief Create a b2Body object

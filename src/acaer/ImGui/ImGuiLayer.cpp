@@ -50,6 +50,12 @@ namespace Acaer {
 		m_pEntityBrowser = new EntityBrowserPanel();
 		m_PanelStack.PushPanel(m_pEntityBrowser);
 
+		m_pSceneEditor = new SceneEditorPanel();
+		m_PanelStack.PushPanel(m_pSceneEditor);
+
+		m_pSandWorldEditor = new SandWorldEditorPanel();
+		m_PanelStack.PushPanel(m_pSandWorldEditor);
+
 		for (auto* panels : m_PanelStack) {
 			panels->SetContext(context);
 		}
@@ -63,6 +69,15 @@ namespace Acaer {
 	
 	void ImGuiLayer::OnUpdate(sf::Time dt) {
 		ImGui::SFML::Update(m_Window, dt);
+
+		// Update Window Focus (shity implementation, but it works)
+		b8 isImGuiFocused = false;
+		for (auto* panels : m_PanelStack) {
+			isImGuiFocused |= panels->IsPanelFocused();
+		}
+		for (auto* panels : m_PanelStack) {
+			panels->SetImGuiFocused(isImGuiFocused);
+		}
 	}
 
 	void ImGuiLayer::OnRender() {

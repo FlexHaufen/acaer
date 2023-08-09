@@ -14,18 +14,17 @@
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Entity/Components.h"
 #include "acaer/Scene/ContactListener/ContactListener.h"
-
 #include "acaer/Scene/Renderer/Renderer.h"
 #include "acaer/Scene/Renderer/DebugRenderer.h"
-
 #include "acaer/Scene/Camera/Camera.h"
-
 #include "acaer/Scene/Handlers/SpriteHandler.h"
+#include "acaer/Scene/World/SandWorld.h"
+#include "acaer/Core/Events/EventManager.h"
+#include "acaer/Core/ScriptEngine/ScriptEngine.h"
 
-#include "acaer/Scene/World/World.h"
 
 //*** DEFINES ***
-
+#define AC_MAX_RENDERLAYERS     10
 
 //*** NAMESPACE ***
 namespace Acaer {
@@ -38,13 +37,23 @@ namespace Acaer {
     class Scene {
 
     public:
-        Scene(sf::RenderWindow &window);
+        Scene(sf::RenderWindow &window, EventManager &eventManager);
         ~Scene();
 
         static Ref<Scene> Copy(Ref<Scene> other);
 
-
+        /**
+         * @brief Setup Scene
+         *        PhysicsWorld (box2d) + SandWorld
+         * 
+         */
         void OnStart();
+
+        /**
+         * @brief Runtime Start
+         *        Start native + Lua scripts, Sprite Handler
+         */
+        void OnRuntimeStart();
 
         void OnEnd();
 
@@ -70,10 +79,13 @@ namespace Acaer {
          * 
          * @param entity 
          */
-        void DestroyEntity(Entity entity);
+        void DestroyEntity(Entity &entity);
 
         /**
          * @brief Update function
+         * 
+         * @note The Updates will be handled in the follow order:
+         *       Scripts -> Physics -> Camera -> Sprites
          * 
          * @param dt delta time
          */
@@ -82,32 +94,42 @@ namespace Acaer {
         /**
          * @brief Main render update function
          * 
-         * @param dt delta time
          */
-        void OnRender(f32 dt);
-
-
-        sf::RenderWindow& GetRenderWindow() { return m_Window; }
+        void OnRender();
 
     private:
 
         // ** Members **
+        // cam
         Camera m_Camera;                            // Camera
-        sf::RenderWindow &m_Window;                 // Ref to sf::RenderWindow
-        Renderer*       m_Renderer      = nullptr;  // Renderer
-        DebugRenderer*  m_DebugRenderer = nullptr;  // DebugRenderer
-        SpriteHandler   m_SpriteHandler;            // SpriteHandler
-        
-        entt::registry  m_Registry;                 // entt Registry
-        b2World*        m_PhysicsWorld  = nullptr;  // Simulated Physics World (for RigidBodies)
-        SandWorld*      m_SandWorld     = nullptr;  // Simulated Sand World (for Pixelsimulation)
+        b8 m_useFreeCamera;                         // True: When camera shall be free            
 
-        ContactListener m_ContactListener;          // Box2D contactlistener
+        // events
+        EventManager       &m_EventManager;         // Ref to EventManager
+
+        // engines
+        ScriptEngine        m_ScriptEngine;         // Lua ScriptEngine
+
+        // rendering
+        sf::RenderWindow   &m_Window;               // Ref to sf::RenderWindow
+        Ref<Renderer>       m_Renderer;             // Renderer
+        Ref<DebugRenderer>  m_DebugRenderer;        // DebugRenderer
+        SpriteHandler       m_SpriteHandler;        // SpriteHandler
+        
+        entt::registry      m_Registry;             // entt Registry
+        Ref<b2World>        m_PhysicsWorld;         // Simulated Physics World (for RigidBodies)
+        Ref<SandWorld>      m_SandWorld;            // Simulated Sand World (for Pixelsimulation)
+
+        ContactListener     m_ContactListener;      // Box2D contactlistener
 
         friend class Entity;                        // Entity class
         friend class SceneSerializer;               // Scene Serializer
 
+
+        // FIXME (flex): Get workaround "friend class"
         // * ImGui *
         friend class EntityBrowserPanel;            // ImGui Panel
+        friend class SceneEditorPanel;              // ImGui Panel
+        friend class SandWorldEditorPanel;          // ImGui Panel
     };
 }

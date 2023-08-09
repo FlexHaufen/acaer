@@ -17,6 +17,8 @@
 
 // * panels *
 #include "acaer/ImGui/Panels/EntityBrowserPanel.h"
+#include "acaer/ImGui/Panels/SceneEditorPanel.h"
+#include "acaer/ImGui/Panels/SandWorldEditorPanel.h"
 
 
 //*** DEFINES ***
@@ -44,6 +46,7 @@ namespace Acaer {
 
 		// * panels *
 		EntityBrowserPanel* m_pEntityBrowser = nullptr;
-
+		SceneEditorPanel* m_pSceneEditor = nullptr;
+		SandWorldEditorPanel* m_pSandWorldEditor = nullptr;
 	};
 }

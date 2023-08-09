@@ -1,11 +1,86 @@
 Scene: Untitled
 Entities:
-  - Entity: 15808060529009966026
+  - Entity: 6511466520505737614
+    Tag:
+      tag: tree3
+    Sprite:
+      texturepath: assets/Textures/World/fir_tree_1.png
+    Transform:
+      renderLayer: "\x04"
+      pos: [-300, -444]
+      scale: [1, 1]
+      rotation: 0
+  - Entity: 14460810783940864501
+    Tag:
+      tag: tree2
+    Sprite:
+      texturepath: assets/Textures/World/fir_tree_1.png
+    Transform:
+      renderLayer: "\x04"
+      pos: [150, -444]
+      scale: [1, 1]
+      rotation: 0
+  - Entity: 10835190012442098076
+    Tag:
+      tag: tree1
+    Sprite:
+      texturepath: assets/Textures/World/fir_tree_1.png
+    Transform:
+      renderLayer: "\x04"
+      pos: [50, -444]
+      scale: [1, 1]
+      rotation: 0
+  - Entity: 2890626165363594440
+    Tag:
+      tag: gnd
+    Sprite:
+      texturepath: assets/Textures/Debug/platform.png
+    Transform:
+      renderLayer: "\x05"
+      pos: [-100, 130]
+      scale: [1, 1]
+      rotation: -0
+    RigitBody_C:
+      type: 0
+      fixedRoation: true
+      density: 1
+      friction: 0.5
+      restitution: 0
+      restitutionThreshold: 0
+    Collider:
+      offset: [0, 0]
+      size: [400, 40]
+      Sensors:
+        []
+  - Entity: 370262367098519403
     Tag:
       tag: player
+    SpriteAnimatior:
+      currentAnimation: run_left
+      pool:
+        - name: run_left
+          framePos: 0
+          frameLenght: 8
+          frameSizeX: 48
+          frameSizeY: 48
+          isMirrored: true
+          currentFrame: 7
+          animationSpeed: 10
+          elapsedTime: 0
+        - name: run_right
+          framePos: 0
+          frameLenght: 8
+          frameSizeX: 48
+          frameSizeY: 48
+          isMirrored: false
+          currentFrame: 0
+          animationSpeed: 10
+          elapsedTime: 0
+    Sprite:
+      texturepath: assets/Textures/Player/run_anim_temp-Sheet.png
     Transform:
-      render_layer: "\x00"
-      pos: [9.00169373, -62.4499855]
+      renderLayer: "\x05"
+      pos: [-4.19634247, -62.4499855]
       scale: [1, 1]
       rotation: -0
     RigitBody_C:
@@ -24,31 +99,3 @@ Entities:
           size: [60, 10]
     Camera:
       zoom: 1.20000005
-  - Entity: 15098682387472372295
-    Tag:
-      tag: tree
-    Transform:
-      render_layer: "\x00"
-      pos: [150, -444]
-      scale: [1, 1]
-      rotation: 0
-  - Entity: 7620546133437981478
-    Tag:
-      tag: ent1
-    Transform:
-      render_layer: "\x00"
-      pos: [-100, 130]
-      scale: [1, 1]
-      rotation: -0
-    RigitBody_C:
-      type: 0
-      fixedRoation: true
-      density: 1
-      friction: 0.5
-      restitution: 0
-      restitutionThreshold: 0
-    Collider:
-      offset: [0, 0]
-      size: [400, 40]
-      Sensors:
-        []

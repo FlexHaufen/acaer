@@ -14,7 +14,7 @@
 #include "acaer/ac_pch.h"
 #include "acaer/Scene/Entity/Components.h"
 
-#include "acaer/Scene/World/WorldChunk.h"
+//#include "acaer/Scene/World/WorldChunk.h"
 
 //*** DEFINES ***
 
@@ -39,11 +39,7 @@ namespace Acaer {
          * @param y             pos y
          * @param c             color of cell (rgba)
          */
-        void RenderCell(size_t x, size_t y, vColor c);
-
-
-        void RenderChunk(WorldChunk* chunk);
-
+        void RenderCell(s32 x, s32 y, vColor c);
 
     private:
         // ** Memberse **

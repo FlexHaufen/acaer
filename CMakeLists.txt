@@ -16,11 +16,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 
-# COMPILER FLAGS
-#
-set(CMAKE_CXX_FLAGS_DEBUG "/W1 /W2 /W3 /Zi")
-set(CMAKE_CXX_FLAGS_RELEASE "/O3 /g0 /DNLY_DEBUG")
-
 
 #----------------------------------------------------
 #				       RESOURCE
@@ -38,15 +33,13 @@ file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h
 file(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/*c
                             ${CMAKE_SOURCE_DIR}/src/*.cpp)
 
-file(GLOB_RECURSE IMGUI_FILES ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.h
-							  ${CMAKE_SOURCE_DIR}/lib/imgui-sfml/*.cpp)
-
-
 ### APP ###
 add_executable(${PROJECT_NAME} 	${SRC_FILES} 
 							   	${HEADER_FILES}
-							   	${IMGUI_FILES}
 							   	${ACAER_APP_ICO})
+
+# Compiler Flags
+#target_compile_options(${PROJECT_NAME} PRIVATE /W4)
 
 
 #----------------------------------------------------
@@ -59,7 +52,11 @@ set(SFML_DIR ${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/lib/cmake/SFML)
 find_package(SFML 2.5.1 REQUIRED COMPONENTS window system graphics audio network)
 
 #---------BOX2D---------
-set(BOX2D_LIB ${CMAKE_SOURCE_DIR}/lib/box2d/lib/box2d.lib)
+# FIXME (flex): only debug build possible
+set(BOX2D_LIB ${CMAKE_SOURCE_DIR}/lib/box2d/lib/bin/Debug/box2d.lib)
+
+#---------LUA---------
+set(LUA_LIB ${CMAKE_SOURCE_DIR}/lib/lua/lua54.lib)
 
 #--------YAML--------
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
@@ -67,21 +64,26 @@ set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml tools")
 set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "disable yaml contrib")
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/yaml/)
 
+#--------SPDLOG-------
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/spdlog/)
+
+#----IMGUI-SFML-------
+set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/lib/vendor/imgui/)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/vendor/imgui-sfml/)
+
 #----------------------------------------------------
 #				      INCLUDE DIRS
 #----------------------------------------------------
 include_directories(
 	${CMAKE_SOURCE_DIR}/src
   	#EnTT
-	${CMAKE_SOURCE_DIR}/lib/vendor/entt
-	# spdlog
-	${CMAKE_SOURCE_DIR}/lib/vendor/spdlog/include
+	${CMAKE_SOURCE_DIR}/lib/entt
 	#SFML
 	${CMAKE_SOURCE_DIR}/lib/SFML-2.5.1/include
 	# Box2D
 	${CMAKE_SOURCE_DIR}/lib/box2d/include
-	#ImGui
-	${CMAKE_SOURCE_DIR}/lib/imgui-sfml/include
+	# Lua
+	${CMAKE_SOURCE_DIR}/lib/lua/include
 )
 
 
@@ -97,9 +99,13 @@ set(LIBS 	sfml-window
 			sfml-audio
 			sfml-network
 			yaml-cpp
-			${BOX2D_LIB})
+			spdlog
+			ImGui-SFML
+			${BOX2D_LIB}
+			${LUA_LIB})
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
+
 
 
 ### PCH ###

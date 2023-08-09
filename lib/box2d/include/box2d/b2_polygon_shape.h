@@ -25,8 +25,6 @@
 #include "b2_api.h"
 #include "b2_shape.h"
 
-struct b2Hull;
-
 /// A solid convex polygon. It is assumed that the interior of the polygon is to
 /// the left of each edge.
 /// Polygons have a maximum number of vertices equal to b2_maxPolygonVertices.
@@ -45,13 +43,9 @@ public:
 	/// Create a convex hull from the given array of local points.
 	/// The count must be in the range [3, b2_maxPolygonVertices].
 	/// @warning the points may be re-ordered, even if they form a convex polygon
-	/// @warning if this fails then the polygon is invalid
-	/// @returns true if valid
-	bool Set(const b2Vec2* points, int32 count);
-
-	/// Create a polygon from a given convex hull (see b2ComputeHull).
-	/// @warning the hull must be valid or this will crash or have unexpected behavior
-	void Set(const b2Hull& hull);
+	/// @warning collinear points are handled but not removed. Collinear points
+	/// may lead to poor stacking behavior.
+	void Set(const b2Vec2* points, int32 count);
 
 	/// Build vertices to represent an axis-aligned box centered on the local origin.
 	/// @param hx the half-width.
@@ -89,5 +83,13 @@ public:
 	b2Vec2 m_normals[b2_maxPolygonVertices];
 	int32 m_count;
 };
+
+inline b2PolygonShape::b2PolygonShape()
+{
+	m_type = e_polygon;
+	m_radius = b2_polygonRadius;
+	m_count = 0;
+	m_centroid.SetZero();
+}
 
 #endif
