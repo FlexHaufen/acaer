@@ -42,8 +42,18 @@ namespace Acaer {
 
         static Ref<Scene> Copy(Ref<Scene> other);
 
-
+        /**
+         * @brief Setup Scene
+         *        PhysicsWorld (box2d) + SandWorld
+         * 
+         */
         void OnStart();
+
+        /**
+         * @brief Runtime Start
+         *        Start native + Lua scripts, Sprite Handler
+         */
+        void OnRuntimeStart();
 
         void OnEnd();
 
@@ -73,6 +83,9 @@ namespace Acaer {
 
         /**
          * @brief Update function
+         * 
+         * @note The Updates will be handled in the follow order:
+         *       Scripts -> Physics -> Camera -> Sprites
          * 
          * @param dt delta time
          */

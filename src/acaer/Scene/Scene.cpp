@@ -98,17 +98,27 @@ namespace Acaer {
         //AC_CORE_INFO("Setting up World");
         //m_SandWorld = CreateRef<SandWorld>();
 
+    }
+
+    void Scene::OnRuntimeStart() {
+        // ** ScriptEngine **
+        AC_CORE_INFO("Setting up ScriptEngine");
+        // Lua
+        m_ScriptEngine.OnStart();
+        // Native
+        m_Registry.view<Component::NativeScript>().each([&](auto entity, auto& nsc) {
+            if (!nsc.Instance) {
+                nsc.Instance = nsc.InstantiateScript();
+                nsc.Instance->m_Entity = Entity{ entity, this };
+                nsc.Instance->OnCreate();
+            }
+        });
+
         // ** SpriteHandler **
         AC_CORE_INFO("Setting up SpriteHandler");
         m_Registry.view<Component::Sprite, Component::Tag>().each([&]( auto e, auto &sprite, auto &tag) {
             m_SpriteHandler.CreateSprite(sprite, tag);
         });
-
-        // ** ScriptEngine **
-        m_ScriptEngine.OnStart();
-
-        // TODO (flex): Add NativeScript::OnStart() here
-
     }
 
     void Scene::OnEnd() {
@@ -123,11 +133,6 @@ namespace Acaer {
         m_ScriptEngine.OnUpdate();
         // Native
         m_Registry.view<Component::NativeScript>().each([&](auto entity, auto& nsc) {
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = Entity{ entity, this };
-                nsc.Instance->OnCreate();
-            }
             nsc.Instance->OnUpdate(dt);
         });
 
