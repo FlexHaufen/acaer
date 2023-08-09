@@ -63,7 +63,7 @@ extern "C" {
 
 
 // *** DEFINES ***
-#define AC_VERSION                          "0.0.6a"
+#define AC_VERSION                          "0.0.7a"
 
 
 #define AC_WINDOW_RESIZABLE                             // flag
