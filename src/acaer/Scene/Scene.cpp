@@ -95,17 +95,36 @@ namespace Acaer {
         #endif
 
         // ** Sand World **
-        AC_CORE_INFO("Setting up World");
-        m_SandWorld = CreateRef<SandWorld>();
+        //AC_CORE_INFO("Setting up World");
+        //m_SandWorld = CreateRef<SandWorld>();
+
+    }
+
+    void Scene::OnRuntimeStart() {
+        // ** ScriptEngine **
+        AC_CORE_INFO("Setting up ScriptEngine");
+        // Lua
+        m_Registry.view<Component::Script>().each([&](auto entity, auto& sc) {
+            for (auto i : sc.pool) {
+                m_ScriptEngine.AddScript(i);
+            }
+        });
+        m_ScriptEngine.OnStart();
+        
+        // Native
+        m_Registry.view<Component::NativeScript>().each([&](auto entity, auto& nsc) {
+            if (!nsc.Instance) {
+                nsc.Instance = nsc.InstantiateScript();
+                nsc.Instance->m_Entity = Entity{ entity, this };
+                nsc.Instance->OnCreate();
+            }
+        });
 
         // ** SpriteHandler **
         AC_CORE_INFO("Setting up SpriteHandler");
         m_Registry.view<Component::Sprite, Component::Tag>().each([&]( auto e, auto &sprite, auto &tag) {
             m_SpriteHandler.CreateSprite(sprite, tag);
         });
-
-        // TODO (flex): Add NativeScript::OnStart() here
-
     }
 
     void Scene::OnEnd() {
@@ -116,19 +135,17 @@ namespace Acaer {
         AC_PROFILE_FUNCTION();
 
         // ** Update Scripts **
+        // Lua
+        m_ScriptEngine.OnUpdate();
+        // Native
         m_Registry.view<Component::NativeScript>().each([&](auto entity, auto& nsc) {
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = Entity{ entity, this };
-                nsc.Instance->OnCreate();
-            }
             nsc.Instance->OnUpdate(dt);
         });
 
 
         // ** Physics **
         m_PhysicsWorld->Step(dt, AC_PHYSICS_VEL_STEPS, AC_PHYSICS_POS_STEPS);
-        m_SandWorld->OnUpdate();
+        //m_SandWorld->OnUpdate();
 
         // retrive transform form box2d
         m_Registry.view<Component::Transform, Component::RigidBody, Component::Collider>().each([&]( auto e, auto &transform, auto &rigidBody, auto &collider) {
@@ -197,6 +214,7 @@ namespace Acaer {
             });
         }
 
+        /*
         for (auto &i : m_SandWorld->GetChunkVector()) {
 
             m_DebugRenderer->RenderChunkBorder(SAND_WORLD_CHUNK_SIZE_X, SAND_WORLD_CHUNK_SIZE_X, i->GetPos().x, i->GetPos().y);
@@ -216,6 +234,7 @@ namespace Acaer {
                 }
             }
         }
+        */
         
 
         #ifdef AC_DEBUG_RENDER

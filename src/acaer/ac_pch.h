@@ -34,6 +34,12 @@
 // * Box2D *
 #include <box2d/box2d.h>
 
+// * Lua *
+extern "C" {
+    #include "lua.h"
+    #include "lualib.h"
+    #include "lauxlib.h"
+}
 // * EnTT *
 #include "entt.hpp"
 
@@ -57,7 +63,7 @@
 
 
 // *** DEFINES ***
-#define AC_VERSION                          "0.0.6a"
+#define AC_VERSION                          "0.0.7a"
 
 
 #define AC_WINDOW_RESIZABLE                             // flag

@@ -20,6 +20,7 @@
 #include "acaer/Scene/Handlers/SpriteHandler.h"
 #include "acaer/Scene/World/SandWorld.h"
 #include "acaer/Core/Events/EventManager.h"
+#include "acaer/Core/ScriptEngine/ScriptEngine.h"
 
 
 //*** DEFINES ***
@@ -41,8 +42,18 @@ namespace Acaer {
 
         static Ref<Scene> Copy(Ref<Scene> other);
 
-
+        /**
+         * @brief Setup Scene
+         *        PhysicsWorld (box2d) + SandWorld
+         * 
+         */
         void OnStart();
+
+        /**
+         * @brief Runtime Start
+         *        Start native + Lua scripts, Sprite Handler
+         */
+        void OnRuntimeStart();
 
         void OnEnd();
 
@@ -73,6 +84,9 @@ namespace Acaer {
         /**
          * @brief Update function
          * 
+         * @note The Updates will be handled in the follow order:
+         *       Scripts -> Physics -> Camera -> Sprites
+         * 
          * @param dt delta time
          */
         void OnUpdate(f32 dt);
@@ -92,6 +106,9 @@ namespace Acaer {
 
         // events
         EventManager       &m_EventManager;         // Ref to EventManager
+
+        // engines
+        ScriptEngine        m_ScriptEngine;         // Lua ScriptEngine
 
         // rendering
         sf::RenderWindow   &m_Window;               // Ref to sf::RenderWindow

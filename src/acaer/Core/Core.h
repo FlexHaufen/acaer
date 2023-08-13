@@ -59,11 +59,28 @@ namespace Acaer {
         void Close();
 
     private:
-      
+    
+        /**
+         * @brief Game loop of app
+         * 
+         */
+        void OnGameUpdate();
+
+        /**
+         * @brief Performe a HotReload
+         * 
+         */
+        void PerformHotReload();
+
+    private:
         // ** Members **
-        bool m_isRunning = true;        // True when app is running
-        bool m_isPaused = false;        // True when app is paused
-        bool m_isMinimized = false;     // True when app is minimzed
+        sf::Clock m_dt_clock;           // Sfml Clock for DeltaTime
+        sf::Time m_dt;                  // DeltaTime
+
+        b8 m_isRunning = true;          // True when app is running
+        b8 m_isPaused = false;          // True when app is paused
+        b8 m_isMinimized = false;       // True when app is minimzed
+        b8 m_UpdateGame = true;         // True when game should be updated
 
         sf::RenderWindow m_Window;      // Sfml window
         std::string m_WindowTitle;      // Sfml window title

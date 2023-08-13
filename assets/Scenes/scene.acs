@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 2780468480297893718
+  - Entity: 6511466520505737614
     Tag:
       tag: tree3
     Sprite:
@@ -10,7 +10,7 @@ Entities:
       pos: [-300, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 1150938641469933315
+  - Entity: 14460810783940864501
     Tag:
       tag: tree2
     Sprite:
@@ -20,7 +20,7 @@ Entities:
       pos: [150, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 16620667908199625230
+  - Entity: 10835190012442098076
     Tag:
       tag: tree1
     Sprite:
@@ -30,7 +30,7 @@ Entities:
       pos: [50, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 14713702588198716934
+  - Entity: 2890626165363594440
     Tag:
       tag: gnd
     Sprite:
@@ -52,7 +52,7 @@ Entities:
       size: [400, 40]
       Sensors:
         []
-  - Entity: 12782830087671263196
+  - Entity: 370262367098519403
     Tag:
       tag: player
     SpriteAnimatior:
@@ -64,7 +64,7 @@ Entities:
           frameSizeX: 48
           frameSizeY: 48
           isMirrored: true
-          currentFrame: 5
+          currentFrame: 7
           animationSpeed: 10
           elapsedTime: 0
         - name: run_right
@@ -80,7 +80,7 @@ Entities:
       texturepath: assets/Textures/Player/run_anim_temp-Sheet.png
     Transform:
       renderLayer: "\x05"
-      pos: [-57.4564095, -62.5550156]
+      pos: [-4.19634247, -62.4499855]
       scale: [1, 1]
       rotation: -0
     RigitBody_C:
