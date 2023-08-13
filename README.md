@@ -28,12 +28,20 @@ Custom 2D **pixelart game** programmed in pure **C++**
 - CMake 3.24 or higher
 - MSVC 19 or higher
 
-## Building
+## Cloning & Building
 
-Init & update git submodules
+1. Clone the project
+2. Init & update git submodules
 ```shell
 git submodule update --init --recursive
 ```
 ```shell
 git submodule update --recursive --remote
+```
+3. Build with CMake
+4. Run acaer.exe  
+**Important:** The executable has to be run from the root path in order for all the textures to be properly loaded. I know this is laborious and yes, I'm working on it.
+```shell
+./build/bin/debug/acaer.exe
+./build/bin/release/acaer.exe
 ```
