@@ -41,9 +41,17 @@ typedef long double         f128;
  * @tparam T type of vector
  */
 template <typename T>
-struct v2 {
+struct v2{
     T x;
     T y;
+
+    // ** Operator Overloading **
+    inline v2<T> operator+ (const v2<T>& a) const { return {x + a.x, y + a.y}; }
+    inline v2<T> operator- (const v2<T>& a) const { return {x - a.x, y - a.y}; }
+    inline v2<T> operator* (const v2<T>& a) const { return {x * a.x, y * a.y}; }
+    inline v2<T> operator/ (const v2<T>& a) const { return {x / a.x, y / a.y}; }
+    inline v2<T> operator= (const v2<T>& a)       { x = a.x; y = a.y; return a; }
+    inline bool operator== (const v2<T>& a) const { return (x == a.x && y == a.y); }
 };
 
 /**
@@ -53,6 +61,14 @@ struct v2 {
 struct v2f {
     f32 x;
     f32 y;
+
+    // ** Operator Overloading **
+    inline v2f operator+ (const v2f& a) const { return {x + a.x, y + a.y}; }
+    inline v2f operator- (const v2f& a) const { return {x - a.x, y - a.y}; }
+    inline v2f operator* (const v2f& a) const { return {x * a.x, y * a.y}; }
+    inline v2f operator/ (const v2f& a) const { return {x / a.x, y / a.y}; }
+    inline v2f operator= (const v2f& a)       { x = a.x; y = a.y; return a; }
+    inline bool operator== (const v2f& a) const { return (x == a.x && y == a.y); }
 };
 
 /**
@@ -65,6 +81,14 @@ struct v3 {
     T x;
     T y;
     T z;
+
+    // ** Operator Overloading **
+    inline v3<T> operator+ (const v3<T>& a) const { return {x + a.x, y + a.y, z + a.z}; }
+    inline v3<T> operator- (const v3<T>& a) const { return {x - a.x, y - a.y, z - a.z}; }
+    inline v3<T> operator* (const v3<T>& a) const { return {x * a.x, y * a.y, z * a.z}; }
+    inline v3<T> operator/ (const v3<T>& a) const { return {x / a.x, y / a.y, z / a.z}; }
+    inline v3<T> operator= (const v3<T>& a)       { x = a.x; y = a.y; z = a.z; return a; }
+    inline bool operator== (const v3<T>& a) const { return (x == a.x && y == a.y && z == a.z); }
 };
 
 /**
@@ -78,6 +102,14 @@ struct v4 {
     T x;
     T y;
     T z;
+    
+    // ** Operator Overloading **
+    inline v4<T> operator+ (const v4<T>& a) const { return {w + a.w, x + a.x, y + a.y, z + a.z}; }
+    inline v4<T> operator- (const v4<T>& a) const { return {w - a.w, x - a.x, y - a.y, z - a.z}; }
+    inline v4<T> operator* (const v4<T>& a) const { return {w * a.w, x * a.x, y * a.y, z * a.z}; }
+    inline v4<T> operator/ (const v4<T>& a) const { return {w / a.w, x / a.x, y / a.y, z / a.z}; }
+    inline v4<T> operator= (const v4<T>& a)       { w = a.w; x = a.x; y = a.y; z = a.z; return a; }
+    inline bool operator== (const v4<T>& a) const { return (w == a.w && x == a.x && y == a.y && z == a.z); }
 };
 
 /**
@@ -89,6 +121,17 @@ struct vColor {
     u8 g;
     u8 b;
     u8 a;
+    
+    // FIXME (inj)
+    /*
+    // ** Operator Overloading **
+    inline vColor operator+ (const vColor& a) const { return {r + a.r, g + a.g, b + a.b, a + a.a}; }
+    inline vColor operator- (const vColor& a) const { return {r - a.r, g - a.g, b - a.b, a - a.a}; }
+    inline vColor operator* (const vColor& a) const { return {r * a.r, g * a.g, b * a.b, a * a.a}; }
+    inline vColor operator/ (const vColor& a) const { return {r / a.r, g / a.g, b / a.b, a / a.a}; }
+    inline vColor operator= (const vColor& a)       { r = a.r; g = a.g; b = a.b; a = a.a; return a; }
+    inline bool  operator== (const vColor& a) const { return (r == a.r && g == a.g && b == a.b && a == a.a); }
+    */
 };
 
 template<typename T>
