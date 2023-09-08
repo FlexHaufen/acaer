@@ -17,10 +17,10 @@
 
 
 //*** DEFINES ***
-#define SAND_WORLD_CHUNK_SIZE_X   32
-#define SAND_WORLD_CHUNK_SIZE_Y   32
+#define SAND_WORLD_CHUNK_SIZE_X   64
+#define SAND_WORLD_CHUNK_SIZE_Y   64
 
-#define _DEST 2
+#define PAIR    2
 
 //*** NAMESPACE ***
 namespace Acaer {
@@ -35,7 +35,11 @@ namespace Acaer {
          * @param x         pos x   [chunk Position]
          * @param y         pos y   [chunk Position]
          */
-        SandWorldChunk(s32 x, s32 y) : m_PosWorld({x * SAND_WORLD_CHUNK_SIZE_X, y * SAND_WORLD_CHUNK_SIZE_Y}), m_FilledCellCount(0) {}
+        SandWorldChunk(s32 x, s32 y) 
+        : m_PosWorld({x * SAND_WORLD_CHUNK_SIZE_X, y * SAND_WORLD_CHUNK_SIZE_Y})
+        , m_FilledCellCount(0) {
+            UpdateRect();
+        }
 
         // ** Getter & Setter **
 
@@ -97,6 +101,9 @@ namespace Acaer {
 			        m_FilledCellCount--;
 		        }
                 dest = cell;
+
+                KeepAlive(idx);
+
                 return;
             }
             AC_CORE_WARN("SetCell Access Violation at Chunk [{0} / {1}]", m_PosWorld.x, m_PosWorld.y);
@@ -137,7 +144,6 @@ namespace Acaer {
          * 
          * @return v2<s32> pos
          */
-        // FIXME (flex): Sometimes raises errro
         v2<s32> GetPos() { return m_PosWorld; }
 
         /**
@@ -146,6 +152,20 @@ namespace Acaer {
          * @return size_t count
          */
         size_t GetFilledCellCount() { return m_FilledCellCount; }
+
+        /**
+         * @brief Get  ChunkRectMin
+         * 
+         * @return v2<s32> 
+         */
+        v2<s32> GetChunkRectMin() { return m_RectMin; }
+
+        /**
+         * @brief Get  ChunkRectMax
+         * 
+         * @return v2<s32> 
+         */
+        v2<s32> GetChunkRectMax() { return m_RectMax; }
 
         // ** Updating Cells **
 
@@ -166,9 +186,7 @@ namespace Acaer {
         void CommitCells() { 
             // remove moves that have their destinations filled
 			for (size_t i = 0; i < m_ChangedCells.size(); i++) {
-				const Cell& dest = m_Cells[std::get<_DEST>(m_ChangedCells[i])];
-
-				if (dest.type != CellType::EMPTY) {
+				if (!IsEmpty(std::get<PAIR>(m_ChangedCells[i]))) {
 					m_ChangedCells[i] = m_ChangedCells.back();
                     m_ChangedCells.pop_back();
 					i--;
@@ -177,15 +195,15 @@ namespace Acaer {
 
 			// sort by destination
 			std::sort(m_ChangedCells.begin(), m_ChangedCells.end(), [](auto& a, auto& b) { 
-                return std::get<_DEST>(a) < std::get<_DEST>(b); 
+                return std::get<PAIR>(a) < std::get<PAIR>(b); 
             });
 
 			// pick random source for each destination
 			size_t iprev = 0;
 			m_ChangedCells.emplace_back(nullptr, -1, -1); // to catch final move
 			for (size_t i = 0; i < m_ChangedCells.size() - 1; i++) {
-				if (std::get<_DEST>(m_ChangedCells[i + 1]) != std::get<_DEST>(m_ChangedCells[i])) {
-					size_t rand = iprev + Math::rand_u(i - iprev);
+				if (std::get<PAIR>(m_ChangedCells[i + 1]) != std::get<PAIR>(m_ChangedCells[i])) {
+					size_t rand = iprev + Math::rand_u(i - iprev);  // FIXME (flex): Possible BUG
 					auto [chunk, src, dst] = m_ChangedCells[rand];
 					SetCell(dst, chunk->GetCell(src));
 					chunk->SetCell(src, Cell());
@@ -197,11 +215,38 @@ namespace Acaer {
         }
 
 
+        void KeepAlive(s32 x, s32 y) { KeepAlive(GetIndex(x, y)); }
+
+        void KeepAlive(size_t index) {
+            s32 x = (s32)(index % SAND_WORLD_CHUNK_SIZE_X);
+            s32 y = (s32)(index / SAND_WORLD_CHUNK_SIZE_X);
+    
+            m_RectWorkingMin.x = Math::clamp(std::min(x - 2, m_RectWorkingMin.x), 0, SAND_WORLD_CHUNK_SIZE_X);
+            m_RectWorkingMin.y = Math::clamp(std::min(y - 2, m_RectWorkingMin.y), 0, SAND_WORLD_CHUNK_SIZE_Y);
+            m_RectWorkingMax.x = Math::clamp(std::max(x + 2, m_RectWorkingMax.x), 0, SAND_WORLD_CHUNK_SIZE_X);
+            m_RectWorkingMax.y = Math::clamp(std::max(y + 2, m_RectWorkingMax.y), 0, SAND_WORLD_CHUNK_SIZE_Y);
+        }
+    
+        void UpdateRect() {
+            // Update current
+            m_RectMin = m_RectWorkingMin;
+            m_RectMax = m_RectWorkingMax;
+            // Reset working
+            m_RectWorkingMin = {SAND_WORLD_CHUNK_SIZE_X, SAND_WORLD_CHUNK_SIZE_Y};
+            m_RectWorkingMax = {-1, -1};
+        }
+
+
     private:
         // ** Members **
-        const v2<s32> m_PosWorld;  // Chunk pos in world [Cell]
+        const v2<s32> m_PosWorld;   // Chunk pos in world [Cell]
 
-        size_t m_FilledCellCount;  // Number of cells in chunk that are not EMPTY
+        size_t m_FilledCellCount;   // Number of cells in chunk that are not EMPTY
+        
+        v2<s32> m_RectMin;          // Dirty Rect
+        v2<s32> m_RectMax;          //
+        v2<s32> m_RectWorkingMin;   // Working Dirty Rect
+        v2<s32> m_RectWorkingMax;   //
 
         std::array<Cell, SAND_WORLD_CHUNK_SIZE_X * SAND_WORLD_CHUNK_SIZE_Y> m_Cells;
         std::vector<std::tuple<SandWorldChunk*, size_t, size_t>> m_ChangedCells;

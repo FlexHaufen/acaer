@@ -16,16 +16,16 @@
 
 namespace Math {
     /**
-     * @brief generate random size_t between 0..max
+     * @brief generate random s32 between 0..max
      * @warning This function requires a seed for rand() to be set
      *          e.x. srand(time(NULL))
      * 
      * @param max      Maximum random number
-     * @return size_t  Random number
+     * @return s32     Random number
      */
-    inline size_t rand_u(const size_t max) {
+    inline s32 rand_u(const s32 max) {
         if (max < 0) {
-            return -(rand() % (abs((int)max) + 1));
+            return -(rand() % (abs((max) + 1)));
         }
         return rand() % (max + 1);
     }
@@ -34,8 +34,7 @@ namespace Math {
     struct pair_hash {
         template<typename T1, typename T2>
         size_t operator() (const std::pair<T1, T2>& pair) const {
-            return ( std::hash<T1>()(pair.first) * 0x1f1f1f1f)
-                ^ std::hash<T2>()(pair.second);
+            return ( std::hash<T1>()(pair.first) * 0x1f1f1f1f) ^ std::hash<T2>()(pair.second);
         }
     };
 
@@ -43,10 +42,10 @@ namespace Math {
     /**
     * Returns the the value clamped between min and max.
     *
-    * @param a Value to be clamped.
-    * @param min Min value of range.
-    * @param max Max value of range.
-    * @tparam T Any type that implements '>' and '<' operators.
+    * @param x      Value to be clamped.
+    * @param min    Min value of range.
+    * @param max    Max value of range.
+    * @tparam T     Any type that implements '>' and '<' operators.
     */
     template<typename T> 
     T clamp(const T& x, const T& min, const T& max) {

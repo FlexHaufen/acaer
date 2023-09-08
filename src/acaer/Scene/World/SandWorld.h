@@ -35,7 +35,9 @@ namespace Acaer {
         void SetCell(s32 x, s32 y, const Cell& cell) {
             if (SandWorldChunk* chunk = GetChunk(x, y)) {
                 chunk->SetCell(x, y, cell);
+                return;
             }
+            AC_CORE_WARN("SetCell: Chunk at [{0} / {1}] not found!", x, y);
 	    } 
 
         // Move
@@ -86,8 +88,12 @@ namespace Acaer {
             if (SandWorldChunk* src = GetChunk(x, y)) {
                 if (SandWorldChunk* dst = GetChunk(to_x, to_y)) {
                     dst->MoveCell(src, x, y, to_x, to_y);
+                    return;
                 }
+                AC_CORE_WARN("MoveCell: Chunk at [{0} / {1}] not found!", to_x, to_y);
+                return;
             }
+            AC_CORE_WARN("MoveCell: Chunk at [{0} / {1}] not found!", x, y);
         }
         
         void OnUpdate() {
@@ -95,22 +101,26 @@ namespace Acaer {
             RemoveEmptyChunks();
 
             for (auto* chunk : m_chunks) {
-                for (size_t x = 0; x < SAND_WORLD_CHUNK_SIZE_X;  x++) {
-                    for (size_t y = 0; y < SAND_WORLD_CHUNK_SIZE_Y; y++) {
+                for (s32 x = chunk->GetChunkRectMin().x; x < chunk->GetChunkRectMax().x;  x++) {
+                    for (s32 y = chunk->GetChunkRectMin().y; y < chunk->GetChunkRectMax().y; y++) {
                         Cell& cell = chunk->GetCell(x + y * SAND_WORLD_CHUNK_SIZE_X);
+
+                        if (cell.props == CellProperties::NONE) {
+                            continue;
+                        }
+
+                        v2<s32> pos = v2<s32>(x, y) + chunk->GetPos();
         
-                        s32 px = x + chunk->GetPos().x;
-                        s32 py = y + chunk->GetPos().y;
-        
-                             if (cell.props & CellProperties::MOVE_DOWN      && MoveDown    (px, py, cell)) {}
-                        else if (cell.props & CellProperties::MOVE_DOWN_SIDE && MoveDownSide(px, py, cell)) {}
-                        else if (cell.props & CellProperties::MOVE_SIDE      && MoveSide    (px, py, cell)) {}
+                        // ** Update Cell **
+                             if (cell.props & CellProperties::MOVE_DOWN      && MoveDown    (pos.x, pos.y, cell)) {}
+                        else if (cell.props & CellProperties::MOVE_DOWN_SIDE && MoveDownSide(pos.x, pos.y, cell)) {}
+                        else if (cell.props & CellProperties::MOVE_SIDE      && MoveSide    (pos.x, pos.y, cell)) {}
                     }
                 }
             }
-        
             for (auto* chunk : m_chunks) {
                 chunk->CommitCells();
+                chunk->UpdateRect();
             }
         }
 
@@ -150,7 +160,6 @@ namespace Acaer {
          */
         SandWorldChunk* GetChunk(s32 x, s32 y) {
             auto location = GetChunkLocation(x, y);
-            AC_CORE_TRACE("Get Chunk [ {0} | {1} ]", location.first, location.second);
             SandWorldChunk* chunk = GetChunkDirect(location);
             if (!chunk) {
                 chunk = CreateChunk(location);
@@ -187,10 +196,6 @@ namespace Acaer {
             SandWorldChunk* chunk = new SandWorldChunk(lx, ly);
             m_chunkLookup.insert({ location, chunk });
             m_chunks.push_back(chunk);
-
-            AC_CORE_TRACE("Creating Chunk [{0}, {1}]", lx, ly);
-            AC_CORE_TRACE("    m_chunks size [{0}]", m_chunks.size());
-
             return chunk;
         }
 
