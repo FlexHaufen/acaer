@@ -182,7 +182,10 @@ namespace Acaer {
         m_ImGuiLayer->OnDetach();      
 
         AC_CORE_INFO("Quiting...");
-        AC_PROFILE_END_SESSION();  
+
+        #ifdef AC_PROFILE
+            AC_PROFILE_END_SESSION();  
+        #endif
     }
 
     void Core::Run() {

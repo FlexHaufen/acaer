@@ -214,18 +214,16 @@ namespace Acaer {
 
         for (auto &i : m_SandWorld->GetChunkVector()) {
             auto pos = i->GetPos();
-            m_DebugRenderer->RenderChunkBorder(SAND_WORLD_CHUNK_SIZE_X, SAND_WORLD_CHUNK_SIZE_X, pos.x, pos.y);
+            m_DebugRenderer->RenderChunkBorder(AC_SAND_WORLD_CHUNK_SIZE_X, AC_SAND_WORLD_CHUNK_SIZE_X, pos.x, pos.y);
             m_DebugRenderer->RenderChunkDirtyRect(i->GetChunkRectMin() + pos, i->GetChunkRectMax() + pos);
 
-            for (size_t x = 0; x < SAND_WORLD_CHUNK_SIZE_X;  x++) {
-                for (size_t y = 0; y < SAND_WORLD_CHUNK_SIZE_Y; y++) {
-                    Cell& cell = i->GetCell(x + y * SAND_WORLD_CHUNK_SIZE_X);
+            for (size_t x = 0; x < AC_SAND_WORLD_CHUNK_SIZE_X;  x++) {
+                for (size_t y = 0; y < AC_SAND_WORLD_CHUNK_SIZE_Y; y++) {
+                    Cell& cell = i->GetCell(x + y * AC_SAND_WORLD_CHUNK_SIZE_X);
     
-                    s32 px = (s32)x + pos.x;
-                    s32 py = (s32)y + pos.y;
-
                     if (cell.type != CellType::EMPTY) {
-                        m_Renderer->RenderCell(px, py, cell.color);
+                        v2<s32> pos_new = v2<s32>(x, y) + pos;
+                        m_Renderer->RenderCell(pos_new.x, pos_new.y, cell.color);
                     }
                 }
             }
