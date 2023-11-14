@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 6511466520505737614
+  - Entity: 17082853347510501938
     Tag:
       tag: tree3
     Sprite:
@@ -10,7 +10,7 @@ Entities:
       pos: [-300, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 14460810783940864501
+  - Entity: 14326662027855035447
     Tag:
       tag: tree2
     Sprite:
@@ -20,7 +20,7 @@ Entities:
       pos: [150, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 10835190012442098076
+  - Entity: 12380495097392755133
     Tag:
       tag: tree1
     Sprite:
@@ -30,7 +30,7 @@ Entities:
       pos: [50, -444]
       scale: [1, 1]
       rotation: 0
-  - Entity: 2890626165363594440
+  - Entity: 4734994154187061977
     Tag:
       tag: gnd
     Sprite:
@@ -52,11 +52,11 @@ Entities:
       size: [400, 40]
       Sensors:
         []
-  - Entity: 370262367098519403
+  - Entity: 15241565220742850838
     Tag:
       tag: player
     SpriteAnimatior:
-      currentAnimation: run_left
+      currentAnimation: run_right
       pool:
         - name: run_left
           framePos: 0
@@ -64,23 +64,23 @@ Entities:
           frameSizeX: 48
           frameSizeY: 48
           isMirrored: true
-          currentFrame: 7
+          currentFrame: 6
           animationSpeed: 10
-          elapsedTime: 0
+          elapsedTime: 0.00700099953
         - name: run_right
           framePos: 0
           frameLenght: 8
           frameSizeX: 48
           frameSizeY: 48
           isMirrored: false
-          currentFrame: 0
+          currentFrame: 3
           animationSpeed: 10
           elapsedTime: 0
     Sprite:
       texturepath: assets/Textures/Player/run_anim_temp-Sheet.png
     Transform:
       renderLayer: "\x05"
-      pos: [-4.19634247, -62.4499855]
+      pos: [-1.9723053, -62.4499855]
       scale: [1, 1]
       rotation: -0
     RigitBody_C:
@@ -99,3 +99,6 @@ Entities:
           size: [60, 10]
     Camera:
       zoom: 1.20000005
+    Script:
+      pool:
+        - ./src/acaer/Scripts/Lua/testScript.lua

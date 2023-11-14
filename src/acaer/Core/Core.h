@@ -81,6 +81,7 @@ namespace Acaer {
         b8 m_isPaused = false;          // True when app is paused
         b8 m_isMinimized = false;       // True when app is minimzed
         b8 m_UpdateGame = true;         // True when game should be updated
+        b8 m_ShowDebugGui = false;      // True when debug GUI should be renderd
 
         sf::RenderWindow m_Window;      // Sfml window
         std::string m_WindowTitle;      // Sfml window title

@@ -195,6 +195,7 @@ namespace Acaer {
         m_EventManager.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) { Close(); });
         m_EventManager.addKeyPressedCallback(sf::Keyboard::Key::Escape, [&](const sf::Event&) {Close(); });
         m_EventManager.addKeyPressedCallback(sf::Keyboard::P, [&](const sf::Event&) { m_isPaused = !m_isPaused; });
+        m_EventManager.addKeyPressedCallback(sf::Keyboard::F1, [&](const sf::Event&) { m_ShowDebugGui = !m_ShowDebugGui; });
         m_EventManager.addKeyPressedCallback(sf::Keyboard::H, [&](const sf::Event&) { PerformHotReload(); });
 
         AC_CORE_INFO("Starting scene...");
@@ -230,13 +231,13 @@ namespace Acaer {
 
             // ---- UPDATE HANDLING ----
             m_ActiveScene->OnUpdate(dt_sec);
-            m_ImGuiLayer->OnUpdate(m_dt);
+            if (m_ShowDebugGui) { m_ImGuiLayer->OnUpdate(m_dt); }
 
             // ---- RENDER LOOP ----
             m_Window.clear(AC_SCENE_CLEAR_BACKGROUND);
             m_ActiveScene->OnRender();
             
-            m_ImGuiLayer->OnRender();
+            if (m_ShowDebugGui) { m_ImGuiLayer->OnRender(); }
             m_Window.display();
         } 
         else {
