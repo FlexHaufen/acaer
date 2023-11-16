@@ -86,6 +86,8 @@ extern "C" {
 #define AC_PPM                             30           // pixels per meter     [SFML -> BOX2D]
 #define AC_DEG_PER_RAD                     57.295795F   // degrees per radian   [SFML -> BOX2D]
 #define AC_PI                              3.1415926535 // PI
+#define AC_PAIR    2                                    // Definition of a "pair"
+
 // Physics
 #define AC_GRAVITY_X                        0           // Gravity in x-direction
 #define AC_GRAVITY_Y                       40           // Gravity in y-direction
@@ -93,4 +95,5 @@ extern "C" {
 #define AC_PHYSICS_POS_STEPS                6
 
 // World
-#define AC_WORLD_CHUNCK_SIZE               64           // x / y chunck size [AC_PX]
+#define AC_SAND_WORLD_CHUNK_SIZE_X         64
+#define AC_SAND_WORLD_CHUNK_SIZE_Y         64

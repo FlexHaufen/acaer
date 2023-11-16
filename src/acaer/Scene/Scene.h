@@ -102,7 +102,7 @@ namespace Acaer {
         // ** Members **
         // cam
         Camera m_Camera;                            // Camera
-        b8 m_useFreeCamera;                         // True: When camera shall be free            
+        b8 m_useFreeCamera = false;                 // True: When camera shall be free            
 
         // events
         EventManager       &m_EventManager;         // Ref to EventManager
