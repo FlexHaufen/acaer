@@ -3,6 +3,9 @@
 
 Custom 2D **pixelart game** programmed in pure **C++**
 
+
+<img src="./resource/images/dev/dev_v0.0.7a_08012024.png">
+
 ## Intention
 - Acaer will be a 2D Pixelart game, where the **whole World** is simulated.
 - There will be almost or none User interface.
